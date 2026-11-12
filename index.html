@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voluta Health</title>
+<meta name="description" content="Voluta Health is building a medical record system for primary care. Coming soon.">
+<meta name="theme-color" content="#F4F7F7">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 164' fill='none'%3E%3Cpath d='M60 10 L60 154' stroke='%230E3B43' stroke-width='10' stroke-linecap='round'/%3E%3Cpath d='M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22' stroke='%231B6F73' stroke-width='10' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ground: #F4F7F7;
+    --ink: #0E3B43;
+    --teal: #1B6F73;
+    --muted: #3E5A60;
+    --line: #D3DFDF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0B2B31;
+      --ink: #F4F7F7;
+      --teal: #8FD0CC;
+      --muted: #C2D8D7;
+      --line: #1F4A51;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  .page {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 20px;
+  }
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 28px;
+    max-width: 560px;
+  }
+  .lockup {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .mark { width: 76px; height: auto; flex: none; }
+  .mark .rod { stroke: var(--ink); }
+  .mark .halo { stroke: var(--ground); }
+  .mark .serpent { stroke: var(--teal); }
+  .mark .head { fill: var(--teal); }
+  .name { text-align: left; }
+  .name h1 {
+    margin: 0;
+    font-size: clamp(44px, 13vw, 64px);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .name span {
+    display: block;
+    margin-top: 8px;
+    font-size: clamp(15px, 4.4vw, 19px);
+    font-weight: 500;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  .soon {
+    margin: 0;
+    padding: 7px 18px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .lede {
+    margin: 0;
+    font-size: clamp(18px, 5vw, 21px);
+    line-height: 1.5;
+    color: var(--muted);
+    text-wrap: balance;
+  }
+  .by {
+    margin: -10px 0 0;
+    font-size: clamp(16px, 4.4vw, 18px);
+    font-weight: 500;
+    color: var(--ink);
+  }
+  footer {
+    padding-top: 24px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  /* The serpent draws itself up the staff, then keeps a slow, gentle sway. */
+  @media (prefers-reduced-motion: no-preference) {
+    .mark .rod { transform-origin: 60px 154px; animation: rise 0.7s ease-out both; }
+    .mark .halo, .mark .serpent { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.2s 0.5s ease-in-out forwards; }
+    .mark .head { opacity: 0; animation: show 0.4s 2.5s ease-out forwards; }
+    .name, .soon, .lede, .by { opacity: 0; animation: show 0.9s ease-out forwards; }
+    .name { animation-delay: 0.3s; }
+    .soon { animation-delay: 1.5s; }
+    .lede { animation-delay: 2s; }
+    .by { animation-delay: 2.6s; }
+  }
+  @keyframes rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes show { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <main>
+    <div class="lockup">
+      <svg class="mark" viewBox="0 0 120 164" fill="none" role="img" aria-label="Voluta Health logo: a single serpent winding up a staff">
+        <path class="rod" d="M60 10 L60 154" stroke-width="6" stroke-linecap="round"/>
+        <path class="halo" pathLength="1" d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"><animate class="sway" attributeName="d" dur="5s" begin="2.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22;M43 139 C79 136 93 114 60 102 S27 82 60 68 S93 48 62 36 C54 33 48 28 52 22;M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22"/></path>
+        <path class="serpent" pathLength="1" d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><animate class="sway" attributeName="d" dur="5s" begin="2.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22;M43 139 C79 136 93 114 60 102 S27 82 60 68 S93 48 62 36 C54 33 48 28 52 22;M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22"/></path>
+        <ellipse class="head" cx="53" cy="20" rx="6" ry="4.5"/>
+      </svg>
+      <div class="name">
+        <h1>Voluta</h1>
+        <span>Health</span>
+      </div>
+    </div>
+    <p class="soon">Coming soon</p>
+    <p class="lede">A medical record system for primary care, built by a practicing physician.</p>
+    <p class="by">&mdash; Dr. Reynaga, MD, MS, DABFM</p>
+  </main>
+  <footer>&copy; 2026 Voluta Health</footer>
+</div>
+<script>
+  // People who ask their device for reduced motion get the still logo.
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('animate.sway').forEach(function (a) { a.remove(); });
+  }
+</script>
+</body>
+</html>
