@@ -3,154 +3,480 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Voluta Health</title>
-<meta name="description" content="Voluta Health is building a medical record system for primary care. Coming soon.">
+<title>Voluta Health · A medical record for primary care, built by a physician</title>
+<meta name="description" content="Voluta is a medical record system for primary care, built by a practicing physician: an AI scribe with consent built in, a visit note that keeps the chief complaint and history for every visit, results followed until closed, and California's rules built in. In development; inviting California practices to the pilot list.">
 <meta name="theme-color" content="#F4F7F7">
+<meta property="og:title" content="Voluta Health · A medical record for primary care, built by a physician">
+<meta property="og:description" content="In development. An AI scribe with consent built in, one visit note from rooming to signing, results followed until closed, California's rules built in.">
+<meta property="og:image" content="https://volutahealth.com/img/note-panel.jpg">
+<meta property="og:url" content="https://volutahealth.com/">
+<meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 164' fill='none'%3E%3Cpath d='M60 10 L60 154' stroke='%230E3B43' stroke-width='10' stroke-linecap='round'/%3E%3Cpath d='M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22' stroke='%231B6F73' stroke-width='10' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --ground: #F4F7F7;
+    --panel: #FFFFFF;
     --ink: #0E3B43;
     --teal: #1B6F73;
+    --teal-soft: #E3F1F0;
+    --amber: #B7791F;
+    --amber-soft: #FDF3DD;
     --muted: #3E5A60;
     --line: #D3DFDF;
+    --shade: rgba(14, 59, 67, 0.12);
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --ground: #0B2B31;
+      --panel: #10363D;
       --ink: #F4F7F7;
       --teal: #8FD0CC;
+      --teal-soft: #164A50;
+      --amber: #F2C46D;
+      --amber-soft: #3A3420;
       --muted: #C2D8D7;
       --line: #1F4A51;
+      --shade: rgba(0, 0, 0, 0.35);
     }
   }
   * { box-sizing: border-box; }
-  html, body { height: 100%; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   body {
     margin: 0;
     background: var(--ground);
     color: var(--ink);
     font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
     -webkit-text-size-adjust: 100%;
   }
-  .page {
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 20px;
-  }
-  main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 28px;
-    max-width: 560px;
-  }
-  .lockup {
-    display: flex;
-    align-items: center;
-    gap: 22px;
-  }
-  .mark { width: 76px; height: auto; flex: none; }
+  a { color: var(--teal); }
+  img { max-width: 100%; height: auto; display: block; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 20px; }
+  section { padding: 72px 0; }
+  section + section { border-top: 1px solid var(--line); }
+  h2 { font-size: clamp(28px, 4.4vw, 40px); line-height: 1.15; letter-spacing: -0.015em; margin: 0 0 12px; font-weight: 600; }
+  h3 { font-size: 20px; margin: 0 0 6px; font-weight: 600; }
+  .kicker { text-transform: uppercase; letter-spacing: 0.18em; font-size: 13px; font-weight: 600; color: var(--teal); margin: 0 0 10px; }
+  .sub { color: var(--muted); max-width: 720px; margin: 0 0 32px; font-size: 18px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; border-radius: 999px; font: inherit; font-weight: 600; text-decoration: none; border: 1.5px solid var(--teal); cursor: pointer; }
+  .btn.pri { background: var(--teal); color: var(--ground); }
+  .btn.ghost { background: transparent; color: var(--teal); }
+  .btn:focus-visible, .tab:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+  /* top bar */
+  header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  header.top .wrap { display: flex; align-items: center; gap: 18px; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 21px; }
+  .brand svg { width: 22px; height: auto; }
+  nav.links { display: flex; gap: 18px; margin-left: auto; font-size: 15px; }
+  nav.links a { color: var(--muted); text-decoration: none; }
+  nav.links a:hover { color: var(--ink); }
+  header.top .btn { padding: 8px 16px; font-size: 15px; }
+  @media (max-width: 860px) { nav.links { display: none; } header.top .btn { margin-left: auto; } }
+
+  /* hero */
+  .hero { padding: 56px 0 72px; }
+  .hero .wrap { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
+  @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } }
+  .lockup { display: flex; align-items: center; gap: 18px; margin-bottom: 22px; }
+  .mark { width: 54px; height: auto; flex: none; }
   .mark .rod { stroke: var(--ink); }
   .mark .halo { stroke: var(--ground); }
   .mark .serpent { stroke: var(--teal); }
   .mark .head { fill: var(--teal); }
-  .name { text-align: left; }
-  .name h1 {
-    margin: 0;
-    font-size: clamp(44px, 13vw, 64px);
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
-  .name span {
-    display: block;
-    margin-top: 8px;
-    font-size: clamp(15px, 4.4vw, 19px);
-    font-weight: 500;
-    letter-spacing: 0.36em;
-    text-transform: uppercase;
-    color: var(--teal);
-  }
-  .soon {
-    margin: 0;
-    padding: 7px 18px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    font-size: 15px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .lede {
-    margin: 0;
-    font-size: clamp(18px, 5vw, 21px);
-    line-height: 1.5;
-    color: var(--muted);
-    text-wrap: balance;
-  }
-  .by {
-    margin: -10px 0 0;
-    font-size: clamp(16px, 4.4vw, 18px);
-    font-weight: 500;
-    color: var(--ink);
-  }
-  footer {
-    padding-top: 24px;
-    font-size: 14px;
-    color: var(--muted);
-  }
-  /* The serpent draws itself up the staff, then keeps a slow, gentle sway. */
+  .lockup .name { font-size: 40px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
+  .lockup .name span { display: block; font-size: 14px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--teal); margin-top: 6px; font-weight: 500; }
+  .status { display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; color: var(--muted); background: var(--panel); margin-bottom: 18px; }
+  .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 4px var(--amber-soft); }
+  .hero h1 { font-size: clamp(34px, 5.4vw, 56px); line-height: 1.08; letter-spacing: -0.025em; margin: 0 0 18px; font-weight: 600; }
+  .hero h1 em { font-style: normal; color: var(--teal); }
+  .hero .lede { font-size: 19px; color: var(--muted); margin: 0 0 26px; max-width: 560px; }
+  .hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero .by { margin: 22px 0 0; font-size: 15px; color: var(--muted); }
+  .shot { position: relative; }
+  .frame { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 60px var(--shade); background: var(--panel); }
+  .frame .bar { display: flex; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .frame .bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+  .callout { position: absolute; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; font-size: 14px; line-height: 1.35; box-shadow: 0 12px 30px var(--shade); max-width: 230px; }
+  .callout b { display: block; font-size: 14px; color: var(--teal); }
+  .callout.c1 { left: -28px; top: 18%; }
+  .callout.c2 { right: -24px; top: 46%; }
+  .callout.c3 { left: -16px; bottom: 8%; }
+  @media (max-width: 1100px) { .callout { position: static; max-width: none; margin-top: 10px; box-shadow: none; } }
+  .pretend { font-size: 13px; color: var(--muted); margin-top: 10px; text-align: center; }
+
+  /* fact strip */
+  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .facts { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .facts { grid-template-columns: 1fr; } }
+  .fact { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .fact .big { font-size: 26px; font-weight: 600; color: var(--teal); line-height: 1.1; margin-bottom: 6px; }
+  .fact p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  /* gallery */
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .tab { font: inherit; font-size: 15px; font-weight: 500; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); cursor: pointer; }
+  .tab[aria-selected="true"] { background: var(--teal); color: var(--ground); border-color: var(--teal); }
+  .pane { display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px; align-items: start; }
+  .pane[hidden] { display: none; }
+  @media (max-width: 900px) { .pane { grid-template-columns: 1fr; } }
+  .pane ul { margin: 12px 0 0; padding-left: 20px; color: var(--muted); }
+  .pane li { margin-bottom: 8px; }
+  .pane .frame img { width: 100%; }
+
+  /* flow */
+  .flow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; counter-reset: step; }
+  @media (max-width: 1000px) { .flow { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 560px) { .flow { grid-template-columns: 1fr; } }
+  .step { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; position: relative; }
+  .step::before { counter-increment: step; content: counter(step); display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--teal-soft); color: var(--teal); font-weight: 600; font-size: 14px; margin-bottom: 8px; }
+  .step h3 { font-size: 17px; }
+  .step p { margin: 0; font-size: 14.5px; color: var(--muted); }
+
+  /* cards */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+  .card svg { width: 30px; height: 30px; stroke: var(--teal); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 10px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15.5px; }
+  .card .law { display: block; margin-top: 8px; font-size: 13px; color: var(--teal); }
+
+  /* roadmap */
+  .road { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .road { grid-template-columns: 1fr; } }
+  .col { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+  .col .tag { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+  .col.built .tag { background: var(--teal-soft); color: var(--teal); }
+  .col.next .tag { background: var(--amber-soft); color: var(--amber); }
+  .col.plan .tag { background: var(--ground); color: var(--muted); border: 1px solid var(--line); }
+  .col ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); font-size: 15.5px; }
+  .col li { margin-bottom: 6px; }
+
+  /* pilot form */
+  .pilot { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 40px; }
+  @media (max-width: 900px) { .pilot { grid-template-columns: 1fr; } }
+  form { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; display: grid; gap: 14px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .row2 { grid-template-columns: 1fr; } }
+  label { display: grid; gap: 6px; font-size: 15px; font-weight: 500; }
+  input, select, textarea { font: inherit; font-size: 16px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--ground); color: var(--ink); width: 100%; }
+  textarea { min-height: 110px; resize: vertical; }
+  fieldset { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin: 0; }
+  legend { font-size: 15px; font-weight: 500; padding: 0 4px; }
+  .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
+  @media (max-width: 560px) { .checks { grid-template-columns: 1fr; } }
+  .checks label { display: flex; align-items: center; gap: 8px; font-weight: 400; }
+  .checks input { width: auto; }
+  .note { font-size: 13.5px; color: var(--muted); margin: 0; }
+  .sent { display: none; background: var(--teal-soft); border-radius: 10px; padding: 12px 14px; font-size: 15px; }
+  .sent.on { display: block; }
+
+  footer { padding: 36px 0 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  footer p { margin: 0 0 8px; }
+
+  /* the serpent draws itself up the staff, then keeps a slow, gentle sway */
   @media (prefers-reduced-motion: no-preference) {
     .mark .rod { transform-origin: 60px 154px; animation: rise 0.7s ease-out both; }
     .mark .halo, .mark .serpent { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.2s 0.5s ease-in-out forwards; }
     .mark .head { opacity: 0; animation: show 0.4s 2.5s ease-out forwards; }
-    .name, .soon, .lede, .by { opacity: 0; animation: show 0.9s ease-out forwards; }
-    .name { animation-delay: 0.3s; }
-    .soon { animation-delay: 1.5s; }
-    .lede { animation-delay: 2s; }
-    .by { animation-delay: 2.6s; }
+    .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+    .reveal.in { opacity: 1; transform: none; }
   }
   @keyframes rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
   @keyframes draw { to { stroke-dashoffset: 0; } }
-  @keyframes show { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes show { to { opacity: 1; } }
 </style>
 </head>
 <body>
-<div class="page">
-  <main>
-    <div class="lockup">
-      <svg class="mark" viewBox="0 0 120 164" fill="none" role="img" aria-label="Voluta Health logo: a single serpent winding up a staff">
-        <path class="rod" d="M60 10 L60 154" stroke-width="6" stroke-linecap="round"/>
-        <path class="halo" pathLength="1" d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"><animate class="sway" attributeName="d" dur="5s" begin="2.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22;M43 139 C79 136 93 114 60 102 S27 82 60 68 S93 48 62 36 C54 33 48 28 52 22;M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22"/></path>
-        <path class="serpent" pathLength="1" d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><animate class="sway" attributeName="d" dur="5s" begin="2.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22;M43 139 C79 136 93 114 60 102 S27 82 60 68 S93 48 62 36 C54 33 48 28 52 22;M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22"/></path>
-        <ellipse class="head" cx="53" cy="20" rx="6" ry="4.5"/>
-      </svg>
-      <div class="name">
-        <h1>Voluta</h1>
-        <span>Health</span>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Voluta Health, back to the top">
+      <svg viewBox="0 0 120 164" fill="none" aria-hidden="true"><path d="M60 10 L60 154" stroke="currentColor" stroke-width="10" stroke-linecap="round"/><path d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke="#1B6F73" stroke-width="10" stroke-linecap="round"/></svg>
+      Voluta
+    </a>
+    <nav class="links" aria-label="Sections">
+      <a href="#see">See it work</a>
+      <a href="#visit">A visit</a>
+      <a href="#california">California</a>
+      <a href="#security">Security</a>
+      <a href="#roadmap">Roadmap</a>
+    </nav>
+    <a class="btn pri" href="#pilot">Join the pilot list</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <div class="lockup">
+          <svg class="mark" viewBox="0 0 120 164" fill="none" role="img" aria-label="Voluta Health logo: a single serpent winding up a staff">
+            <path class="rod" d="M60 10 L60 154" stroke-width="6" stroke-linecap="round"/>
+            <path class="halo" pathLength="1" d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"><animate class="sway" attributeName="d" dur="5s" begin="2.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22;M43 139 C79 136 93 114 60 102 S27 82 60 68 S93 48 62 36 C54 33 48 28 52 22;M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22"/></path>
+            <path class="serpent" pathLength="1" d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><animate class="sway" attributeName="d" dur="5s" begin="2.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22;M43 139 C79 136 93 114 60 102 S27 82 60 68 S93 48 62 36 C54 33 48 28 52 22;M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22"/></path>
+            <ellipse class="head" cx="53" cy="20" rx="6" ry="4.5"/>
+          </svg>
+          <div class="name">Voluta<span>Health</span></div>
+        </div>
+        <p class="status"><span class="dot" aria-hidden="true"></span>In development · Inviting California primary care practices to the pilot list</p>
+        <h1>The medical record where <em>the visit writes itself</em>, and nothing falls through.</h1>
+        <p class="lede">Voluta is a medical record system for primary care, built by a practicing family physician. One tap starts the AI scribe, with the patient's consent recorded in the note. The chief complaint and history are kept for every visit. Every result is followed until someone closes it. California's rules are built in, not bolted on.</p>
+        <div class="ctas">
+          <a class="btn pri" href="#pilot">Join the pilot list</a>
+          <a class="btn ghost" href="#see">See it work</a>
+        </div>
+        <p class="by">Built by Dr. Reynaga, MD, MS, DABFM, a board-certified family physician.</p>
+      </div>
+      <div class="shot">
+        <div class="frame">
+          <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <picture>
+            <source srcset="img/note-panel.webp" type="image/webp">
+            <img src="img/note-panel.jpg" width="1298" height="1492" alt="Voluta's visit note for a pretend patient: the AI scribe bar with the consent recorded, an 'AI draft to check' bar with Mark reviewed and Undo the AI draft, the chief complaint and history boxes, and the note with bold CHIEF COMPLAINT and HISTORY OF PRESENT ILLNESS sections, the AI's words tinted until reviewed" fetchpriority="high">
+          </picture>
+        </div>
+        <div class="callout c1"><b>One tap, consent recorded</b>The question to ask is on screen; the yes goes into the note with the date, time and who asked.</div>
+        <div class="callout c2"><b>Tinted until reviewed</b>Everything the AI wrote stays marked until a physician or APP reviews it. Undo takes it all back out.</div>
+        <div class="callout c3"><b>Typed once, kept for history</b>The chief complaint and HPI boxes and the note follow each other as you type.</div>
+        <p class="pretend">Screens show pretend patients and pretend data.</p>
       </div>
     </div>
-    <p class="soon">Coming soon</p>
-    <p class="lede">A medical record system for primary care, built by a practicing physician.</p>
-    <p class="by">&mdash; Dr. Reynaga, MD, MS, DABFM</p>
-  </main>
-  <footer>&copy; 2026 Voluta Health</footer>
-</div>
+  </section>
+
+  <section aria-labelledby="facts-h">
+    <div class="wrap">
+      <h2 id="facts-h" class="reveal">Built the way a clinic actually works</h2>
+      <p class="sub reveal">Every part of Voluta came from a real clinic day: the huddle before the first patient, rooming, the visit, the results that come back after the patient leaves, and the office work around it.</p>
+      <div class="facts">
+        <div class="fact reveal"><div class="big">1 tap</div><p>to start the AI scribe, with the consent question on screen and the answer recorded in the note.</p></div>
+        <div class="fact reveal"><div class="big">0 copy-paste</div><p>The chief complaint, history, review of systems and exam boxes and the note stay in step by themselves.</p></div>
+        <div class="fact reveal"><div class="big">Every result</div><p>followed from order to a closed loop, with critical results escalated until someone acts.</p></div>
+        <div class="fact reveal"><div class="big">No third-party code</div><p>in the page. Records are encrypted, and every chart opened is in a sealed audit log.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="see" aria-labelledby="see-h">
+    <div class="wrap">
+      <p class="kicker">See it work</p>
+      <h2 id="see-h">Real screens, pretend patients</h2>
+      <p class="sub">These are Voluta's own screens, filled with invented patients for testing.</p>
+      <div class="tabs" role="tablist" aria-label="Voluta screens">
+        <button class="tab" role="tab" id="t-huddle" aria-controls="p-huddle" aria-selected="true">Team huddle</button>
+        <button class="tab" role="tab" id="t-chart" aria-controls="p-chart" aria-selected="false" tabindex="-1">Chart at a glance</button>
+        <button class="tab" role="tab" id="t-gaps" aria-controls="p-gaps" aria-selected="false" tabindex="-1">Care gaps</button>
+        <button class="tab" role="tab" id="t-inbox" aria-controls="p-inbox" aria-selected="false" tabindex="-1">Results inbox</button>
+        <button class="tab" role="tab" id="t-schedule" aria-controls="p-schedule" aria-selected="false" tabindex="-1">Schedule</button>
+      </div>
+      <div class="pane" role="tabpanel" id="p-huddle" aria-labelledby="t-huddle">
+        <div class="frame"><picture><source srcset="img/huddle.webp" type="image/webp"><img src="img/huddle.jpg" width="2752" height="1280" loading="lazy" alt="The team huddle for today: each appointment with what is due, results not reviewed, referrals still open and insurance to check"></picture></div>
+        <div><h3>Ready before the first patient</h3><p>The huddle lists what each visit needs before it starts.</p><ul><li>Care due: vaccines, screenings and annual wellness parts</li><li>Results not yet reviewed, referrals still open, insurance not checked</li><li>Visit prep: the plan from the last visit, ready to print</li></ul></div>
+      </div>
+      <div class="pane" role="tabpanel" id="p-chart" aria-labelledby="t-chart" hidden>
+        <div class="frame"><picture><source srcset="img/chart.webp" type="image/webp"><img src="img/chart.jpg" width="2752" height="1280" loading="lazy" alt="A pretend patient's chart summary: what changed since the last visit, care gaps, the problem list and recall"></picture></div>
+        <div><h3>The whole patient on one screen</h3><p>The chart opens on what matters today.</p><ul><li>What changed since the last visit</li><li>Care gaps with one tap to order, and a problem list with each diagnosis's history</li><li>Search the whole record, with quotes for a phrase</li></ul></div>
+      </div>
+      <div class="pane" role="tabpanel" id="p-gaps" aria-labelledby="t-gaps" hidden>
+        <div class="frame"><picture><source srcset="img/gaps.webp" type="image/webp"><img src="img/gaps.jpg" width="2752" height="1120" loading="lazy" alt="The care gaps worklist across the practice, each gap with the order and the diagnosis code ready"></picture></div>
+        <div><h3>Care gaps across the practice</h3><p>Every screening, monitoring test and vaccine due, for every patient.</p><ul><li>Filter by gap, insurance or primary care provider</li><li>One click places the order with its diagnosis code attached</li><li>Mark "done elsewhere" with where and when</li></ul></div>
+      </div>
+      <div class="pane" role="tabpanel" id="p-inbox" aria-labelledby="t-inbox" hidden>
+        <div class="frame"><picture><source srcset="img/inbox.webp" type="image/webp"><img src="img/inbox.jpg" width="2752" height="660" loading="lazy" alt="The results inbox: each abnormal result with one-tap actions to file it, discuss it, call the patient, review and tell the patient, message or order"></picture></div>
+        <div><h3>Results with one-tap next steps</h3><p>Each result arrives with the actions a clinician takes most.</p><ul><li>Normal, discuss at the next visit, call the patient, review and tell</li><li>Each test followed until someone closes it</li><li>Critical results escalate until someone acts</li></ul></div>
+      </div>
+      <div class="pane" role="tabpanel" id="p-schedule" aria-labelledby="t-schedule" hidden>
+        <div class="frame"><picture><source srcset="img/schedule.webp" type="image/webp"><img src="img/schedule.jpg" width="2752" height="1240" loading="lazy" alt="The day's schedule with each visit's type, provider and rooming status"></picture></div>
+        <div><h3>A schedule that knows the visit</h3><p>Booking, check-in and rooming flow into the visit note.</p><ul><li>The reason for the visit and the chief complaint carry into the note</li><li>Rooming status for each patient at a glance</li><li>Blocked time, waitlist and reminders</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="visit" aria-labelledby="visit-h">
+    <div class="wrap">
+      <p class="kicker">One visit, one note</p>
+      <h2 id="visit-h">From check-in to signature, nothing typed twice</h2>
+      <p class="sub">The medical assistant's work, the AI scribe's draft and the physician's words all land in the same note, each credited to who wrote it.</p>
+      <div class="flow">
+        <div class="step reveal"><h3>Check-in</h3><p>The reason for the visit becomes the chief complaint.</p></div>
+        <div class="step reveal"><h3>Rooming</h3><p>Vitals, screenings and an optional brief HPI, written into the visit's note.</p></div>
+        <div class="step reveal"><h3>AI scribe</h3><p>One tap after everyone agrees out loud. The consent is recorded with the time.</p></div>
+        <div class="step reveal"><h3>Draft in place</h3><p>History, review of systems, exam and plans go into their boxes and the note at once.</p></div>
+        <div class="step reveal"><h3>Review and sign</h3><p>AI words stay tinted until reviewed. Signing asks if any are left.</p></div>
+        <div class="step reveal"><h3>Follow-up</h3><p>Orders, results and recalls are tracked until each is closed.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="california" aria-labelledby="ca-h">
+    <div class="wrap">
+      <p class="kicker">Built for California</p>
+      <h2 id="ca-h">California's rules, built in</h2>
+      <p class="sub">Small practices in California carry rules most systems leave to binders and spreadsheets. Voluta builds them into the day's work.</p>
+      <div class="cards">
+        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a4 4 0 0 1 4 4v4a4 4 0 0 1-8 0V7a4 4 0 0 1 4-4zM5 11a7 7 0 0 0 14 0M12 18v3"/></svg><h3>Recording consent</h3><p>Everyone in the room agrees before the AI scribe records, and the note says when and who asked.</p><span class="law">Penal Code 632</span></div>
+        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><h3>Protected care kept separate</h3><p>Reproductive and gender-affirming care is held apart from staff who do not need it, while prior authorizations and referrals still get worked.</p><span class="law">California health privacy law</span></div>
+        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg><h3>AI messages, disclosed</h3><p>AI-written handouts carry the required notice in English and Spanish, with a way to reach a person.</p><span class="law">AB 3030</span></div>
+        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4a2 2 0 0 1 4 0v10.3a4 4 0 1 1-4 0z"/><path d="M12 10v7"/></svg><h3>Vaccine fridge failures</h3><p>A temperature excursion puts the affected lots on hold, with the VFC steps to follow.</p><span class="law">VFC program</span></div>
+        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6-9 9H5v-6z"/><path d="M12 6l6 6"/></svg><h3>Sharps injury log</h3><p>Each exposure recorded within the deadline, with the follow-up owed.</p><span class="law">Cal/OSHA, 8 CCR 5193</span></div>
+        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><h3>Prenatal care on time</h3><p>A prenatal due list by gestational age, including the California Prenatal Screening Program.</p><span class="law">CDPH</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="security" aria-labelledby="sec-h">
+    <div class="wrap">
+      <p class="kicker">Security and privacy</p>
+      <h2 id="sec-h">Designed to be trusted with a chart</h2>
+      <p class="sub">An independent review of Voluta was done before any real patient, and its fixes are being made in order. A professional penetration test and an attorney's review come before the pilot.</p>
+      <div class="cards">
+        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><h3>Encrypted records</h3><p>AES-256 encryption with the key kept in Google's Secret Manager, never on the disk with the data.</p></div>
+        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><h3>A sealed audit log</h3><p>Every chart opened and every change is logged, sealed with a key and checked against copies kept off the server.</p></div>
+        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M17 8h4M19 6v4"/></svg><h3>Each role sees its part</h3><p>The front desk, billing, referrals and the clinical team each receive only what their work needs.</p></div>
+        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg><h3>Sign-in that holds</h3><p>Two-step codes, growing waits after wrong passwords, and a screen lock enforced by the server.</p></div>
+        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.7M4 4v4h4"/></svg><h3>Backups you can restore</h3><p>Nightly encrypted backups with a restore drill, and every release can be rolled back.</p></div>
+        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6L5 19a1.5 1.5 0 0 0 1.3 2h11.4a1.5 1.5 0 0 0 1.3-2L14 9V3"/></svg><h3>Tested before every release</h3><p>Hundreds of server checks and thousands of browser test steps run in Chrome and Safari before each version.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="roadmap" aria-labelledby="road-h">
+    <div class="wrap">
+      <p class="kicker">Roadmap</p>
+      <h2 id="road-h">What's built, what's next, what's planned</h2>
+      <p class="sub">Voluta is in development and is not yet used with real patients. Here is where it stands.</p>
+      <div class="road">
+        <div class="col built reveal"><span class="tag">Built, in testing</span><h3>The clinic day</h3><ul><li>AI scribe with recorded consent, drafting the whole visit</li><li>One note per visit from rooming to signature</li><li>Team huddle, care gaps and recalls</li><li>Results inbox with follow-up until closed</li><li>Prenatal due list, wellness visits, care management</li><li>Patient portal, standing orders and refill protocols</li><li>Office safety checks, vaccine fridge, sharps log</li></ul></div>
+        <div class="col next reveal"><span class="tag">Next</span><h3>Safety before patients</h3><ul><li>Lab results filed on the server the moment they arrive</li><li>Patient matching by record number, name and date of birth</li><li>Prescribing checks for allergies, pregnancy and children's doses</li><li>Privacy-law features: change history, self-pay restriction</li><li>Independent penetration test and attorney's review</li><li>A pilot with pretend patients, then a small live pilot</li></ul></div>
+        <div class="col plan reveal"><span class="tag">Planned, with partners</span><h3>Connected care</h3><ul><li>Electronic prescribing, including controlled substances</li><li>Claims, eligibility and payment posting</li><li>California's Data Exchange Framework and national networks</li><li>CAIR immunization registry, two-way</li><li>Electronic lab orders and results</li><li>Spanish-language scribe visits and two-way texting</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pilot" aria-labelledby="pilot-h">
+    <div class="wrap pilot">
+      <div>
+        <p class="kicker">Pilot</p>
+        <h2 id="pilot-h">Join the pilot list</h2>
+        <p class="sub">We are looking for a few California primary care practices to help shape Voluta before it opens. Tell us about your practice and what you would want from your medical record.</p>
+        <p class="note">The form opens a ready-to-send email in your email app. Please do not include any patient information.</p>
+      </div>
+      <form id="inq" novalidate>
+        <div class="row2">
+          <label>Your name<input name="name" autocomplete="name" required></label>
+          <label>Your role<select name="role"><option>Physician</option><option>Nurse practitioner or physician assistant</option><option>Practice owner or manager</option><option>Nurse or medical assistant</option><option>Other</option></select></label>
+        </div>
+        <div class="row2">
+          <label>Practice<input name="practice" autocomplete="organization"></label>
+          <label>City<input name="city" autocomplete="address-level2"></label>
+        </div>
+        <div class="row2">
+          <label>Email<input name="email" type="email" autocomplete="email" required></label>
+          <label>Clinicians in the practice<select name="size"><option>1</option><option>2 to 5</option><option>6 to 15</option><option>More than 15</option></select></label>
+        </div>
+        <fieldset>
+          <legend>Most interested in</legend>
+          <div class="checks">
+            <label><input type="checkbox" name="int" value="AI scribe">AI scribe</label>
+            <label><input type="checkbox" name="int" value="Results follow-up">Results follow-up</label>
+            <label><input type="checkbox" name="int" value="Prenatal care">Prenatal care</label>
+            <label><input type="checkbox" name="int" value="Care gaps and quality">Care gaps and quality</label>
+            <label><input type="checkbox" name="int" value="Billing and MIPS">Billing and MIPS</label>
+            <label><input type="checkbox" name="int" value="California compliance">California compliance</label>
+          </div>
+        </fieldset>
+        <label>Anything else<textarea name="msg" placeholder="What does your current system make hard?"></textarea></label>
+        <div><button class="btn pri" type="submit">Write the email</button></div>
+        <p class="sent" id="sent" role="status" aria-live="polite"></p>
+        <p class="note">Or email <span id="addr">us</span> directly.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Voluta is in development and is not yet used with real patients. Every screen on this page shows pretend patients and pretend data.</p>
+    <p>&copy; 2026 Voluta Health</p>
+  </div>
+</footer>
+
 <script>
-  // People who ask their device for reduced motion get the still logo.
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll('animate.sway').forEach(function (a) { a.remove(); });
-  }
+  (function () {
+    // People who ask their device for reduced motion get the still logo and no fade-ins.
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (still) document.querySelectorAll('animate.sway').forEach(function (a) { a.remove(); });
+
+    // Sections fade in as they come into view.
+    var rev = document.querySelectorAll('.reveal');
+    if (!still && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
+      rev.forEach(function (el) { io.observe(el); });
+    } else rev.forEach(function (el) { el.classList.add('in'); });
+
+    // The screen gallery: tabs, with the arrow keys moving between them.
+    var tabs = [].slice.call(document.querySelectorAll('[role="tab"]'));
+    function pick(t) {
+      tabs.forEach(function (x) {
+        var on = x === t;
+        x.setAttribute('aria-selected', on ? 'true' : 'false');
+        x.tabIndex = on ? 0 : -1;
+        document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
+      });
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { pick(t); });
+      t.addEventListener('keydown', function (e) {
+        var j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : -9;
+        if (j === -9) return;
+        e.preventDefault();
+        var n = tabs[(j + tabs.length) % tabs.length];
+        pick(n); n.focus();
+      });
+    });
+
+    // The address is put together here, so it is not sitting in the page for address collectors.
+    var to = ['reynaga', 'volutahealth.com'].join('@');
+    var a = document.getElementById('addr');
+    a.innerHTML = '';
+    var link = document.createElement('a');
+    link.href = 'mailto:' + to; link.textContent = to;
+    a.appendChild(link);
+
+    // The pilot form writes an email in the visitor's own email app: nothing is sent or stored by this page.
+    var f = document.getElementById('inq'), sent = document.getElementById('sent');
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = function (n) { return (f.elements[n].value || '').trim(); };
+      if (!v('name') || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v('email'))) {
+        sent.textContent = 'Please add your name and an email address we can reply to.';
+        sent.classList.add('on');
+        (v('name') ? f.elements.email : f.elements.name).focus();
+        return;
+      }
+      var ints = [].slice.call(f.querySelectorAll('input[name="int"]:checked')).map(function (c) { return c.value; });
+      var body = [
+        'Name: ' + v('name'),
+        'Role: ' + v('role'),
+        'Practice: ' + v('practice'),
+        'City: ' + v('city'),
+        'Clinicians: ' + v('size'),
+        'Email: ' + v('email'),
+        'Most interested in: ' + (ints.join(', ') || 'not said'),
+        '',
+        v('msg')
+      ].join('\n');
+      var subject = 'Voluta pilot list: ' + (v('practice') || v('name'));
+      window.location.href = 'mailto:' + to + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      sent.textContent = 'Your email app should open with the message ready. Press Send there. If nothing opened, write to ' + to + '.';
+      sent.classList.add('on');
+    });
+  })();
 </script>
 </body>
 </html>
