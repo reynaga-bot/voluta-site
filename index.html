@@ -6,7 +6,7 @@
      script slipped into the page or a request to another site, is refused by the browser. When the style or the script
      below changes, its sha256 in this line must be updated, from the exact text between the tags:
      python3 -c "import re,hashlib,base64;h=open('index.html',encoding='utf-8').read();[print(t,'sha256-'+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()) for t in ('style','script') for m in re.findall('<'+t+'>(.*?)</'+t+'>',h,re.S)]" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-iudyBsoZ9UQ0Uur8UEFxKYiVGfHx9nVUYdw4LtwGzLU='; style-src 'sha256-EMHN/DhvDpsqrn8iOFIl/TA4nfq6bx1Shgvl/jU/pBs='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-iudyBsoZ9UQ0Uur8UEFxKYiVGfHx9nVUYdw4LtwGzLU='; style-src 'sha256-cJYsbHEo3ZfV6Ddrq7LpWbrELFCsqQrghHQYV/9itS0='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voluta Health · A medical record for primary care, built by a physician</title>
@@ -38,8 +38,9 @@
   @font-face { font-family: "Plex fallback"; src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans"); font-weight: 400; size-adjust: 100.8%; }
   @font-face { font-family: "Plex fallback"; src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("LiberationSans-Bold"); font-weight: 600; size-adjust: 96.8%; }
 
-  /* Colors come from the V emblem: royal blue for actions, the serpent's light blue as light, navy ink and bands.
-     Amber means "not final yet" and green means "done", as they do inside Voluta. */
+  /* Colors come from Voluta's wordmark and emblem: royal blue, the wordmark's lettering, for every action; a light sky
+     blue as light; navy ink and bands; the emblem keeps its own blue and green, lighter in the dark. Amber means "not
+     final yet" and green means "done", as they do inside Voluta. */
   :root {
     color-scheme: light dark;
     --bg: #F7F9FC; --bg-alt: #EEF3FB; --surface: #FFFFFF;
@@ -48,6 +49,7 @@
     --field: #7A879E;
     --accent: #1D4ED8; --accent-strong: #1E40AF; --accent-soft: #E8EFFF; --on-accent: #FFFFFF;
     --sky: #93C5FD; --sky-2: #BFDBFE;
+    --logo-b: #196BAC; --logo-g: #4B9E37;
     --draft-bg: #FFECB8; --draft-line: #8A4F00; --draft-ink: #7A4500;
     --done-bg: #D1FADF; --done-ink: #065F3A;
     --plan-bg: #EEF1F6; --plan-ink: #414D64;
@@ -75,6 +77,7 @@
       --bg: #0A0F1D; --bg-alt: #0D1426; --surface: #121A2F;
       --ink: #E7ECF7; --muted: #A7B3CC; --line: #24304B; --field: #66758F;
       --accent: #93C5FD; --accent-strong: #BFDBFE; --accent-soft: #16254A; --on-accent: #0A1A44;
+      --logo-b: #3D93D6; --logo-g: #8FD16A;
       --draft-bg: #40300C; --draft-line: #FFD166; --draft-ink: #FFD166;
       --done-bg: #123A25; --done-ink: #6FE0A0; --plan-bg: #1A2238; --plan-ink: #A7B3CC;
       --dot-dev: #FFC233; --err: #FF9A8F; --focus: #93C5FD;
@@ -215,18 +218,16 @@
   header.top.scrolled { box-shadow: 0 1px 0 var(--line), var(--shadow-sm); }
   .top .wrap { display: flex; align-items: center; gap: 8px; height: 56px; }
   @media (min-width: 601px) { .top .wrap { height: 64px; gap: 12px; } }
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 44px;
-    text-decoration: none;
-    color: var(--ink);
-    font-weight: 600;
-    font-size: 20px;
-    margin-right: auto;
-  }
-  .brand img { width: 28px; height: 28px; flex: none; }
+  .brand { display: flex; align-items: center; min-height: 44px; text-decoration: none; margin-right: auto; }
+  /* The wordmark: the emblem is the V of "Voluta", a blue left arm and a green arm rolling into the Ionic scroll
+     ("voluta" is Latin for that scroll), before the royal-blue letters. Its size and place are the approved sheet's:
+     the V's top 0.8 em above the baseline, its foot just below it, the scroll almost touching the o. The drawing sits
+     on the baseline as flex items do, so it is moved down by position (a bottom margin has no effect there). */
+  .wm { display: inline-flex; align-items: baseline; color: var(--accent); font-weight: 600; }
+  .wm svg { position: relative; top: 0.064em; width: 0.914em; height: 0.868em; margin-right: -0.035em; flex: none; overflow: visible; }
+  .wm .vl { stroke: var(--logo-b); }
+  .wm .vr { stroke: var(--logo-g); }
+  .brand .wm { font-size: 24px; }
   nav.links { display: none; }
   .links a, .menu a { color: var(--muted); text-decoration: none; position: relative; }
   .links a:hover, .menu a:hover { color: var(--ink); }
@@ -318,9 +319,11 @@
   .by { margin: 24px 0 0; font-size: 15px; color: var(--muted); }
   .shot { position: relative; isolation: isolate; }
   .volute { position: absolute; z-index: -1; width: 135%; left: -18%; top: -24%; pointer-events: none; }
-  /* beside the text, the spiral sweeps out from behind the picture's top-right corner, clear of the words */
+  /* beside the text, the spiral sweeps out from behind the picture's top-right corner, clear of the words; on phones
+     its top sits just above the picture, below the byline (the arc's top is 24.7% of the shot's width into the drawing) */
   @media (min-width: 900px) { .volute { width: 120%; left: 30%; top: -260px; } }
-  .volute path { fill: none; stroke: var(--sky); stroke-opacity: .35; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+  @media (max-width: 599px) { .volute { top: calc(-14px - 24.7vw); } }
+  .volute path { fill: none; stroke: var(--logo-g); stroke-opacity: .3; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
   .frame { margin: 0; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow-lg); }
   .frame figcaption { padding: 8px 14px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line); }
   .pic { position: relative; }
@@ -824,8 +827,8 @@
   @media (prefers-color-scheme: dark) { footer { border-top: 1px solid var(--band-line); } }
   footer p { margin: 0 0 8px; max-width: 70ch; }
   footer a { color: var(--band-accent); }
-  .foot-brand { display: flex; align-items: center; gap: 10px; color: var(--band-ink); font-weight: 600; font-size: 18px; margin-bottom: 16px; }
-  .foot-brand img { width: 24px; height: 24px; }
+  .foot-brand { display: flex; align-items: baseline; gap: 6px; color: var(--band-ink); font-weight: 600; font-size: 18px; margin-bottom: 16px; }
+  footer .wm { color: var(--band-accent); --logo-b: #3D93D6; --logo-g: #8FD16A; }
   .foot-links { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-top: 12px; }
   .foot-links a { display: inline-flex; align-items: center; min-height: 44px; }
 
@@ -833,6 +836,9 @@
      shows something true; nothing that starts on its own lasts more than five seconds. */
   @media (prefers-reduced-motion: no-preference) {
     html { scroll-behavior: smooth; }
+    .top .wm path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+    .top .wm .vl { animation: draw 400ms var(--ease-in-out) 150ms forwards; }
+    .top .wm .vr { animation: draw 1000ms var(--ease-in-out) 500ms forwards; }
     .hero-copy > * { animation: rise 600ms var(--ease-out) both; }
     .hero-copy > :nth-child(2) { animation-delay: 70ms; }
     .hero-copy > :nth-child(3) { animation-delay: 140ms; }
@@ -920,7 +926,9 @@
       --band-ink: #0E1A33; --band-muted: #414D64; --band-accent: #1D4ED8; --band-card: #FFFFFF; --band-line: #DCE4F0;
       --pilot-ink: #0E1A33; --pilot-muted: #414D64;
       --shadow-sm: none; --shadow-md: none; --shadow-lg: none; --hero-glow: none;
+      --logo-b: #196BAC; --logo-g: #4B9E37;
     }
+    footer .wm { --logo-b: #196BAC; --logo-g: #4B9E37; }
     .hero, .alt, .band, .band.deep, .pilot-band, footer { background: none; border: 0; }
     *, *::before, *::after { transition: none !important; animation: none !important; }
     html.rv .reveal { opacity: 1 !important; transform: none !important; }
@@ -1542,8 +1550,7 @@
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#top" aria-label="Voluta Health, back to the top">
-      <img src="/favicon.svg" alt="" width="28" height="28">
-      Voluta
+      <span class="wm"><svg viewBox="3 3 60 57" aria-hidden="true" focusable="false"><g fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path class="vr" pathLength="1" d="M23.4 54.6L36.3 16.0A11.2 11.2 0 0 1 46.8 8.4A10.8 10.8 0 0 1 57.6 19.2A8.6 8.6 0 0 1 49.0 27.8A4.4 4.4 0 0 1 44.6 23.4"/><path class="vl" pathLength="1" d="M8.2 9.6L22.6 54.4"/></g></svg>oluta</span>
     </a>
     <nav class="links" aria-label="Sections">
       <a href="#ai" data-nav>The AI scribe</a>
@@ -2021,7 +2028,7 @@
 
 <footer>
   <div class="wrap">
-    <p class="foot-brand"><img src="/favicon.svg" alt="" width="24" height="24">Voluta Health</p>
+    <p class="foot-brand"><span class="wm" role="img" aria-label="Voluta"><svg viewBox="3 3 60 57" aria-hidden="true" focusable="false"><g fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path class="vr" pathLength="1" d="M23.4 54.6L36.3 16.0A11.2 11.2 0 0 1 46.8 8.4A10.8 10.8 0 0 1 57.6 19.2A8.6 8.6 0 0 1 49.0 27.8A4.4 4.4 0 0 1 44.6 23.4"/><path class="vl" pathLength="1" d="M8.2 9.6L22.6 54.4"/></g></svg>oluta</span><span>Health</span></p>
     <p>Voluta is in development and is not yet used with real patients. Every screen on this page shows pretend patients and pretend data.</p>
     <p>Screens captured Nov 18, 2026 from the version in testing.</p>
     <p>&copy; 2026 Voluta Health</p>
