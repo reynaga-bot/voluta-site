@@ -6,7 +6,7 @@
      script slipped into the page or a request to another site, is refused by the browser. When the style or the script
      below changes, its sha256 in this line must be updated, from the exact text between the tags:
      python3 -c "import re,hashlib,base64;h=open('index.html',encoding='utf-8').read();[print(t,'sha256-'+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()) for t in ('style','script') for m in re.findall('<'+t+'>(.*?)</'+t+'>',h,re.S)]" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-RrNXCqQlOMb6wzzl1a1tdUYDELI/z2ernIM1wLwDtgI='; style-src 'sha256-AFUeMlr6t+d6/HuuvZiUwNXUxelYUUYKjxLID/CMHSw='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-iudyBsoZ9UQ0Uur8UEFxKYiVGfHx9nVUYdw4LtwGzLU='; style-src 'sha256-EMHN/DhvDpsqrn8iOFIl/TA4nfq6bx1Shgvl/jU/pBs='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voluta Health · A medical record for primary care, built by a physician</title>
@@ -27,11 +27,16 @@
 <link rel="icon" href="/favicon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/IBMPlexSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/IBMPlexSans-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <style>
   /* IBM Plex Sans, the EMR's own typeface, from the EMR's own unmodified files (the license reserves the name "Plex"
      for unmodified fonts; its text is in /fonts/OFL.txt). Served from this site, so nothing is asked of another. */
   @font-face { font-family: "IBM Plex Sans"; src: url("/fonts/IBMPlexSans-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
   @font-face { font-family: "IBM Plex Sans"; src: url("/fonts/IBMPlexSans-SemiBold.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+  /* Until Plex arrives, Arial stands in, scaled to Plex's widths (measured on this page's text), so the words wrap the
+     same and nothing moves when Plex takes over. Liberation Sans has Arial's widths. */
+  @font-face { font-family: "Plex fallback"; src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans"); font-weight: 400; size-adjust: 100.8%; }
+  @font-face { font-family: "Plex fallback"; src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("LiberationSans-Bold"); font-weight: 600; size-adjust: 96.8%; }
 
   /* Colors come from the V emblem: royal blue for actions, the serpent's light blue as light, navy ink and bands.
      Amber means "not final yet" and green means "done", as they do inside Voluta. */
@@ -96,7 +101,7 @@
     margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: "IBM Plex Sans", "Plex fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
     font-size: 17px;
     line-height: 1.6;
   }
@@ -155,7 +160,8 @@
   .chip.test { background: var(--draft-bg); color: var(--draft-ink); }
   .chip.done { background: var(--done-bg); color: var(--done-ink); }
   .chip.law { background: var(--accent-soft); color: var(--accent-strong); }
-  /* "In testing" marks the parts of 0.158 not yet released; adding class v158 to <html> retires every chip at once */
+  /* "In testing" marks the parts of 0.158 not yet released; adding class v158 to <html> retires every chip at once
+     (then also take "(in the version now in testing)" out of step 4's picture description) */
   html.v158 .soon { display: none; }
 
   /* buttons: royal blue is the one action color */
@@ -283,11 +289,8 @@
     overflow-x: clip;
   }
   .hero .wrap { display: grid; gap: 48px; align-items: center; }
-  @media (min-width: 900px) { .hero .wrap { grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); } }
-  .lockup { display: flex; align-items: center; gap: 18px; margin-bottom: 24px; width: fit-content; }
-  .mark { width: 64px; height: 64px; flex: none; }
-  .lockup .name { font-size: 40px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
-  .lockup .name span { display: block; font-size: 14px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--accent); margin-top: 6px; }
+  /* the wide gap leaves room for the left callout to float clear of the words */
+  @media (min-width: 900px) { .hero .wrap { grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: 72px; } }
   .status {
     display: inline-flex;
     align-items: center;
@@ -310,6 +313,8 @@
   .sound-row.off { visibility: hidden; }
   html:not(.js) .sound-row { display: none; }
   .sound-note { margin: 0; font-size: 13px; line-height: 1.45; color: var(--muted); flex: 1 1 260px; max-width: 46ch; }
+  /* on phones the hero's three buttons share one width, so the edge under the main action is straight */
+  @media (max-width: 599px) { .ctas .btn, #hear-hero { width: 100%; } }
   .by { margin: 24px 0 0; font-size: 15px; color: var(--muted); }
   .shot { position: relative; isolation: isolate; }
   .volute { position: absolute; z-index: -1; width: 135%; left: -18%; top: -24%; pointer-events: none; }
@@ -352,13 +357,17 @@
   .callout b { display: block; font-size: 15px; color: var(--ink); margin-bottom: 2px; }
   .callout[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
   .callout[aria-pressed="true"] b { color: var(--accent-strong); }
-  @media (min-width: 1100px) {
+  /* Below the picture they sit as a list (three across while the picture has the full width). From 1280 px, where
+     the page has its full width, they float over the frame's edges: the right ones 16 px inside the screen and clear
+     of the rings, the left one inside the gap and clear of the words. */
+  @media (min-width: 601px) and (max-width: 899px) { .callouts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 1280px) {
     .callouts { margin: 0; display: block; }
-    .callouts li { position: absolute; width: 210px; }
+    .callouts li { position: absolute; width: 190px; }
     .callout { box-shadow: var(--shadow-md); }
-    .callouts li:nth-child(1) { right: -40px; top: 2%; }
-    .callouts li:nth-child(2) { left: -56px; top: 47%; }
-    .callouts li:nth-child(3) { right: -40px; bottom: 6%; }
+    .callouts li:nth-child(1) { right: -24px; top: 2%; }
+    .callouts li:nth-child(2) { left: -48px; top: 47%; }
+    .callouts li:nth-child(3) { right: -24px; bottom: 6%; }
   }
   .pretend { font-size: 13px; color: var(--muted); margin: 12px 0 0; text-align: center; }
   @media (max-width: 600px) {
@@ -366,6 +375,8 @@
     .shot.h1 .ring { --x: 5.13%; --y: 1.18%; --w: 89.74%; --h: 50.21%; }
     .shot.h2 .ring { --x: 5.13%; --y: 66.22%; --w: 89.74%; --h: 32.83%; }
     .shot.h3 .ring { --x: 5.64%; --y: 69.4%; --w: 88.72%; --h: 29.31%; }
+    /* the phone picture has no note, so the third callout (the boxes and the note in step) is left out */
+    .callouts li:nth-child(3) { display: none; }
   }
 
   /* facts strip */
@@ -473,6 +484,14 @@
   .walk-close { margin: 0; color: var(--band-muted); grid-column: 1 / -1; }
   .walk.live .steps, .walk.live .walk-close { display: none; }
   .walk-side { display: flex; flex-direction: column; gap: 20px; }
+  /* the step's text shares one grid cell with invisible copies of every step's text, so the box is always as tall as
+     the longest step and nothing below it moves from step to step */
+  .now-box { display: grid; }
+  .now-box > * { grid-area: 1 / 1; min-width: 0; }
+  .now-size { visibility: hidden; }
+  /* Back, Next and Hear it come first in the page's order and stay put; beside the stage the step's text sits above
+     them, level with the picture, and on phones it follows them under the stage. The steps list comes last. */
+  @media (min-width: 900px) { .now-box { order: -1; } }
   .now-k { margin: 0 0 4px; font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--band-accent); }
   .walk-now h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 8px; font-size: 1.375rem; }
   .now-t { margin: 0; color: var(--band-muted); font-size: 17px; }
@@ -561,6 +580,27 @@
   .fr-4 .ring { --x: 1.2%; --y: 36.18%; --w: 97.6%; --h: 14.18%; }
   .fr-5 .ring { --x: 3.68%; --y: 5.19%; --w: 91.32%; --h: 23.66%; }
   .fr-6 .ring { --x: 3.59%; --y: 58.2%; --w: 92.82%; --h: 41.02%; }
+  /* While the tour speaks on a phone, the line being said shows over the stage's bottom edge, since the step text
+     below the stage can be off screen. The frames pan so the ring stays above it. */
+  .cap { display: none; }
+  @media (max-width: 899px) {
+    .stage.capt .cap {
+      display: block;
+      position: absolute;
+      z-index: 2;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      margin: 0;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgb(11 24 56 / .92);
+      color: #F1F5FF;
+      font-size: 15px;
+      line-height: 1.45;
+      box-shadow: 0 8px 24px -8px rgb(0 0 0 / .5);
+    }
+  }
   .speak-pill {
     position: fixed;
     right: 12px;
@@ -585,7 +625,6 @@
   @media (max-width: 899px) {
     .stage { order: -1; }
     .stage-view { height: clamp(420px, 62svh, 560px); }
-    .walk-side .rail { order: 9; }
     .rail { display: flex; justify-content: space-between; gap: 0; }
     .rail::before, .rail::after { left: 22px; right: 22px; top: 21px; bottom: auto; width: auto; height: 2px; }
     .rail::after { transform: scaleX(var(--p)); transform-origin: 0 50%; }
@@ -713,7 +752,34 @@
   .plan .tag { background: var(--plan-bg); color: var(--plan-ink); }
   .col ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); font-size: 15px; }
   .col li { margin-bottom: 8px; }
-  @media (min-width: 900px) { .road::before { content: ""; position: absolute; z-index: 0; left: 10%; right: 10%; top: 40px; height: 2px; background: var(--line); background: linear-gradient(90deg, var(--done-ink), var(--draft-line), var(--plan-ink)); transform-origin: 0 50%; } }
+  /* side by side, a track runs above the three columns from built to planned, with a dot over each column's tag */
+  @media (min-width: 900px) {
+    .road { padding-top: 34px; }
+    .road::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 30px;
+      right: calc((100% - 48px) / 3 - 30px);
+      height: 2px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--done-ink), var(--draft-line) 50%, var(--plan-ink));
+      transform-origin: 0 50%;
+    }
+    .col::before {
+      content: "";
+      position: absolute;
+      top: -29px;
+      left: 24px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--done-ink);
+      box-shadow: 0 0 0 4px var(--bg);
+    }
+    .col.next::before { background: var(--draft-line); }
+    .col.plan::before { background: var(--plan-ink); }
+  }
 
   /* the pilot band */
   .pilot-band { background-color: var(--pilot-2); background-image: linear-gradient(135deg, var(--pilot-1), var(--pilot-2)); color: var(--pilot-ink); }
@@ -726,6 +792,7 @@
   .row2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
   @media (max-width: 599px) { .row2 { grid-template-columns: minmax(0, 1fr); } }
   label { display: grid; gap: 6px; font-size: 15px; font-weight: 600; }
+  .req { font-weight: 400; color: var(--muted); }
   input, select, textarea {
     font: inherit;
     font-size: 16px;
@@ -766,15 +833,12 @@
      shows something true; nothing that starts on its own lasts more than five seconds. */
   @media (prefers-reduced-motion: no-preference) {
     html { scroll-behavior: smooth; }
-    .mark .rod { transform-origin: 60px 154px; animation: rise-y 0.7s ease-out both; }
-    .mark .serpent { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.2s 0.5s ease-in-out forwards; }
-    .mark .head { opacity: 0; animation: show 0.4s 2.5s ease-out forwards; }
-    .hero-copy > :not(.lockup) { animation: rise 600ms var(--ease-out) both; }
-    .hero-copy > :nth-child(3) { animation-delay: 70ms; }
-    .hero-copy > :nth-child(4) { animation-delay: 140ms; }
-    .hero-copy > :nth-child(5) { animation-delay: 210ms; }
-    .hero-copy > :nth-child(6) { animation-delay: 280ms; }
-    .hero-copy > :nth-child(7) { animation-delay: 350ms; }
+    .hero-copy > * { animation: rise 600ms var(--ease-out) both; }
+    .hero-copy > :nth-child(2) { animation-delay: 70ms; }
+    .hero-copy > :nth-child(3) { animation-delay: 140ms; }
+    .hero-copy > :nth-child(4) { animation-delay: 210ms; }
+    .hero-copy > :nth-child(5) { animation-delay: 280ms; }
+    .hero-copy > :nth-child(6) { animation-delay: 350ms; }
     .hero .frame { animation: lift 800ms var(--ease-out) 150ms both; }
     .volute path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.8s var(--ease-in-out) 300ms forwards; }
     .callouts li { animation: fade 320ms var(--ease-out) both; }
@@ -835,9 +899,7 @@
       }
     }
   }
-  @keyframes rise-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
   @keyframes draw { to { stroke-dashoffset: 0; } }
-  @keyframes show { to { opacity: 1; } }
   @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
   @keyframes lift { from { transform: translateY(20px) scale(.985); } }
   @keyframes fade { from { opacity: 0; transform: translateY(6px); } }
@@ -845,6 +907,33 @@
   @keyframes level { from { transform: scaleY(.3); } to { transform: scaleY(1); } }
   @keyframes drop { from { opacity: 0; transform: translateY(-6px); } }
   @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* On paper or in a saved PDF: the light look, every part shown whether or not it was scrolled to, the walkthrough as
+     its list of steps, and none of the controls that need a screen. */
+  @media print {
+    :root {
+      color-scheme: light;
+      --bg: #FFFFFF; --bg-alt: #FFFFFF; --surface: #FFFFFF; --ink: #0E1A33; --muted: #414D64; --line: #DCE4F0; --field: #7A879E;
+      --accent: #1D4ED8; --accent-strong: #1E40AF; --accent-soft: #E8EFFF; --on-accent: #FFFFFF;
+      --draft-bg: #FFECB8; --draft-line: #8A4F00; --draft-ink: #7A4500;
+      --done-bg: #D1FADF; --done-ink: #065F3A; --plan-bg: #EEF1F6; --plan-ink: #414D64;
+      --band-ink: #0E1A33; --band-muted: #414D64; --band-accent: #1D4ED8; --band-card: #FFFFFF; --band-line: #DCE4F0;
+      --pilot-ink: #0E1A33; --pilot-muted: #414D64;
+      --shadow-sm: none; --shadow-md: none; --shadow-lg: none; --hero-glow: none;
+    }
+    .hero, .alt, .band, .band.deep, .pilot-band, footer { background: none; border: 0; }
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+    html.rv .reveal { opacity: 1 !important; transform: none !important; }
+    html.rv .card .ico path { stroke-dashoffset: 0 !important; }
+    .try.armed .ai-line { clip-path: none !important; }
+    .walk.live .steps { display: grid; }
+    .walk.live .walk-close { display: block; }
+    .step-n { background: none; border: 1.5px solid var(--ink); color: var(--ink); }
+    .btn.pri { background: none; color: var(--accent); border-color: var(--accent); }
+    header.top, .skip, .volute, .sound-row, .try-btns, .walk-side, .stage, .speak-pill, .tabs, .enlarge { display: none !important; }
+    section { padding: 32px 0; }
+    .card, .col, .fact, .step, .callout, .frame, .shotframe { break-inside: avoid; }
+  }
 </style>
 <script>
   document.documentElement.classList.add('js');
@@ -858,29 +947,14 @@
     const observer = (cb, opts) => ('IntersectionObserver' in window ? new IntersectionObserver(cb, opts) : null);
     const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; };
 
-    // When reduced motion is turned on mid-visit, every movement jumps to its end and the emblem stops where it is.
+    // When reduced motion is turned on mid-visit, every movement jumps to its end.
     function motionPref() {
       const settle = () => {
         if (!still()) return;
         if (document.getAnimations) document.getAnimations().forEach(a => { try { a.finish(); } catch (e) { a.cancel(); } });
-        const svg = $('.mark'); if (svg && svg.pauseAnimations) svg.pauseAnimations();
         $$('.reveal').forEach(r => r.classList.add('in'));
       };
       if (reduce.addEventListener) reduce.addEventListener('change', settle); else if (reduce.addListener) reduce.addListener(settle);
-    }
-
-    // The serpent sways once after the emblem draws itself, and again on a hover or tap; it pauses while off screen.
-    function emblem() {
-      const svg = $('.mark'), sway = svg && $('animate.sway', svg);
-      if (!sway) return;
-      if (still()) { sway.remove(); return; }
-      const play = () => { if (!still() && sway.isConnected) { try { sway.beginElement(); } catch (e) { /* no SMIL: stays still */ } } };
-      setTimeout(play, 2900);
-      const lock = $('.lockup');
-      lock.addEventListener('mouseenter', play);
-      lock.addEventListener('click', play);
-      const o = observer(es => es.forEach(e => (e.isIntersecting ? svg.unpauseAnimations() : svg.pauseAnimations())));
-      if (o) o.observe(svg);
     }
 
     // Sections and cards rise into place once, as they come into view; siblings follow 60 ms apart (at most six).
@@ -935,7 +1009,11 @@
       const mark = $('#try-mark'), undo = $('#try-undo'), again = $('#try-again');
       $('#try-btns').hidden = false;
       const open = () => parts.filter(p => !p.classList.contains('reviewed') && !p.classList.contains('undone'));
-      const chip = (p, text) => { $('.cl', p).textContent = text; };
+      // the chip, and the unseen words before each tinted sentence, say whose words they are for a screen reader too
+      const chip = (p, text) => {
+        $('.cl', p).textContent = text;
+        $$('.ai-k', p).forEach(k => { k.textContent = p.classList.contains('reviewed') ? 'Reviewed: ' : 'AI draft: '; });
+      };
       const done = from => {
         mark.hidden = true; undo.hidden = true; again.hidden = false;
         if (document.activeElement === from || document.activeElement === document.body) again.focus();
@@ -972,7 +1050,7 @@
     // the step is about, and rings it while the rest dims. Returns the controls the spoken tour uses.
     function walk() {
       const box = $('#walk'), steps = $$('.step', $('#steps')), stage = $('#stage'), view = $('.stage-view', stage);
-      const rail = $('#rail'), back = $('#w-back'), next = $('#w-next'), close = $('#walk-close');
+      const rail = $('#rail'), back = $('#w-back'), next = $('#w-next'), close = $('#walk-close'), cap = $('#cap');
       const N = steps.length, frames = [], frameOf = [], railBtns = [];
       steps.forEach((li, i) => {
         const pic = $('picture', li);
@@ -993,39 +1071,68 @@
         item.append(b); rail.append(item); railBtns.push(b);
       });
       const words = i => $$('.say', i >= N ? close : steps[i]);
-      let cur = -1, shown = null, token = 0;
+      let cur = -1, shown = null, token = 0, near = false;
 
       // the text beside the stage is the step's own words, so what is spoken is what is on screen
-      function render(i) {
-        const end = i >= N;
-        $('#now-k').textContent = end ? 'After the visit' : 'Step ' + (i + 1) + ' of ' + N;
-        const h = $('#now-h');
-        h.hidden = end;
-        if (!end) {
-          h.replaceChildren($('.step-t', steps[i]).textContent);
-          const c = $('.chip', steps[i]);
-          if (c) h.append(' ', c.cloneNode(true));
-        }
-        const t = $('#now-t');
+      const kicker = i => (i >= N ? 'After the visit' : 'Step ' + (i + 1) + ' of ' + N);
+      function title(i, h) {
+        h.replaceChildren($('.step-t', steps[i]).textContent);
+        const c = $('.chip', steps[i]);
+        if (c) h.append(' ', c.cloneNode(true));
+      }
+      function text(i, t) {
         t.replaceChildren();
         words(i).forEach((s, k) => { if (k) t.append(' '); t.append(s.cloneNode(true)); });
+      }
+      function render(i) {
+        const end = i >= N, h = $('#now-h');
+        $('#now-k').textContent = kicker(i);
+        h.hidden = end;
+        if (!end) title(i, h);
+        text(i, $('#now-t'));
         $('#now-end').hidden = !end;
       }
-      // pan the frame so the ringed part sits about two thirds down the stage and clear of its faded bottom edge
+      // an invisible copy of every step's text, in the same grid cell, holds the box at the longest step's height
+      function sizers() {
+        for (let i = 0; i <= N; i++) {
+          const s = el('div', 'walk-now now-size'), t = el('p', 'now-t');
+          s.setAttribute('aria-hidden', 'true');
+          s.append(el('p', 'now-k', kicker(i)));
+          if (i < N) { const h = el('h3'); title(i, h); s.append(h); }
+          text(i, t);
+          s.append(t);
+          if (i === N) {
+            const e = $('#now-end').cloneNode(true);
+            e.hidden = false;
+            [e].concat($$('[id]', e)).forEach(x => x.removeAttribute('id'));
+            s.append(e);
+          }
+          $('#now-box').append(s);
+        }
+      }
+      // pan the frame so the ringed part sits about two thirds down what can be seen of the stage, above its faded
+      // bottom edge or, while the tour speaks on a phone, above the caption
       function pan(fr) {
         const cs = getComputedStyle($('.ring', fr)), vh = view.clientHeight, fh = fr.offsetHeight, off = fr.offsetTop;
         const y = parseFloat(cs.getPropertyValue('--y')) / 100 * fh, h = parseFloat(cs.getPropertyValue('--h')) / 100 * fh;
-        let p = Math.min(0, Math.max(vh * 0.62 - off - (y + h / 2), vh - 56 - off - fh));
-        if (off + y + h + p > vh - 52) p = vh - 52 - off - y - h;
+        const room = vh - (cap.offsetHeight ? cap.offsetHeight + 24 : 52);
+        let p = Math.min(0, Math.max(room * 0.66 - off - (y + h / 2), room - 4 - off - fh));
+        if (off + y + h + p > room) p = room - off - y - h;
         if (off + y + p < 8) p = 8 - off - y;
         fr.style.setProperty('--pan', Math.round(Math.min(0, p)) + 'px');
+      }
+      // A step's picture, and the next one's, load at once only when the walkthrough is near the screen or the visitor
+      // has used it; before that they wait, so the first view of the page loads only what it shows.
+      function warm(fr) {
+        if (!near || !fr) return;
+        $('img', fr).loading = 'eager';
+        const nx = frames[frames.indexOf(fr) + 1];
+        if (nx) $('img', nx).loading = 'eager';
       }
       // the next screen is decoded before it is shown; the draft wipes down over the recording (step 3 to 4)
       function swap(fr) {
         const my = ++token, img = $('img', fr);
-        img.loading = 'eager';
-        const nx = frames[frames.indexOf(fr) + 1];
-        if (nx) $('img', nx).loading = 'eager';
+        warm(fr);
         const go = () => {
           if (my !== token || fr === shown) return;
           const old = shown;
@@ -1060,10 +1167,14 @@
         pan(fr);
         swap(fr);
       }
+      const frameNow = () => frames[frameOf[Math.min(Math.max(cur, 0), N - 1)]];
       const api = { N, show, words, get cur() { return cur; }, hook: null,
         // a step chosen by the visitor; the spoken tour, when on, starts again from there
-        nav(i) { i = Math.max(0, Math.min(N, i)); if (!(api.hook && api.hook(i))) show(i); } };
-      back.addEventListener('click', () => api.nav(cur - 1));
+        nav(i) { near = true; i = Math.max(0, Math.min(N, i)); if (!(api.hook && api.hook(i))) show(i); },
+        // pans again, for when the caption comes or goes
+        refit() { pan(frameNow()); } };
+      // Back is turned off at step 1 and Next is hidden at the end, so focus moves to the control that takes over
+      back.addEventListener('click', () => { api.nav(cur - 1); if (cur === 0) next.focus(); });
       next.addEventListener('click', () => { api.nav(cur + 1); if (cur >= N) $('#w-again').focus(); });
       $('#w-again').addEventListener('click', () => { api.nav(0); next.focus(); });
       // the arrows move from the step that has focus
@@ -1078,7 +1189,10 @@
       if ('ResizeObserver' in window) new ResizeObserver(() => { if (shown) pan(shown); }).observe(view);
       const o = observer(es => { if (es[0].isIntersecting) { stage.classList.add('pop'); o.disconnect(); } }, { threshold: 0.35 });
       if (o && !still()) o.observe(stage);
-      [rail, stage, $('#walk-now'), $('#walk-ctl')].forEach(x => { x.hidden = false; });
+      const soon = observer(es => { if (es[0].isIntersecting) { near = true; warm(frameNow()); soon.disconnect(); } }, { rootMargin: '100% 0px' });
+      if (soon) soon.observe(box); else near = true;
+      sizers();
+      [rail, stage, $('#now-box'), $('#walk-ctl')].forEach(x => { x.hidden = false; });
       box.classList.add('live');
       show(0);
       return api;
@@ -1089,10 +1203,11 @@
       const synth = window.speechSynthesis, Utter = window.SpeechSynthesisUtterance;
       if (!synth || !Utter || !W) return;
       const row = $('#sound-row'), heroB = $('#hear-hero'), walkB = $('#hear-walk'), pill = $('#speak-pill');
-      const now = $('#walk-now'), msg = $('#now-msg'), intro = $('#walk-sub [data-say]');
+      const now = $('#walk-now'), msg = $('#now-msg'), intro = $('#walk-sub [data-say]'), stage = $('#stage'), cap = $('#cap');
       const NOVELTY = /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox)\b/i;
       const PREFER = /Samantha|Ava|Allison|Susan|Zoe|Evan|Nathan|Tom|Alex|Microsoft (Zira|David|Mark)/;
-      let run = 0, speaking = false, keep = [], timers = [], ctx = null, master = null, walkSeen = true;
+      const wide = window.matchMedia('(min-width: 900px)');
+      let run = 0, speaking = false, keep = [], timers = [], ctx = null, master = null, stopSeen = true, pillT = 0;
 
       // Only voices that run on the device: a voice that works through a server could send the words away.
       function pickVoice() {
@@ -1161,22 +1276,41 @@
       }
       const unmark = () => $$('.say.speaking').forEach(s => s.classList.remove('speaking'));
       function onLine(line) {
+        cap.textContent = line.text;
         if (line.step !== W.cur) { W.show(line.step); if (line.step > 0 && line.step < W.N) tone('step'); }
         unmark();
         const n = line.node();
         if (n) n.classList.add('speaking');
       }
+      // The caption over the stage (phones only, by the style) is held at the height of the longest line, so the
+      // frames pan once for it and not again line by line.
+      function caption(L) {
+        stage.classList.add('capt');
+        cap.style.minHeight = '';
+        let tall = 0;
+        L.forEach(l => { cap.textContent = l.text; tall = Math.max(tall, cap.offsetHeight); });
+        cap.style.minHeight = tall ? tall + 'px' : '';
+        cap.textContent = L.length ? L[0].text : '';
+      }
+      // The Stop pill shows while speaking whenever the walkthrough's own Stop button is out of view, after a short
+      // wait so it does not flash during the scroll from the hero.
+      function setPill() {
+        clearTimeout(pillT);
+        if (!(speaking && !stopSeen)) { pill.hidden = true; return; }
+        pillT = setTimeout(() => { pill.hidden = !(speaking && !stopSeen); }, 700);
+      }
+      // The Hear buttons read Stop while speaking; the label alone tells the state, so there is no pressed state too.
       function busy(on) {
         speaking = on;
         [heroB, walkB].forEach(b => {
           b.classList.toggle('on', on);
-          b.setAttribute('aria-pressed', String(on));
           $('.lbl', b).textContent = on ? 'Stop' : b.dataset.idle;
         });
         now.setAttribute('aria-live', on ? 'off' : 'polite');
         $('#walk-hint').hidden = !(on && window.matchMedia('(pointer: coarse)').matches);
-        pill.hidden = !(on && !walkSeen);
-        if (!on) unmark();
+        setPill();
+        if (!on) { unmark(); stage.classList.remove('capt'); cap.textContent = ''; }
+        W.refit();
       }
       function start(from, fromHero) {
         const voice = pickVoice();
@@ -1189,6 +1323,7 @@
         try { if (synth.speaking || synth.pending) synth.cancel(); } catch (e) { /* nothing queued */ }
         // every line is queued inside the tap, which is what iPhone and iPad need
         const L = lines(from);
+        caption(L);
         keep = L.map((line, n) => {
           const u = new Utter(line.text);
           u.voice = voice; u.lang = voice.lang; u.rate = 1; u.pitch = 1; u.volume = 1;
@@ -1200,7 +1335,9 @@
         });
         W.show(from);
         busy(true);
-        if (fromHero) $('#visit').scrollIntoView({ behavior: still() ? 'auto' : 'smooth', block: 'start' });
+        // From the hero, the page scrolls so the first spoken line, the stage and the Stop button are in view: on a
+        // computer from the line under the heading, on a phone from the stage, whose caption then shows each line.
+        if (fromHero) (wide.matches ? $('#walk-sub') : $('#walk')).scrollIntoView({ behavior: still() ? 'auto' : 'smooth', block: 'start' });
       }
       // if the device's voice fails, the tour goes on with the words on screen, at a reading pace
       function wordsOnly(L, n) {
@@ -1251,9 +1388,9 @@
         msg.hidden = false;
       });
       window.addEventListener('pagehide', () => { stop(); if (ctx && ctx.state !== 'closed') ctx.close(); ctx = null; });
-      // the Stop pill shows only while speaking with less than 30 % of the walkthrough on screen
-      const o = observer(es => { walkSeen = es[0].intersectionRatio >= 0.3; pill.hidden = !(speaking && !walkSeen); }, { threshold: [0, 0.3] });
-      if (o) o.observe($('#walk'));
+      // "In view" means at least half of the walkthrough's Stop button shows below the sticky header
+      const o = observer(es => { stopSeen = es[0].isIntersecting && es[0].intersectionRatio >= 0.5; setPill(); }, { threshold: [0, 0.5, 1], rootMargin: '-64px 0px 0px 0px' });
+      if (o) o.observe(walkB);
     }
 
     // The screen gallery: tabs with the arrow, Home and End keys; the selected pill slides between them.
@@ -1350,13 +1487,18 @@
     // The pilot form writes an email in the visitor's own email app: nothing is sent or stored by this page.
     function pilotForm() {
       const f = $('#inq'), sent = $('#sent'), say = $('#sent-t');
-      f.addEventListener('input', e => { if (e.target.getAttribute('aria-invalid') === 'true') e.target.setAttribute('aria-invalid', 'false'); });
+      // a field marked invalid points to the message that says what is missing, until it is edited
+      const flag = (input, ok) => {
+        input.setAttribute('aria-invalid', String(!ok));
+        if (ok) input.removeAttribute('aria-describedby'); else input.setAttribute('aria-describedby', 'sent-t');
+      };
+      f.addEventListener('input', e => { if (e.target.getAttribute('aria-invalid') === 'true') flag(e.target, true); });
       f.addEventListener('submit', e => {
         e.preventDefault();
         const v = n => (f.elements[n].value || '').trim();
         const nameOk = !!v('name'), mailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v('email'));
-        f.elements.name.setAttribute('aria-invalid', String(!nameOk));
-        f.elements.email.setAttribute('aria-invalid', String(!mailOk));
+        flag(f.elements.name, nameOk);
+        flag(f.elements.email, mailOk);
         sent.classList.remove('on', 'ok', 'err');
         void sent.offsetWidth;
         if (!nameOk || !mailOk) {
@@ -1388,7 +1530,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       // each part runs on its own, so one that fails leaves the others working (and its error still shows)
       const safe = f => { try { return f(); } catch (e) { setTimeout(() => { throw e; }); return null; } };
-      [motionPref, emblem, reveal, header, navCurrent, heroRing, tryIt, gallery, viewer, menu, address, pilotForm].forEach(safe);
+      [motionPref, reveal, header, navCurrent, heroRing, tryIt, gallery, viewer, menu, address, pilotForm].forEach(safe);
       const W = safe(walk);
       safe(() => tour(W));
     });
@@ -1431,27 +1573,15 @@
   <section class="hero" id="top" aria-labelledby="hero-h">
     <div class="wrap">
       <div class="hero-copy">
-        <div class="lockup">
-          <svg class="mark" viewBox="0 0 64 64" role="img" aria-label="Voluta logo: a V whose right arm is a staff with a serpent winding up it">
-            <rect width="64" height="64" rx="14" fill="#1d4ed8"/>
-            <path d="M10 12 L30 54" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round"/>
-            <g transform="rotate(25 32 32) translate(22 1.5) scale(.34)">
-              <path class="rod" d="M60 10 L60 154" stroke="#fff" stroke-width="24" stroke-linecap="round"/>
-              <path class="serpent" pathLength="1" d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke="#93c5fd" stroke-width="18" fill="none" stroke-linecap="round" stroke-linejoin="round"><animate class="sway" attributeName="d" dur="2s" begin="indefinite" fill="remove" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22;M43 139 C79 136 93 114 60 102 S27 82 60 68 S93 48 62 36 C54 33 48 28 52 22;M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22"/></path>
-              <ellipse class="head" cx="53" cy="20" rx="12" ry="10" fill="#93c5fd"/>
-            </g>
-          </svg>
-          <div class="name">Voluta<span>Health</span></div>
-        </div>
         <p class="status"><span class="dot" aria-hidden="true"></span>In development · Inviting California primary care practices to the pilot list</p>
         <h1 id="hero-h">The AI drafts the visit. <em>You decide what is signed.</em></h1>
-        <p class="lede">Voluta is a medical record system for primary care, built by a practicing family physician. One tap starts the AI scribe, with everyone's consent recorded in the note, and its words stay marked until you review them. The chief complaint and history are kept for every visit. Every result is followed until someone closes it. California's rules are built in, not bolted on.</p>
+        <p class="lede">Voluta is a medical record system for primary care, built by a practicing family physician. One tap starts the AI scribe, with everyone's consent recorded in the note, and its words stay marked until you review them.</p>
         <div class="ctas">
           <a class="btn pri" href="#pilot">Join the pilot list</a>
           <a class="btn sec" href="#visit">Walk through a visit</a>
         </div>
         <div class="sound-row off" id="sound-row">
-          <button class="btn quiet hear" id="hear-hero" type="button" aria-pressed="false"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">Hear the visit</span></button>
+          <button class="btn quiet hear" id="hear-hero" type="button"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">Hear the visit</span></button>
           <p class="sound-note">Read aloud by your device's own voice, with the words on screen. Nothing plays until you tap; this page never uses your microphone.</p>
         </div>
         <p class="by">Built by Dr. Reynaga, MD, MS, DABFM, a board-certified family physician.</p>
@@ -1483,10 +1613,10 @@
   <section class="alt" aria-labelledby="facts-h">
     <div class="wrap">
       <h2 id="facts-h" class="reveal">Built the way a clinic actually works</h2>
-      <p class="sub reveal">Every part of Voluta came from a real clinic day: the huddle before the first patient, rooming, the visit, the results that come back after the patient leaves, and the office work around it.</p>
+      <p class="sub reveal">Every part of Voluta came from a real clinic day: the huddle before the first patient, rooming, the visit, the results that come back after the patient leaves, and the office work around it. California's rules are built in, not bolted on.</p>
       <div class="facts reveal">
         <div class="fact"><div class="big">1 tap</div><p>to start the AI scribe, with the consent question on screen and the answer recorded in the note.</p></div>
-        <div class="fact"><div class="big">Typed once</div><p>The chief complaint, history, review of systems and exam boxes and the note stay in step by themselves.</p></div>
+        <div class="fact"><div class="big">Typed once</div><p>and kept in step: the chief complaint, history, review of systems and exam boxes and the note follow each other.</p></div>
         <div class="fact"><div class="big">Every result</div><p>followed from order to a closed loop, with critical results escalated until someone acts.</p></div>
         <div class="fact"><div class="big">No third-party code</div><p>in the page. Records are encrypted, and every chart opened is in a sealed audit log.</p></div>
       </div>
@@ -1496,7 +1626,7 @@
   <section id="ai" aria-labelledby="ai-h">
     <div class="wrap">
       <p class="kicker">AI scribe</p>
-      <h2 id="ai-h">The AI drafts. You decide.</h2>
+      <h2 id="ai-h">What the AI scribe does, and never does</h2>
       <div class="ai-grid">
         <div class="lists reveal">
           <h3>What the AI scribe does</h3>
@@ -1520,11 +1650,11 @@
           <div class="try-part" data-name="History">
             <p class="try-h">History of present illness <span class="chip test try-chip"><svg class="chk" viewBox="0 0 16 16" aria-hidden="true"><path pathLength="1" d="M3 8.5l3 3 7-7"/></svg><span class="cl">AI draft: check before signing</span></span></p>
             <p>Six days of cough with clear sputum and nasal congestion. No fever at home. Using honey and fluids.</p>
-            <div class="fold"><p class="ai-line"><span class="ai">She reports six days of cough, worse at night, with sinus pressure and clear nasal drainage.</span></p></div>
+            <div class="fold"><p class="ai-line"><span class="ai"><span class="vh ai-k">AI draft: </span>She reports six days of cough, worse at night, with sinus pressure and clear nasal drainage.</span></p></div>
           </div>
           <div class="try-part" data-name="Review of systems" data-all-ai="1">
             <p class="try-h">Review of systems <span class="chip test try-chip"><svg class="chk" viewBox="0 0 16 16" aria-hidden="true"><path pathLength="1" d="M3 8.5l3 3 7-7"/></svg><span class="cl">AI draft: check before signing</span></span></p>
-            <div class="fold"><p class="ai-line"><span class="ai">Respiratory: Reports cough; denies shortness of breath or wheezing.</span></p></div>
+            <div class="fold"><p class="ai-line"><span class="ai"><span class="vh ai-k">AI draft: </span>Respiratory: Reports cough; denies shortness of breath or wheezing.</span></p></div>
           </div>
           <div class="try-btns" id="try-btns" hidden>
             <button class="btn pri sm" id="try-mark" type="button">Mark reviewed</button>
@@ -1544,28 +1674,31 @@
       <p class="sub" id="walk-sub"><span class="say" data-say>A pretend visit with a pretend patient, on Voluta's real screens.</span> This page only shows pictures; it never uses your microphone.</p>
       <div class="walk" id="walk">
         <div class="walk-side">
-          <ol class="rail" id="rail" aria-label="Steps of the visit" hidden></ol>
-          <div class="walk-now" id="walk-now" aria-live="polite" hidden>
-            <p class="now-k" id="now-k"></p>
-            <h3 id="now-h"></h3>
-            <p class="now-t" id="now-t"></p>
-            <p class="now-msg" id="now-msg" hidden></p>
-            <div class="now-end" id="now-end" hidden>
-              <button class="btn sec" id="w-again" type="button">Start over</button>
-              <a class="btn pri" href="#pilot">Join the pilot list</a>
-            </div>
-          </div>
           <div class="walk-ctl" id="walk-ctl" hidden>
             <button class="btn sec" id="w-back" type="button">Back</button>
             <button class="btn pri" id="w-next" type="button">Next</button>
-            <button class="btn quiet hear" id="hear-walk" type="button" aria-pressed="false" hidden><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">Hear it</span></button>
+            <button class="btn quiet hear" id="hear-walk" type="button" hidden><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">Hear it</span></button>
+          </div>
+          <div class="now-box" id="now-box" hidden>
+            <div class="walk-now" id="walk-now" aria-live="polite">
+              <p class="now-k" id="now-k"></p>
+              <h3 id="now-h"></h3>
+              <p class="now-t" id="now-t"></p>
+              <p class="now-msg" id="now-msg" hidden></p>
+              <div class="now-end" id="now-end" hidden>
+                <button class="btn sec" id="w-again" type="button">Start over</button>
+                <a class="btn pri" href="#pilot">Join the pilot list</a>
+              </div>
+            </div>
           </div>
           <p class="walk-note" id="walk-note" hidden>Read aloud by your device's own voice, with the words on screen. Nothing plays until you tap; this page never uses your microphone.</p>
           <p class="walk-hint" id="walk-hint" hidden>No sound? Check the volume and any silent switch.</p>
+          <ol class="rail" id="rail" aria-label="Steps of the visit" hidden></ol>
         </div>
         <div class="stage" id="stage" hidden>
           <p class="stage-strip">Pretend patient · Version in testing</p>
           <div class="stage-view"></div>
+          <p class="cap" id="cap" aria-hidden="true"></p>
         </div>
         <ol class="steps" id="steps">
           <li class="step">
@@ -1599,7 +1732,7 @@
               <source media="(max-width: 600px)" srcset="img/visit-4-phone.webp" type="image/webp" width="780" height="1952">
               <source media="(max-width: 600px)" srcset="img/visit-4-phone.jpg" width="780" height="1952">
               <source srcset="img/visit-4.webp" type="image/webp" width="985" height="1605">
-              <img src="img/visit-4.jpg" width="985" height="1605" loading="lazy" decoding="async" alt="The AI draft waiting for review in a pretend visit: a bar listing the parts to check with Next part, Mark reviewed and Undo the AI draft, saying 3 orders are in the orders cart, not signed, and that nothing is placed until a physician signs; below, the drafted words tinted and underlined in the note.">
+              <img src="img/visit-4.jpg" width="985" height="1605" loading="lazy" decoding="async" alt="The AI draft waiting for review in a pretend visit: a bar listing the parts to check with Next part, Mark reviewed and Undo the AI draft, saying 3 orders are in the orders cart, not signed (in the version now in testing), and that nothing is placed until a physician signs; below, the drafted words tinted and underlined in the note.">
             </picture>
           </li>
           <li class="step">
@@ -1649,7 +1782,7 @@
         <div class="shotframe"><picture>
           <source media="(max-width: 600px)" srcset="img/phone-huddle.webp" type="image/webp" width="780" height="1456">
           <source media="(max-width: 600px)" srcset="img/phone-huddle.jpg" width="780" height="1456">
-          <source srcset="img/screen-huddle.webp" type="image/webp" width="2201" height="1270">
+          <source srcset="img/screen-huddle-1200.webp 1200w, img/screen-huddle.webp 2201w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2201" height="1270">
           <img src="img/screen-huddle.jpg" width="2201" height="1270" loading="lazy" decoding="async" alt="The daily huddle for a pretend clinic: today's visits in time order, each with what the chart says to prepare, such as care and screenings due, a result not reviewed, an order waiting for a signature and insurance not checked lately, and Visit prep.">
         </picture></div>
         <a class="enlarge" href="img/screen-huddle.webp" data-title="Team huddle">Enlarge</a>
@@ -1666,7 +1799,7 @@
         <div class="shotframe"><picture>
           <source media="(max-width: 600px)" srcset="img/phone-chart.webp" type="image/webp" width="780" height="1546">
           <source media="(max-width: 600px)" srcset="img/phone-chart.jpg" width="780" height="1546">
-          <source srcset="img/screen-chart.webp" type="image/webp" width="1863" height="1689">
+          <source srcset="img/screen-chart-1200.webp 1200w, img/screen-chart.webp 1863w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="1863" height="1689">
           <img src="img/screen-chart.jpg" width="1863" height="1689" loading="lazy" decoding="async" alt="A pretend patient's chart summary: the banner with the allergy and code status, today's chief complaint taken at check-in and the visit status, and what changed since the last visit.">
         </picture></div>
         <a class="enlarge" href="img/screen-chart.webp" data-title="Chart at a glance">Enlarge</a>
@@ -1683,7 +1816,7 @@
         <div class="shotframe"><picture>
           <source media="(max-width: 600px)" srcset="img/visit-6.webp" type="image/webp" width="780" height="1292">
           <source media="(max-width: 600px)" srcset="img/visit-6.jpg" width="780" height="1292">
-          <source srcset="img/screen-results.webp" type="image/webp" width="2201" height="1259">
+          <source srcset="img/screen-results-1200.webp 1200w, img/screen-results.webp 2201w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2201" height="1259">
           <img src="img/screen-results.jpg" width="2201" height="1259" loading="lazy" decoding="async" alt="The results inbox for pretend patients: Review the normal ones for the 3 normal lab results, and the abnormal results first, with values, units, flags and reference ranges and one-tap actions for each.">
         </picture></div>
         <a class="enlarge" href="img/screen-results.webp" data-title="Results inbox">Enlarge</a>
@@ -1701,7 +1834,7 @@
         <div class="shotframe"><picture>
           <source media="(max-width: 600px)" srcset="img/phone-gaps.webp" type="image/webp" width="780" height="1520">
           <source media="(max-width: 600px)" srcset="img/phone-gaps.jpg" width="780" height="1520">
-          <source srcset="img/screen-gaps.webp" type="image/webp" width="2392" height="1634">
+          <source srcset="img/screen-gaps-1200.webp 1200w, img/screen-gaps.webp 2392w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2392" height="1634">
           <img src="img/screen-gaps.jpg" width="2392" height="1634" loading="lazy" decoding="async" alt="Care gaps across a pretend practice, by patient: filters by gap, insurance and primary care provider, the note that the rules are simplified for practice and must be validated before real use, and each gap due with Click to order, its screening diagnosis code, and Done already.">
         </picture></div>
         <a class="enlarge" href="img/screen-gaps.webp" data-title="Care gaps">Enlarge</a>
@@ -1718,8 +1851,8 @@
         <div class="shotframe"><picture>
           <source media="(max-width: 600px)" srcset="img/phone-schedule.webp" type="image/webp" width="780" height="1468">
           <source media="(max-width: 600px)" srcset="img/phone-schedule.jpg" width="780" height="1468">
-          <source srcset="img/screen-schedule.webp" type="image/webp" width="2201" height="1459">
-          <img src="img/screen-schedule.jpg" width="2201" height="1459" loading="lazy" decoding="async" alt="The schedule for a pretend clinic day: today's visits by time, each with its status, such as Visit complete and With physician.">
+          <source srcset="img/screen-schedule-1200.webp 1200w, img/screen-schedule.webp 2201w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2201" height="1287">
+          <img src="img/screen-schedule.jpg" width="2201" height="1287" loading="lazy" decoding="async" alt="The schedule for a pretend clinic day: today's visits by time, each with its status, such as Visit complete and With physician.">
         </picture></div>
         <a class="enlarge" href="img/screen-schedule.webp" data-title="Schedule">Enlarge</a>
       </div>
@@ -1735,7 +1868,7 @@
         <div class="shotframe"><picture>
           <source media="(max-width: 600px)" srcset="img/phone-encounters.webp" type="image/webp" width="780" height="980">
           <source media="(max-width: 600px)" srcset="img/phone-encounters.jpg" width="780" height="980">
-          <source srcset="img/screen-encounters.webp" type="image/webp" width="2544" height="528">
+          <source srcset="img/screen-encounters-1200.webp 1200w, img/screen-encounters.webp 2544w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2544" height="528">
           <img src="img/screen-encounters.jpg" width="2544" height="528" loading="lazy" decoding="async" alt="Encounters for a pretend patient: today's draft visit with Open encounter, and an earlier signed visit with Open note.">
         </picture></div>
         <a class="enlarge" href="img/screen-encounters.webp" data-title="Encounters">Enlarge</a>
@@ -1855,7 +1988,7 @@
       </div>
       <form id="inq" novalidate>
         <div class="row2">
-          <label>Your name<input name="name" autocomplete="name" required></label>
+          <label><span>Your name <span class="req" aria-hidden="true">(required)</span></span><input name="name" autocomplete="name" required></label>
           <label>Your role<select name="role"><option>Physician</option><option>Nurse practitioner or physician assistant</option><option>Practice owner or manager</option><option>Nurse or medical assistant</option><option>Other</option></select></label>
         </div>
         <div class="row2">
@@ -1863,7 +1996,7 @@
           <label>City<input name="city" autocomplete="address-level2"></label>
         </div>
         <div class="row2">
-          <label>Email<input name="email" type="email" autocomplete="email" required></label>
+          <label><span>Email <span class="req" aria-hidden="true">(required)</span></span><input name="email" type="email" autocomplete="email" required></label>
           <label>Clinicians in the practice<select name="size"><option>1</option><option>2 to 5</option><option>6 to 15</option><option>More than 15</option></select></label>
         </div>
         <fieldset>
