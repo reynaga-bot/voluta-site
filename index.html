@@ -6,19 +6,19 @@
      script slipped into the page or a request to another site, is refused by the browser. When the style or the script
      below changes, its sha256 in this line must be updated, from the exact text between the tags:
      python3 -c "import re,hashlib,base64;h=open('index.html',encoding='utf-8').read();[print(t,'sha256-'+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()) for t in ('style','script') for m in re.findall('<'+t+'>(.*?)</'+t+'>',h,re.S)]" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-iudyBsoZ9UQ0Uur8UEFxKYiVGfHx9nVUYdw4LtwGzLU='; style-src 'sha256-cJYsbHEo3ZfV6Ddrq7LpWbrELFCsqQrghHQYV/9itS0='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-JL0oqZTwzzEJ2bZz+5/zvLqwxgzYGrXB0FjafUJsEtQ='; style-src 'sha256-VfbmoHtREhWhfYmiMCgKhOeZStENykX+afl1wTrIvXk='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voluta Health · A medical record for primary care, built by a physician</title>
-<meta name="description" content="Voluta is a medical record system for primary care, built by a practicing physician: an AI scribe with consent built in whose words stay marked until you review them, a visit note that keeps the chief complaint and history for every visit, results followed until closed, and California's rules built in. In development; inviting California practices to the pilot list.">
+<meta name="description" content="Voluta is a medical record system for primary care, built by a practicing physician: an AI scribe with consent built in whose words stay marked until you review them, a visit note that keeps the chief complaint and history for every visit, results followed until closed, and tools built to help a practice follow California's rules. In development and not yet used with real patients; inviting California practices to the pilot list.">
 <meta name="theme-color" content="#F7F9FC" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0A0F1D" media="(prefers-color-scheme: dark)">
-<meta property="og:title" content="Voluta Health · A medical record for primary care, built by a physician">
-<meta property="og:description" content="In development. An AI scribe with consent built in that drafts the visit while you decide what is signed, one visit note from rooming to signing, results followed until closed, California's rules built in.">
-<meta property="og:image" content="https://volutahealth.com/img/og-visit.jpg">
+<meta property="og:title" content="Voluta Health · In development · A medical record for primary care, built by a physician">
+<meta property="og:description" content="In development, not yet used with real patients. An AI scribe with consent built in that drafts the visit while you decide what is signed, one visit note from rooming to signing, results followed until closed, and tools built to help a practice follow California's rules.">
+<meta property="og:image" content="https://volutahealth.com/img/og-chart.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Voluta's visit screen for a pretend patient: the chart beside the visit note, with the AI scribe's Everyone agreed: start recording button and the line asking to check with everyone in the room first.">
+<meta property="og:image:alt" content="A strip reading Pretend patient · Voluta is in development, over Voluta's chart for a pretend patient: the banner with the allergy and code status, today's chief complaint taken at check-in, the chart's tabs and search, and its first boxes: since the last visit, care gaps, problems and recall.">
 <meta property="og:url" content="https://volutahealth.com/">
 <meta property="og:type" content="website">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -46,7 +46,7 @@
     --bg: #F7F9FC; --bg-alt: #EEF3FB; --surface: #FFFFFF;
     --ink: #0E1A33; --muted: #414D64;
     --line: #DCE4F0;
-    --field: #7A879E;
+    --field: #7A879E; --placeholder: #5B677D;
     --accent: #1D4ED8; --accent-strong: #1E40AF; --accent-soft: #E8EFFF; --on-accent: #FFFFFF;
     --sky: #93C5FD; --sky-2: #BFDBFE;
     --logo-b: #196BAC; --logo-g: #4B9E37;
@@ -75,7 +75,7 @@
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #0A0F1D; --bg-alt: #0D1426; --surface: #121A2F;
-      --ink: #E7ECF7; --muted: #A7B3CC; --line: #24304B; --field: #66758F;
+      --ink: #E7ECF7; --muted: #A7B3CC; --line: #24304B; --field: #66758F; --placeholder: #94A3BD;
       --accent: #93C5FD; --accent-strong: #BFDBFE; --accent-soft: #16254A; --on-accent: #0A1A44;
       --logo-b: #3D93D6; --logo-g: #8FD16A;
       --draft-bg: #40300C; --draft-line: #FFD166; --draft-ink: #FFD166;
@@ -162,7 +162,6 @@
   }
   .chip.test { background: var(--draft-bg); color: var(--draft-ink); }
   .chip.done { background: var(--done-bg); color: var(--done-ink); }
-  .chip.law { background: var(--accent-soft); color: var(--accent-strong); }
   /* "In testing" marks the parts of 0.158 not yet released; adding class v158 to <html> retires every chip at once
      (then also take "(in the version now in testing)" out of step 4's picture description) */
   html.v158 .soon { display: none; }
@@ -339,9 +338,9 @@
     box-shadow: 0 0 0 4px var(--ring-halo);
     pointer-events: none;
   }
-  .shot.h1 .ring { --x: 24.65%; --y: 12.3%; --w: 45.56%; --h: 16.92%; }
-  .shot.h2 .ring { --x: 25.65%; --y: 51.25%; --w: 43.56%; --h: 23.27%; }
-  .shot.h3 .ring { --x: 25.96%; --y: 80.21%; --w: 42.94%; --h: 15.43%; }
+  .shot.h1 .ring { --x: 24.65%; --y: 12.3%; --w: 45.56%; --h: 17.54%; }
+  .shot.h2 .ring { --x: 25.65%; --y: 48.86%; --w: 43.56%; --h: 23.27%; }
+  .shot.h3 .ring { --x: 25.96%; --y: 77.82%; --w: 42.94%; --h: 15.43%; }
   .callouts { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 10px; }
   .callout {
     display: block;
@@ -371,13 +370,15 @@
     .callouts li:nth-child(1) { right: -24px; top: 2%; }
     .callouts li:nth-child(2) { left: -48px; top: 47%; }
     .callouts li:nth-child(3) { right: -24px; bottom: 6%; }
+    /* the note under the picture keeps left of the third callout, which floats over the frame's lower right corner */
+    .shot .pretend { text-align: left; max-width: calc(100% - 200px); }
   }
   .pretend { font-size: 13px; color: var(--muted); margin: 12px 0 0; text-align: center; }
   @media (max-width: 600px) {
     .hero .frame { max-width: 300px; margin-inline: auto; }
-    .shot.h1 .ring { --x: 5.13%; --y: 1.18%; --w: 89.74%; --h: 50.21%; }
-    .shot.h2 .ring { --x: 5.13%; --y: 66.22%; --w: 89.74%; --h: 32.83%; }
-    .shot.h3 .ring { --x: 5.64%; --y: 69.4%; --w: 88.72%; --h: 29.31%; }
+    .shot.h1 .ring { --x: 5.13%; --y: 1.18%; --w: 89.74%; --h: 46.23%; }
+    .shot.h2 .ring { --x: 5.13%; --y: 62.59%; --w: 89.74%; --h: 32.83%; }
+    .shot.h3 .ring { --x: 5.64%; --y: 65.77%; --w: 88.72%; --h: 29.31%; }
     /* the phone picture has no note, so the third callout (the boxes and the note in step) is left out */
     .callouts li:nth-child(3) { display: none; }
   }
@@ -484,6 +485,9 @@
   }
   .step p { color: var(--band-muted); max-width: 62ch; margin: 0 0 16px; }
   .step picture img { max-width: 584px; width: 100%; border-radius: 12px; }
+  .step .pic-note, .now-note { font-size: 14px; line-height: 1.5; color: var(--band-muted); }
+  .step .pic-note { margin: -8px 0 16px; }
+  .now-note { margin: 10px 0 0; }
   .walk-close { margin: 0; color: var(--band-muted); grid-column: 1 / -1; }
   .walk.live .steps, .walk.live .walk-close { display: none; }
   .walk-side { display: flex; flex-direction: column; gap: 20px; }
@@ -577,8 +581,8 @@
   .fr-1, .fr-3 { --fw: 584px; } .fr-4 { --fw: 582px; } .fr-5 { --fw: 380px; } .fr-6 { --fw: 390px; }
   .fr .ring { box-shadow: 0 0 0 4px var(--ring-halo), 0 0 0 200vmax var(--dim); }
   .edge { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--dot-dev); opacity: 0; pointer-events: none; }
-  .stage[data-at="1"] .fr-1 .ring { --x: 1.37%; --y: 45.3%; --w: 97.26%; --h: 8.99%; }
-  .stage[data-at="2"] .fr-1 .ring { --x: .68%; --y: .27%; --w: 98.63%; --h: 19.17%; }
+  .stage[data-at="1"] .fr-1 .ring { --x: 1.37%; --y: 42.48%; --w: 97.26%; --h: 8.99%; }
+  .stage[data-at="2"] .fr-1 .ring { --x: .68%; --y: .27%; --w: 98.63%; --h: 19.89%; }
   .fr-3 .ring { --x: 2.23%; --y: 91.33%; --w: 95.55%; --h: 7.08%; }
   .fr-4 .ring { --x: 1.2%; --y: 36.18%; --w: 97.6%; --h: 14.18%; }
   .fr-5 .ring { --x: 3.68%; --y: 5.19%; --w: 91.32%; --h: 23.66%; }
@@ -640,8 +644,8 @@
   }
   @media (max-width: 600px) {
     .fr { --fw: 100%; max-width: calc(100% - 24px); top: 12px; }
-    .stage[data-at="1"] .fr-1 .ring { --x: 5.13%; --y: 66.22%; --w: 89.74%; --h: 11.83%; }
-    .stage[data-at="2"] .fr-1 .ring { --x: 5.13%; --y: 1.18%; --w: 89.74%; --h: 50.21%; }
+    .stage[data-at="1"] .fr-1 .ring { --x: 5.13%; --y: 62.59%; --w: 89.74%; --h: 11.83%; }
+    .stage[data-at="2"] .fr-1 .ring { --x: 5.13%; --y: 1.18%; --w: 89.74%; --h: 46.23%; }
     .fr-3 .ring { --x: 6.41%; --y: 83.65%; --w: 87.18%; --h: 15.16%; }
     .fr-4 .ring { --x: 6.41%; --y: 86.23%; --w: 87.18%; --h: 13.11%; }
   }
@@ -677,6 +681,7 @@
     border-radius: 999px;
     background: var(--accent);
   }
+  .gal-note { margin: -24px 0 32px; max-width: 72ch; font-size: 15px; color: var(--muted); }
   .pane-text { display: grid; gap: 8px 48px; margin-bottom: 24px; }
   @media (min-width: 900px) { .pane-text { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); } .pane-text ul { columns: 2; column-gap: 40px; } }
   .pane-text p { margin: 0; color: var(--muted); }
@@ -721,7 +726,8 @@
   .card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: var(--shadow-md); opacity: 0; pointer-events: none; }
   .ico { width: 30px; height: 30px; stroke: var(--accent); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 12px; }
   .card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.5; }
-  .card .chip { margin-top: 12px; }
+  .card .law { margin-top: 12px; font-size: 13px; font-weight: 600; }
+  .ca-note { margin: 24px 0 0; max-width: 70ch; font-size: 14px; color: var(--muted); }
   .card .more { display: inline-flex; align-items: center; min-height: 44px; margin-top: 4px; font-size: 15px; font-weight: 600; }
   .band .card { background: var(--band-card); border-color: var(--band-line); box-shadow: none; }
   .band .card p { color: var(--band-muted); }
@@ -791,6 +797,7 @@
   .pilot { display: grid; gap: 40px; align-items: start; }
   @media (min-width: 900px) { .pilot { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); } }
   .lead-note { font-size: 15px; margin: 0; max-width: 52ch; }
+  .pilot-band .lead-note a { color: var(--pilot-ink); }
   form { background: var(--surface); color: var(--ink); border-radius: 18px; padding: 24px; display: grid; gap: 16px; box-shadow: var(--shadow-lg); }
   .row2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
   @media (max-width: 599px) { .row2 { grid-template-columns: minmax(0, 1fr); } }
@@ -810,6 +817,7 @@
   }
   input[aria-invalid="true"] { border-color: var(--err); box-shadow: 0 0 0 1px var(--err); }
   textarea { min-height: 110px; resize: vertical; }
+  ::placeholder { color: var(--placeholder); opacity: 1; }
   fieldset { border: 1.5px solid var(--field); border-radius: 8px; padding: 8px 14px 10px; margin: 0; }
   legend { font-size: 15px; font-weight: 600; padding: 0 4px; }
   .checks { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 14px; }
@@ -822,6 +830,16 @@
   .sent.err { background: var(--draft-bg); }
   .sent .chk { width: 20px; height: 20px; flex: none; margin-top: 2px; color: var(--done-ink); }
   .sent:not(.ok) .chk { display: none; }
+
+  .info { display: grid; gap: 56px; align-items: start; }
+  @media (min-width: 900px) { .info { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; } }
+  .info h2 { font-size: clamp(1.5rem, 1.2rem + 1vw, 1.875rem); }
+  .info h3 { font-size: 1.0625rem; margin: 24px 0 6px; }
+  .info p, .info li { font-size: 15px; line-height: 1.55; color: var(--muted); }
+  .info p { margin: 0 0 8px; max-width: 64ch; }
+  .info ul { margin: 0; padding-left: 20px; max-width: 64ch; }
+  .info li { margin-bottom: 6px; }
+  .info .dated { font-size: 14px; font-weight: 600; }
 
   footer { background: var(--band); color: var(--band-muted); padding: 48px 0 56px; font-size: 14px; }
   @media (prefers-color-scheme: dark) { footer { border-top: 1px solid var(--band-line); } }
@@ -919,7 +937,7 @@
   @media print {
     :root {
       color-scheme: light;
-      --bg: #FFFFFF; --bg-alt: #FFFFFF; --surface: #FFFFFF; --ink: #0E1A33; --muted: #414D64; --line: #DCE4F0; --field: #7A879E;
+      --bg: #FFFFFF; --bg-alt: #FFFFFF; --surface: #FFFFFF; --ink: #0E1A33; --muted: #414D64; --line: #DCE4F0; --field: #7A879E; --placeholder: #5B677D;
       --accent: #1D4ED8; --accent-strong: #1E40AF; --accent-soft: #E8EFFF; --on-accent: #FFFFFF;
       --draft-bg: #FFECB8; --draft-line: #8A4F00; --draft-ink: #7A4500;
       --done-bg: #D1FADF; --done-ink: #065F3A; --plan-bg: #EEF1F6; --plan-ink: #414D64;
@@ -1092,12 +1110,19 @@
         t.replaceChildren();
         words(i).forEach((s, k) => { if (k) t.append(' '); t.append(s.cloneNode(true)); });
       }
+      // what a step's picture leaves out or stands in for (a sentence left out, sample text, time shortened)
+      function picNote(i, p) {
+        const n = i < N ? $('.pic-note', steps[i]) : null;
+        p.textContent = n ? n.textContent : '';
+        p.hidden = !n;
+      }
       function render(i) {
         const end = i >= N, h = $('#now-h');
         $('#now-k').textContent = kicker(i);
         h.hidden = end;
         if (!end) title(i, h);
         text(i, $('#now-t'));
+        picNote(i, $('#now-note'));
         $('#now-end').hidden = !end;
       }
       // an invisible copy of every step's text, in the same grid cell, holds the box at the longest step's height
@@ -1109,6 +1134,9 @@
           if (i < N) { const h = el('h3'); title(i, h); s.append(h); }
           text(i, t);
           s.append(t);
+          const pn = el('p', 'now-note');
+          picNote(i, pn);
+          s.append(pn);
           if (i === N) {
             const e = $('#now-end').cloneNode(true);
             e.hidden = false;
@@ -1487,9 +1515,11 @@
     // The address is put together here, so it is not sitting in the page for address collectors.
     const to = ['reynaga', 'volutahealth.com'].join('@');
     function address() {
-      const link = el('a', '', to);
-      link.href = 'mailto:' + to;
-      $('#addr').replaceChildren(link);
+      $$('#addr, [data-addr]').forEach(s => {
+        const link = el('a', '', to);
+        link.href = 'mailto:' + to;
+        s.replaceChildren(link);
+      });
     }
 
     // The pilot form writes an email in the visitor's own email app: nothing is sent or stored by this page.
@@ -1510,8 +1540,10 @@
         sent.classList.remove('on', 'ok', 'err');
         void sent.offsetWidth;
         if (!nameOk || !mailOk) {
-          const miss = [nameOk ? '' : 'your name', mailOk ? '' : 'an email address we can reply to'].filter(Boolean);
-          say.textContent = 'Please add ' + miss.join(' and ') + '.';
+          const typed = !!v('email'), miss = [nameOk ? '' : 'your name', mailOk || typed ? '' : 'an email address we can reply to'].filter(Boolean);
+          const asks = miss.length ? ['add ' + miss.join(' and ')] : [];
+          if (!mailOk && typed) asks.push('check the email address: it should look like name@example.com');
+          say.textContent = 'Please ' + asks.join(', and ') + '.';
           sent.classList.add('on', 'err');
           (nameOk ? f.elements.email : f.elements.name).focus();
           return;
@@ -1612,7 +1644,7 @@
           <li><button class="callout" type="button" data-h="2"><b>Credited to who wrote it</b>The chief complaint shows who took it at check-in; the history shows who wrote it.</button></li>
           <li><button class="callout" type="button" data-h="3"><b>Typed once, kept for history</b>The chief complaint and HPI boxes and the note follow each other as you type.</button></li>
         </ul>
-        <p class="pretend">Screens show pretend patients and pretend data.</p>
+        <p class="pretend">Screens show pretend patients and pretend data. One sentence, about deleting the recording, is left out of this picture until it is confirmed.</p>
       </div>
     </div>
   </section>
@@ -1620,12 +1652,12 @@
   <section class="alt" aria-labelledby="facts-h">
     <div class="wrap">
       <h2 id="facts-h" class="reveal">Built the way a clinic actually works</h2>
-      <p class="sub reveal">Every part of Voluta came from a real clinic day: the huddle before the first patient, rooming, the visit, the results that come back after the patient leaves, and the office work around it. California's rules are built in, not bolted on.</p>
+      <p class="sub reveal">Every part of Voluta came from a real clinic day: the huddle before the first patient, rooming, the visit, the results that come back after the patient leaves, and the office work around it. It is built to help a practice follow California's rules as part of that day.</p>
       <div class="facts reveal">
         <div class="fact"><div class="big">1 tap</div><p>to start the AI scribe, with the consent question on screen and the answer recorded in the note.</p></div>
         <div class="fact"><div class="big">Typed once</div><p>and kept in step: the chief complaint, history, review of systems and exam boxes and the note follow each other.</p></div>
-        <div class="fact"><div class="big">Every result</div><p>followed from order to a closed loop, with critical results escalated until someone acts.</p></div>
-        <div class="fact"><div class="big">No third-party code</div><p>in the page. Records are encrypted, and every chart opened is in a sealed audit log.</p></div>
+        <div class="fact"><div class="big">Every result</div><p>you order is followed until someone closes it, and a critical one is escalated until someone acts.</p></div>
+        <div class="fact"><div class="big">No outside scripts</div><p>in Voluta's page or on this website, and nothing loaded from other sites. Records are encrypted, and every chart opened is in a sealed audit log.</p></div>
       </div>
     </div>
   </section>
@@ -1639,20 +1671,20 @@
           <h3>What the AI scribe does</h3>
           <ul>
             <li>Records only after a tap on Everyone agreed, and writes that consent into the note with the date, the time and who asked.</li>
-            <li>Drafts the history, review of systems, exam and each diagnosis's plan from the visit conversation, into their boxes and the note at once. Nothing you wrote is replaced.</li>
+            <li>Drafts the history, review of systems, exam and each diagnosis's plan from the visit conversation. When the draft is ready, it goes into their boxes and the note together. Nothing you wrote is replaced.</li>
             <li>Marks every word it wrote until a physician or APP reviews it. Signing asks first while any are left.</li>
-            <li><span class="chip test soon">In testing</span>Puts the orders you said aloud in the orders cart, with their diagnosis, marked as its suggestion.</li>
+            <li><span class="chip test soon">In testing</span>Puts the orders you said aloud in the orders cart, with their diagnosis, marked as added by the AI for you to sign.</li>
           </ul>
           <h3>What it never does</h3>
           <ul class="never">
             <li>Signs, sends or places anything.</li>
-            <li>Keeps the recording: it is deleted once the draft is made.</li>
+            <li>Keeps the recording: it is sent only to write the draft and is never saved by Voluta.</li>
             <li><span class="chip test soon">In testing</span>Pends a controlled substance, or an order already in the cart.</li>
           </ul>
-          <p class="caveat">No AI is perfect. Voluta's scribe is told to write only what was said, and everything it writes stays marked for you to check.</p>
+          <p class="caveat">No AI is perfect. Voluta's scribe is told to write only what was said; the one thing it may add is a diagnosis's code, when it is sure of it. Everything it writes stays marked for you to check.</p>
         </div>
         <div class="try reveal" id="try">
-          <p class="try-label">An illustration with a pretend patient. This is not Voluta itself, and nothing here is saved.</p>
+          <p class="try-label">Illustration with pretend data. This is not Voluta itself; nothing here is saved, and the AI's words are sample text written for it.</p>
           <h3>Tinted until reviewed</h3>
           <div class="try-part" data-name="History">
             <p class="try-h">History of present illness <span class="chip test try-chip"><svg class="chk" viewBox="0 0 16 16" aria-hidden="true"><path pathLength="1" d="M3 8.5l3 3 7-7"/></svg><span class="cl">AI draft: check before signing</span></span></p>
@@ -1691,6 +1723,7 @@
               <p class="now-k" id="now-k"></p>
               <h3 id="now-h"></h3>
               <p class="now-t" id="now-t"></p>
+              <p class="now-note" id="now-note" hidden></p>
               <p class="now-msg" id="now-msg" hidden></p>
               <div class="now-end" id="now-end" hidden>
                 <button class="btn sec" id="w-again" type="button">Start over</button>
@@ -1711,6 +1744,7 @@
           <li class="step">
             <h3><span class="step-n" aria-hidden="true">1</span><span class="step-t">Check-in and rooming</span></h3>
             <p><span class="say">At check-in, the reason for the visit becomes the chief complaint, with the name of who took it.</span> <span class="say">While rooming, the medical assistant can start a brief history.</span></p>
+            <p class="pic-note">One sentence, about deleting the recording, is left out of this picture until it is confirmed.</p>
             <picture>
               <source media="(max-width: 600px)" srcset="img/hero-phone.webp" type="image/webp" width="780" height="1156">
               <source media="(max-width: 600px)" srcset="img/hero-phone.jpg" width="780" height="1156">
@@ -1721,10 +1755,11 @@
           <li class="step">
             <h3><span class="step-n" aria-hidden="true">2</span><span class="step-t">Ask, then one tap</span></h3>
             <p><span class="say">Before recording, the physician asks everyone in the room out loud, because California needs everyone's yes.</span> <span class="say">Then one tap on Everyone agreed starts the AI scribe.</span></p>
+            <p class="pic-note">One sentence, about deleting the recording, is left out of this picture until it is confirmed.</p>
           </li>
           <li class="step">
             <h3><span class="step-n" aria-hidden="true">3</span><span class="step-t">Consent in the note</span></h3>
-            <p><span class="say">The note records the consent, with the date, the time and who asked.</span> <span class="say">The recording is deleted once the draft is made.</span></p>
+            <p><span class="say">The note records the consent, with the date, the time and who asked.</span> <span class="say">Voluta keeps no recording: it is sent only to write the draft and is never saved by Voluta.</span></p>
             <picture>
               <source media="(max-width: 600px)" srcset="img/visit-3-phone.webp" type="image/webp" width="780" height="1372">
               <source media="(max-width: 600px)" srcset="img/visit-3-phone.jpg" width="780" height="1372">
@@ -1734,7 +1769,8 @@
           </li>
           <li class="step">
             <h3><span class="step-n" aria-hidden="true">4</span><span class="step-t">The draft, tinted until reviewed</span></h3>
-            <p><span class="say">Stop and draft puts the history, review of systems, exam and plans into their boxes and the note at once.</span> <span class="say">The AI's words stay tinted until a physician, nurse practitioner or physician assistant marks them reviewed.</span></p>
+            <p><span class="say">Stop and draft ends the recording; when the draft is ready, it fills the history, review of systems, exam and plans, in their boxes and in the note.</span> <span class="say">The AI's words stay tinted until a physician, nurse practitioner or physician assistant marks them reviewed.</span></p>
+            <p class="pic-note">Time shortened. The AI's words in this picture are sample text written for it, not output from a recording.</p>
             <picture>
               <source media="(max-width: 600px)" srcset="img/visit-4-phone.webp" type="image/webp" width="780" height="1952">
               <source media="(max-width: 600px)" srcset="img/visit-4-phone.jpg" width="780" height="1952">
@@ -1744,7 +1780,8 @@
           </li>
           <li class="step">
             <h3><span class="step-n" aria-hidden="true">5</span><span class="step-t">Orders wait for you</span> <span class="chip test soon">In testing</span></h3>
-            <p><span class="say">In the version now in testing, orders said aloud wait in the orders cart, marked as the AI's suggestion.</span> <span class="say">Nothing is placed until a physician signs.</span></p>
+            <p><span class="say">In the version now in testing, orders said aloud wait in the orders cart, marked as added by the AI.</span> <span class="say">Nothing is placed until a physician signs.</span></p>
+            <p class="pic-note">These orders come from the sample text written for the picture of step 4.</p>
             <picture>
               <source srcset="img/visit-5.webp" type="image/webp" width="760" height="1266">
               <img src="img/visit-5.jpg" width="760" height="1266" loading="lazy" decoding="async" alt="Voluta's orders cart for a pretend patient: three orders the AI scribe pended, each labeled 'Suggested by the AI scribe: check before signing', in the cart and not signed, with Sign, Edit and Remove; the prescription notes that no quantity was said.">
@@ -1753,6 +1790,7 @@
           <li class="step">
             <h3><span class="step-n" aria-hidden="true">6</span><span class="step-t">Follow-up</span></h3>
             <p><span class="say">After the visit, orders, results and recalls are tracked until each is closed.</span></p>
+            <p class="pic-note">The lab results shown are pretend entries: no lab is connected to Voluta yet.</p>
             <picture>
               <source srcset="img/visit-6.webp" type="image/webp" width="780" height="1292">
               <img src="img/visit-6.jpg" width="780" height="1292" loading="lazy" decoding="async" alt="Voluta's results inbox on a phone, for pretend patients: 3 normal lab results waiting with Review the normal ones, then the first abnormal result, a potassium of 5.9 mmol/L flagged High with its reference range, and its one-tap actions: Normal, no change to plan; Discuss at next visit; Call patient with result; Review and tell the patient; Message patient; Order; Show visit.">
@@ -1769,6 +1807,7 @@
       <p class="kicker">See it work</p>
       <h2 id="see-h">Real screens, pretend patients</h2>
       <p class="sub">These are Voluta's own screens, filled with invented patients for testing.</p>
+      <p class="gal-note">Voluta is not yet connected to any lab, pharmacy or immunization registry: the lab results shown are pretend entries, and what is built for prescribing and the registry sends nothing yet (see the <a href="#roadmap">roadmap</a>). Telehealth visits are scheduled and documented in Voluta, which has no video calling of its own.</p>
       <div class="tabs" role="tablist" aria-label="Voluta screens">
         <button class="tab" role="tab" id="t-huddle" aria-controls="p-huddle" aria-selected="true">Team huddle</button>
         <button class="tab" role="tab" id="t-chart" aria-controls="p-chart" aria-selected="false" tabindex="-1">Chart at a glance</button>
@@ -1799,7 +1838,7 @@
           <div><h3>The whole patient on one screen</h3><p>The chart opens on what matters today.</p></div>
           <ul>
             <li>What changed since the last visit</li>
-            <li>Care gaps with one tap to order, and a problem list with each diagnosis's history</li>
+            <li>Care gaps with one tap to put the order in the cart, and a problem list with each diagnosis's history</li>
             <li>Search the whole record, with quotes for a phrase</li>
           </ul>
         </div>
@@ -1813,7 +1852,7 @@
       </div>
       <div class="pane" role="tabpanel" id="p-results" aria-labelledby="t-results" tabindex="0" hidden>
         <div class="pane-text">
-          <div><h3>Results with one-tap next steps</h3><p>Each result arrives with the actions a clinician takes most.</p></div>
+          <div><h3>Results with one-tap next steps</h3><p>Each result is shown with the actions a clinician takes most.</p></div>
           <ul>
             <li>Normal, discuss at the next visit, call the patient, review and tell</li>
             <li>Each test followed until someone closes it</li>
@@ -1830,10 +1869,10 @@
       </div>
       <div class="pane" role="tabpanel" id="p-gaps" aria-labelledby="t-gaps" tabindex="0" hidden>
         <div class="pane-text">
-          <div><h3>Care gaps across the practice</h3><p>Every screening, monitoring test and vaccine due, for every patient.</p></div>
+          <div><h3>Care gaps across the practice</h3><p>Screenings, monitoring tests and vaccines due, for each patient in the practice.</p></div>
           <ul>
             <li>Filter by gap, insurance or primary care provider</li>
-            <li>One click places the order with its diagnosis code attached</li>
+            <li>One click puts the order in the cart with its diagnosis code, for the physician to sign</li>
             <li>Mark "done elsewhere" with where and when</li>
             <li>The rules shown are simplified for testing and must be validated before real use</li>
           </ul>
@@ -1886,48 +1925,48 @@
   <section id="california" aria-labelledby="ca-h">
     <div class="wrap">
       <p class="kicker">Built for California</p>
-      <h2 id="ca-h">California's rules, built in</h2>
-      <p class="sub">Small practices in California carry rules most systems leave to binders and spreadsheets. Voluta builds them into the day's work.</p>
+      <h2 id="ca-h">Built to help you follow California's rules</h2>
+      <p class="sub">Small practices in California follow many state rules. Voluta is built to help a practice follow them as part of the day's work.</p>
       <div class="cards">
         <div class="card reveal">
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M12 3a4 4 0 0 1 4 4v4a4 4 0 0 1-8 0V7a4 4 0 0 1 4-4zM5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
           <h3>Recording consent</h3>
           <p>Everyone in the room agrees before the AI scribe records, and the note says when and who asked.</p>
-          <span class="chip law">Penal Code 632</span>
-          <br>
+          <p class="law">Built around: Penal Code 632</p>
           <a class="more" href="#visit">See it in a visit →</a>
         </div>
         <div class="card reveal">
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M12 3l8 3v6c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V6z"/><path pathLength="1" d="M9 12l2 2 4-4"/></svg>
           <h3>Protected care kept separate</h3>
-          <p>Reproductive and gender-affirming care is held apart from staff who do not need it, while prior authorizations and referrals still get worked.</p>
-          <span class="chip law">California health privacy law</span>
+          <p>Reproductive and gender-affirming care is held apart from staff who do not need it, while prior authorizations and referrals still get worked. A change history and the self-pay restriction are next on the roadmap.</p>
+          <p class="law">Built around: California health privacy law</p>
         </div>
         <div class="card reveal">
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M4 5h16v11H8l-4 4z"/><path pathLength="1" d="M8 9h8M8 12h5"/></svg>
           <h3>AI messages, disclosed</h3>
-          <p>AI-written handouts carry the required notice in English and Spanish, with a way to reach a person.</p>
-          <span class="chip law">AB 3030</span>
+          <p>AI-written handouts carry the notice California requires, in English and Spanish with a way to reach a person, until a licensed clinician approves them.</p>
+          <p class="law">Built around: AB 3030</p>
         </div>
         <div class="card reveal">
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M10 4a2 2 0 0 1 4 0v10.3a4 4 0 1 1-4 0z"/><path pathLength="1" d="M12 10v7"/></svg>
           <h3>Vaccine fridge failures</h3>
-          <p>A temperature excursion puts the affected lots on hold, with the VFC steps to follow.</p>
-          <span class="chip law">VFC program</span>
+          <p>A temperature excursion puts the affected lots on hold, with the CDC's storage and handling steps, and a reminder to report VFC vaccine in myCAvax.</p>
+          <p class="law">Built around: CDC storage and handling; California's VFC program</p>
         </div>
         <div class="card reveal">
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M14 4l6 6-9 9H5v-6z"/><path pathLength="1" d="M12 6l6 6"/></svg>
           <h3>Sharps injury log</h3>
           <p>Each exposure recorded within the deadline, with the follow-up owed.</p>
-          <span class="chip law">Cal/OSHA, 8 CCR 5193</span>
+          <p class="law">Built around: Cal/OSHA, 8 CCR 5193</p>
         </div>
         <div class="card reveal">
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M21 12a9 9 0 1 1-18 0a9 9 0 1 1 18 0z"/><path pathLength="1" d="M12 7v5l3 2"/></svg>
           <h3>Prenatal care on time</h3>
           <p>A prenatal due list by gestational age, including the California Prenatal Screening Program.</p>
-          <span class="chip law">CDPH</span>
+          <p class="law">Built around: California Prenatal Screening Program (CDPH)</p>
         </div>
       </div>
+      <p class="ca-note">Voluta is not affiliated with, approved by or endorsed by the CDC, the California Department of Public Health, Cal/OSHA or any other government agency. Law and program names show what each feature is built to help a practice follow.</p>
     </div>
   </section>
 
@@ -1935,12 +1974,12 @@
     <div class="wrap">
       <p class="kicker">Security and privacy</p>
       <h2 id="sec-h">Designed to be trusted with a chart</h2>
-      <p class="sub">An independent review of Voluta was done before any real patient, and its fixes are being made in order. A professional penetration test and an attorney's review come before the pilot.</p>
+      <p class="sub">A full review of Voluta's code, safety and security was done before any real patient, and its fixes are being made in order. A professional penetration test and an attorney's review come before any real patient.</p>
       <div class="cards">
         <div class="card reveal">
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M7 10h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 10V7a4 4 0 0 1 8 0v3"/></svg>
           <h3>Encrypted records</h3>
-          <p>AES-256 encryption with the key kept in Google's Secret Manager, never on the disk with the data.</p>
+          <p>AES-256 encryption. In Voluta's cloud setup, the key is kept in Google's Secret Manager, never on the disk with the data.</p>
         </div>
         <div class="card reveal">
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path pathLength="1" d="M9 8h6M9 12h6"/></svg>
@@ -1965,10 +2004,10 @@
         <div class="card reveal">
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M9 3h6M10 3v6L5 19a1.5 1.5 0 0 0 1.3 2h11.4a1.5 1.5 0 0 0 1.3-2L14 9V3"/></svg>
           <h3>Tested before every release</h3>
-          <p>Hundreds of server checks and thousands of browser test steps run in Chrome and Safari before each version.</p>
+          <p>Hundreds of server checks and thousands of browser test steps run in Chrome and in Safari's engine before each version.</p>
         </div>
       </div>
-      <p class="site-note">This website sets no cookies and loads nothing from other sites. The spoken tour uses your device's own voice.</p>
+      <p class="site-note">This website sets no cookies and loads nothing from other sites. The spoken tour uses your device's own voice. See <a href="#privacy">Privacy</a>.</p>
     </div>
   </section>
 
@@ -1978,7 +2017,7 @@
       <h2 id="road-h">What's built, what's next, what's planned</h2>
       <p class="sub">Voluta is in development and is not yet used with real patients. Here is where it stands.</p>
       <div class="road">
-        <div class="col built reveal"><span class="tag">Built, in testing</span><h3>The clinic day</h3><ul><li>AI scribe with recorded consent, drafting the whole visit</li><li>One note per visit from rooming to signature</li><li>Draft visits open straight into the note</li><li>Diagnoses discussed but not on the problem list, offered to add or dismiss</li><li>Team huddle, care gaps and recalls</li><li>Results inbox with follow-up until closed</li><li>Prenatal due list, wellness visits, care management</li><li>Patient portal, standing orders and refill protocols</li><li>Office safety checks, vaccine fridge, sharps log</li></ul></div>
+        <div class="col built reveal"><span class="tag">Built, in testing</span><h3>The clinic day</h3><ul><li>AI scribe with recorded consent, drafting the whole visit</li><li>One note per visit from rooming to signature</li><li>Draft visits open straight into the note</li><li>Diagnoses discussed but not on the problem list, offered to add or dismiss</li><li>Team huddle, care gaps and recalls</li><li>Results inbox with follow-up until closed, and critical results escalated</li><li>Prenatal due list, wellness visits, care management</li><li>Patient portal, standing orders and refill protocols</li><li>Office safety checks, vaccine fridge, sharps log</li><li>Protected care held apart from staff who do not need it</li><li>California's notice on AI-written handouts</li><li>Encryption, a sealed audit log, a part for each role, two-step sign-in and nightly backups</li></ul></div>
         <div class="col next reveal"><span class="tag">Next</span><h3>Safety before patients</h3><ul><li>Orders said aloud during a scribed visit, pended for the physician's signature (in testing now)</li><li>Dictation of your own voice into any field, from the top bar</li><li>Lab results filed on the server the moment they arrive</li><li>Patient matching by record number, name and date of birth</li><li>Prescribing checks for allergies, pregnancy and children's doses</li><li>Privacy-law features: change history, self-pay restriction</li><li>Independent penetration test and attorney's review</li><li>A pilot with pretend patients, then a small live pilot</li></ul></div>
         <div class="col plan reveal"><span class="tag">Planned, with partners</span><h3>Connected care</h3><ul><li>Electronic prescribing, including controlled substances</li><li>Claims, eligibility and payment posting</li><li>California's Data Exchange Framework and national networks</li><li>CAIR immunization registry, two-way</li><li>Electronic lab orders and results</li><li>Spanish-language scribe visits and two-way texting</li></ul></div>
       </div>
@@ -1991,7 +2030,7 @@
         <p class="kicker">Pilot</p>
         <h2 id="pilot-h">Join the pilot list</h2>
         <p class="sub">We are looking for a few California primary care practices to help shape Voluta before it opens. Tell us about your practice and what you would want from your medical record.</p>
-        <p class="lead-note">The form opens a ready-to-send email in your email app. Please do not include any patient information.</p>
+        <p class="lead-note">The form opens a ready-to-send email in your email app. Please do not include any patient information. How we handle your email: <a href="#privacy">Privacy</a>.</p>
       </div>
       <form id="inq" novalidate>
         <div class="row2">
@@ -2024,15 +2063,71 @@
       </form>
     </div>
   </section>
+
+  <section class="alt site-info" aria-label="Accessibility and privacy">
+    <div class="wrap info">
+      <article id="accessibility" aria-labelledby="acc-h">
+        <h2 id="acc-h">Accessibility</h2>
+        <p class="dated">Last checked: November 18, 2026</p>
+        <p>We want everyone to be able to use this site, including people who use a screen reader, a keyboard alone, magnification or voice control. We design it to the Web Content Accessibility Guidelines (WCAG) 2.2, Level AA, published by the W3C, and test it as described here.</p>
+        <h3>How we check</h3>
+        <p>Before each change, we test the page in Chrome and in Safari's engine, at phone and computer widths and at 320 pixels wide (as at 400 percent zoom), in the light and dark looks, with reduced motion on and off, with JavaScript off, with a keyboard alone, and with automated accessibility checks (axe-core). No outside audit has been done.</p>
+        <h3>What to expect</h3>
+        <ul>
+          <li>Movement that starts on its own ends within five seconds, and nothing moves if your device asks for reduced motion. Nothing flashes.</li>
+          <li>Sound plays only when you press Hear the visit or Hear it; Stop or the Escape key ends it. Every word it reads is on the page.</li>
+          <li>Every picture of Voluta has a text description of what it shows, and Enlarge shows a screen at full size. The descriptions summarize each screen rather than reading every word on it. Decorative pictures are hidden from screen readers.</li>
+        </ul>
+        <h3>Known limits</h3>
+        <ul>
+          <li>We have not yet tested the page with a screen reader, such as VoiceOver or NVDA.</li>
+          <li>Hear it needs a voice on your device. Without one, the button does not appear; the same words are on the page.</li>
+          <li>Our email address is put together by the page's script, to keep it from address-collecting robots, so with JavaScript off it does not show, and the pilot form does not work.</li>
+        </ul>
+        <h3>Found a problem?</h3>
+        <p>Write to <span class="addr" data-addr>us at the address this page shows when JavaScript is on</span>, and tell us which part of the page and what happened. We aim to reply within five business days. If you need anything on this page in another form, tell us.</p>
+      </article>
+      <article id="privacy" aria-labelledby="priv-h">
+        <h2 id="priv-h">Privacy</h2>
+        <p class="dated">Effective November 18, 2026</p>
+        <p>This notice covers volutahealth.com only.</p>
+        <h3>What this site does not do</h3>
+        <ul>
+          <li>It sets no cookies and saves nothing in your browser's storage. Like any website, your browser may keep a copy of the page and its pictures in its cache for a while.</li>
+          <li>It has no analytics, ads, tracking pixels, chat or social media widgets, and it loads nothing from other sites, its font included. We do not track you over time or across other sites.</li>
+          <li>Hear the visit reads the page aloud with a voice on your device. The page never uses your microphone.</li>
+        </ul>
+        <h3>Who else receives information when you visit</h3>
+        <ul>
+          <li>GitHub hosts this site. GitHub logs the IP address of every visitor to a GitHub Pages site and keeps it for security. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noreferrer">GitHub's privacy statement</a>.</li>
+          <li>If you share a link to this page, the site you share it on fetches the page's title, description and preview picture.</li>
+        </ul>
+        <h3>The pilot form and your email</h3>
+        <ul>
+          <li>The form sends nothing to us. Write the email opens your own email app with a message filled in, and nothing is sent until you press Send there.</li>
+          <li>Your email arrives in our mailbox, which Google Workspace stores for us. It is read only by the people working on the pilot and, when needed, our attorney or advisers. We never sell it or use it for advertising, and we give it to no one else unless the law requires it.</li>
+          <li>It stays in our mailbox until we delete it, and you can ask us to delete it at any time.</li>
+          <li>Please do not send any patient information. If some arrives, we delete it and tell you.</li>
+        </ul>
+        <h3>Other points</h3>
+        <ul>
+          <li>Because we do not track you, the site works the same whether or not your browser sends Do Not Track or Global Privacy Control.</li>
+          <li>This site is for medical practices and is not meant for children.</li>
+          <li>If we change this notice, we change its date.</li>
+        </ul>
+        <p>Questions, or to ask us to delete your email: write to <span class="addr" data-addr>us at the address this page shows when JavaScript is on</span>.</p>
+      </article>
+    </div>
+  </section>
 </main>
 
 <footer>
   <div class="wrap">
     <p class="foot-brand"><span class="wm" role="img" aria-label="Voluta"><svg viewBox="3 3 60 57" aria-hidden="true" focusable="false"><g fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path class="vr" pathLength="1" d="M23.4 54.6L36.3 16.0A11.2 11.2 0 0 1 46.8 8.4A10.8 10.8 0 0 1 57.6 19.2A8.6 8.6 0 0 1 49.0 27.8A4.4 4.4 0 0 1 44.6 23.4"/><path class="vl" pathLength="1" d="M8.2 9.6L22.6 54.4"/></g></svg>oluta</span><span>Health</span></p>
-    <p>Voluta is in development and is not yet used with real patients. Every screen on this page shows pretend patients and pretend data.</p>
-    <p>Screens captured Nov 18, 2026 from the version in testing.</p>
+    <p>Voluta is in development and is not yet used with real patients, and it is not yet connected to any lab, pharmacy or immunization registry. Every screen on this page shows pretend patients and pretend data.</p>
+    <p>Screens captured Nov 18, 2026 from the version in testing. Where they show the AI's words, those are sample text written for the pictures, not output from a recording.</p>
     <p>&copy; 2026 Voluta Health</p>
-    <p class="foot-links"><a href="#top">Back to the top</a><a href="#pilot">Join the pilot list</a></p>
+    <p class="foot-links"><a href="#top">Back to the top</a><a href="#pilot">Join the pilot list</a><a href="#accessibility">Accessibility</a><a href="#privacy">Privacy</a></p>
   </div>
 </footer>
 <button class="speak-pill" id="speak-pill" type="button" hidden><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Speaking · Stop</button>
