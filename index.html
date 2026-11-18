@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Only this page's own style and script, Google Fonts and the site's own pictures may load: anything else, such as
+     a script slipped into the page, is refused by the browser. When the style or script below changes, its sha256 in
+     this line must be updated (tools: openssl dgst -sha256 -binary | base64). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-JFsTtYS8ufqKvNrJjMkoMdstObw471MSYs8KArXD6BA='; style-src 'sha256-E3sxd7jb40K7n+zz/ozC6N0VuFkz93oW5G3TdiAWGs4=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voluta Health · A medical record for primary care, built by a physician</title>
 <meta name="description" content="Voluta is a medical record system for primary care, built by a practicing physician: an AI scribe with consent built in, a visit note that keeps the chief complaint and history for every visit, results followed until closed, and California's rules built in. In development; inviting California practices to the pilot list.">
