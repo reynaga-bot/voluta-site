@@ -2,321 +2,1976 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- Only this page's own style and script, Google Fonts and the site's own pictures may load: anything else, such as
-     a script slipped into the page, is refused by the browser. When the style or script below changes, its sha256 in
-     this line must be updated (tools: openssl dgst -sha256 -binary | base64). -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-JFsTtYS8ufqKvNrJjMkoMdstObw471MSYs8KArXD6BA='; style-src 'sha256-XzFOnsyxtYIcD5hxUhMtwLvQ3JQqHu/5XORud83vkjs=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<!-- Only this page's own style and script, and the site's own fonts and pictures, may load: anything else, such as a
+     script slipped into the page or a request to another site, is refused by the browser. When the style or the script
+     below changes, its sha256 in this line must be updated, from the exact text between the tags:
+     python3 -c "import re,hashlib,base64;h=open('index.html',encoding='utf-8').read();[print(t,'sha256-'+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()) for t in ('style','script') for m in re.findall('<'+t+'>(.*?)</'+t+'>',h,re.S)]" -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-njzkPyilroSylPKi1Vjov03c2+PvWEvl7xCL28+U7N4='; style-src 'sha256-gm7YKLGlWkvXB7OVRNRHkifWlA5jai2khy6SbRD6sR8='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voluta Health · A medical record for primary care, built by a physician</title>
-<meta name="description" content="Voluta is a medical record system for primary care, built by a practicing physician: an AI scribe with consent built in, a visit note that keeps the chief complaint and history for every visit, results followed until closed, and California's rules built in. In development; inviting California practices to the pilot list.">
-<meta name="theme-color" content="#F4F7F7">
-<meta property="og:title" content="Voluta Health · A medical record for primary care, built by a physician">
-<meta property="og:description" content="In development. An AI scribe with consent built in, one visit note from rooming to signing, results followed until closed, California's rules built in.">
-<meta property="og:image" content="https://volutahealth.com/img/note-panel.jpg">
+<meta name="description" content="Voluta is a medical record system for primary care, built by a practicing physician: an AI scribe with consent built in whose words stay marked until you review them, a visit note that keeps the chief complaint and history for every visit, results that wait for review with tests followed up when no result comes, and tools built to help a practice follow California's rules. In development and not yet used with real patients; inviting California practices to the pilot list.">
+<meta name="theme-color" content="#F7F9FC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A0F1D" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Voluta Health · In development · A medical record for primary care, built by a physician">
+<meta property="og:description" content="In development, not yet used with real patients. An AI scribe with consent built in that drafts the visit while you decide what is signed, one visit note from rooming to signing, results that wait for review with tests followed up when no result comes, and tools built to help a practice follow California's rules.">
+<meta property="og:image" content="https://volutahealth.com/img/og-chart.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A strip reading Pretend patient · Voluta is in development, over Voluta's chart for a pretend patient: the banner with the allergy and code status, today's chief complaint taken at check-in, the chart's tabs and search, and its first boxes: since the last visit, care gaps, problems and recall.">
 <meta property="og:url" content="https://volutahealth.com/">
 <meta property="og:type" content="website">
-<link rel="icon" href="/favicon.ico" sizes="48x48">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/favicon-96.png" sizes="96x96" type="image/png">
-<link rel="icon" href="/favicon-192.png" sizes="192x192" type="image/png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="/favicon-96.png?v=2" sizes="96x96" type="image/png">
+<link rel="icon" href="/favicon-192.png?v=2" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+<link rel="preload" href="/fonts/IBMPlexSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/IBMPlexSans-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  /* IBM Plex Sans, the EMR's own typeface, from the EMR's own unmodified files (the license reserves the name "Plex"
+     for unmodified fonts; its text is in /fonts/OFL.txt). Served from this site, so nothing is asked of another. */
+  @font-face { font-family: "IBM Plex Sans"; src: url("/fonts/IBMPlexSans-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: "IBM Plex Sans"; src: url("/fonts/IBMPlexSans-SemiBold.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+  /* Until Plex arrives, Arial stands in, scaled to Plex's widths (measured on this page's text), so the words wrap the
+     same and nothing moves when Plex takes over. Liberation Sans has Arial's widths. */
+  @font-face { font-family: "Plex fallback"; src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans"); font-weight: 400; size-adjust: 100.8%; }
+  @font-face { font-family: "Plex fallback"; src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("LiberationSans-Bold"); font-weight: 600; size-adjust: 96.8%; }
+
+  /* Colors come from Voluta's wordmark and emblem: royal blue, the wordmark's lettering, for every action; a light sky
+     blue as light; navy ink and bands; the emblem keeps its own blue and green, lighter in the dark. Amber means "not
+     final yet" and green means "done", as they do inside Voluta. */
   :root {
-    --ground: #F4F7F7;
-    --panel: #FFFFFF;
-    --ink: #0E3B43;
-    --teal: #1B6F73;
-    --teal-soft: #E3F1F0;
-    --amber: #B7791F;
-    --amber-soft: #FDF3DD;
-    --muted: #3E5A60;
-    --line: #D3DFDF;
-    --shade: rgba(14, 59, 67, 0.12);
+    color-scheme: light dark;
+    --bg: #F7F9FC; --bg-alt: #EEF3FB; --surface: #FFFFFF;
+    --ink: #0E1A33; --muted: #414D64;
+    --line: #DCE4F0;
+    --field: #7A879E; --placeholder: #5B677D;
+    --accent: #1D4ED8; --accent-strong: #1E40AF; --accent-soft: #E8EFFF; --on-accent: #FFFFFF;
+    --sky: #93C5FD; --sky-2: #BFDBFE;
+    --logo-b: #196BAC; --logo-g: #4B9E37;
+    --draft-bg: #FFECB8; --draft-line: #8A4F00; --draft-ink: #7A4500;
+    --done-bg: #D1FADF; --done-ink: #065F3A;
+    --plan-bg: #EEF1F6; --plan-ink: #414D64;
+    --dot-dev: #D97706;
+    --err: #B42318;
+    --focus: #1D4ED8;
+    --band: #0B1838; --band-2: #10245A;
+    --band-ink: #F1F5FF; --band-muted: #B9C6E4; --band-accent: #93C5FD;
+    --band-card: rgb(255 255 255 / .06); --band-line: rgb(147 197 253 / .18); --band-edge: rgb(147 197 253 / .55);
+    --band-btn: #93C5FD; --band-btn-ink: #0A1A44; --band-btn-hover: #BFDBFE;
+    --pilot-1: #1E3A8A; --pilot-2: #1D4ED8; --pilot-ink: #FFFFFF; --pilot-muted: #DBEAFE;
+    --stage: #F7F9FC; --ring: #1D4ED8; --ring-halo: rgb(147 197 253 / .6); --dim: rgb(11 24 56 / .28);
+    --shadow-sm: 0 1px 2px rgb(14 26 51 / .06), 0 1px 3px rgb(14 26 51 / .04);
+    --shadow-md: 0 4px 12px rgb(14 26 51 / .06), 0 14px 32px -10px rgb(29 78 216 / .16);
+    --shadow-lg: 0 2px 6px rgb(14 26 51 / .05), 0 36px 72px -28px rgb(29 78 216 / .32);
+    --hero-glow: radial-gradient(1100px 560px at 82% -8%, rgb(147 197 253 / .34), transparent 62%),
+                 radial-gradient(700px 480px at -8% 18%, rgb(29 78 216 / .07), transparent 60%);
+    --ease-out: cubic-bezier(.2, .7, .2, 1);
+    --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+    --ease-std: cubic-bezier(.4, 0, .2, 1);
+    --gutter: 20px;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --ground: #0B2B31;
-      --panel: #10363D;
-      --ink: #F4F7F7;
-      --teal: #8FD0CC;
-      --teal-soft: #164A50;
-      --amber: #F2C46D;
-      --amber-soft: #3A3420;
-      --muted: #C2D8D7;
-      --line: #1F4A51;
-      --shade: rgba(0, 0, 0, 0.35);
+      --bg: #0A0F1D; --bg-alt: #0D1426; --surface: #121A2F;
+      --ink: #E7ECF7; --muted: #A7B3CC; --line: #24304B; --field: #66758F; --placeholder: #94A3BD;
+      --accent: #93C5FD; --accent-strong: #BFDBFE; --accent-soft: #16254A; --on-accent: #0A1A44;
+      --logo-b: #3D93D6; --logo-g: #8FD16A;
+      --draft-bg: #40300C; --draft-line: #FFD166; --draft-ink: #FFD166;
+      --done-bg: #123A25; --done-ink: #6FE0A0; --plan-bg: #1A2238; --plan-ink: #A7B3CC;
+      --dot-dev: #FFC233; --err: #FF9A8F; --focus: #93C5FD;
+      --band: #0E1B3D; --band-2: #132A60; --band-line: rgb(147 197 253 / .22);
+      --pilot-1: #13245A; --pilot-2: #1E3A8A;
+      --stage: #121A2F;
+      --shadow-sm: 0 0 0 1px rgb(147 197 253 / .06);
+      --shadow-md: 0 0 0 1px rgb(147 197 253 / .10), 0 16px 40px -12px rgb(0 0 0 / .6);
+      --shadow-lg: 0 0 0 1px rgb(147 197 253 / .10), 0 40px 80px -30px rgb(0 0 0 / .75);
+      --hero-glow: radial-gradient(1100px 560px at 82% -8%, rgb(147 197 253 / .14), transparent 62%),
+                   radial-gradient(700px 480px at -8% 18%, rgb(29 78 216 / .18), transparent 60%);
     }
   }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  @media (prefers-contrast: more) { :root { --muted: var(--ink); --line: var(--field); } }
+  @media (forced-colors: active) { .ring { forced-color-adjust: none; } }
+  @media (min-width: 768px) { :root { --gutter: 32px; } }
+  @media (min-width: 1100px) { :root { --gutter: 40px; } }
+
+  /* base */
+  *, *::before, *::after { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-padding-top: 80px; -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
-    background: var(--ground);
+    background: var(--bg);
     color: var(--ink);
-    font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: "IBM Plex Sans", "Plex fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
     font-size: 17px;
-    line-height: 1.55;
-    -webkit-text-size-adjust: 100%;
+    line-height: 1.6;
   }
-  a { color: var(--teal); }
   img { max-width: 100%; height: auto; display: block; }
-  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 20px; }
-  section { padding: 72px 0; }
-  section + section { border-top: 1px solid var(--line); }
-  h2 { font-size: clamp(28px, 4.4vw, 40px); line-height: 1.15; letter-spacing: -0.015em; margin: 0 0 12px; font-weight: 600; }
-  h3 { font-size: 20px; margin: 0 0 6px; font-weight: 600; }
-  .kicker { text-transform: uppercase; letter-spacing: 0.18em; font-size: 13px; font-weight: 600; color: var(--teal); margin: 0 0 10px; }
-  .sub { color: var(--muted); max-width: 720px; margin: 0 0 32px; font-size: 18px; }
-  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; border-radius: 999px; font: inherit; font-weight: 600; text-decoration: none; border: 1.5px solid var(--teal); cursor: pointer; }
-  .btn.pri { background: var(--teal); color: var(--ground); }
-  .btn.ghost { background: transparent; color: var(--teal); }
-  .btn:focus-visible, .tab:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  h1, h2, h3 { text-wrap: balance; }
+  p, li { text-wrap: pretty; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .band :focus-visible, footer :focus-visible { outline-color: var(--band-accent); }
+  .pilot-band :focus-visible { outline-color: #FFFFFF; }
+  .pilot-band form :focus-visible { outline-color: var(--focus); }
+  .vh {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+  .skip {
+    position: absolute;
+    left: 12px;
+    top: -80px;
+    z-index: 50;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--accent);
+    font-weight: 600;
+    box-shadow: var(--shadow-md);
+  }
+  .skip:focus { top: 12px; }
+  main:focus { outline: none; }
+  .sentinel { position: absolute; top: 64px; left: 0; width: 1px; height: 1px; pointer-events: none; }
+  .wrap { width: min(1200px, 100% - 2 * var(--gutter)); margin-inline: auto; }
+  section { padding: clamp(64px, 9vw, 120px) 0; }
+  h2 { font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.625rem); line-height: 1.12; letter-spacing: -0.02em; margin: 0 0 12px; font-weight: 600; }
+  h3 { font-size: 1.1875rem; line-height: 1.3; letter-spacing: -0.005em; margin: 0 0 6px; font-weight: 600; }
+  .kicker { text-transform: uppercase; letter-spacing: 0.14em; font-size: 13px; font-weight: 600; color: var(--accent); margin: 0 0 12px; }
+  .sub { color: var(--muted); max-width: 62ch; margin: 0 0 40px; font-size: 18px; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+    padding: 2px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    vertical-align: 0.1em;
+  }
+  .chip.test { background: var(--draft-bg); color: var(--draft-ink); }
+  .chip.done { background: var(--done-bg); color: var(--done-ink); }
+  /* "In testing" marks the parts of 0.158 not yet released; adding class v158 to <html> retires every chip at once
+     (then also take "(in the version now in testing)" out of step 4's picture description) */
+  html.v158 .soon { display: none; }
 
-  /* top bar */
-  header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
-  header.top .wrap { display: flex; align-items: center; gap: 18px; height: 64px; }
-  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 21px; }
-  .brand img { width: 26px; height: 26px; border-radius: 6px; flex: none; }
-  nav.links { display: flex; gap: 18px; margin-left: auto; font-size: 15px; }
-  nav.links a { color: var(--muted); text-decoration: none; }
-  nav.links a:hover { color: var(--ink); }
-  header.top .btn { padding: 8px 16px; font-size: 15px; }
-  @media (max-width: 860px) { nav.links { display: none; } header.top .btn { margin-left: auto; } }
+  /* buttons: royal blue is the one action color */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 22px;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.15;
+    text-decoration: none;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+  }
+  .btn.sm { min-height: 44px; padding: 0 16px; font-size: 15px; }
+  .btn.pri { background: var(--accent); color: var(--on-accent); }
+  .btn.pri:hover { background: var(--accent-strong); }
+  .btn.sec { background: var(--surface); color: var(--accent); border-color: var(--field); }
+  .btn.sec:hover { border-color: var(--accent); }
+  .btn.quiet { background: var(--accent-soft); color: var(--accent-strong); }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn svg, .menu-btn svg {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .bars { display: none; align-items: flex-end; gap: 2px; height: 14px; }
+  .bars i { width: 3px; height: 100%; border-radius: 2px; background: currentColor; transform-origin: 50% 100%; }
+  .bars i:nth-child(2) { transform: scaleY(.6); }
+  .bars i:nth-child(3) { transform: scaleY(.8); }
+  .hear.on .bars, .speak-pill .bars { display: inline-flex; }
+  .hear.on .spk { display: none; }
+
+  /* header */
+  header.top { position: sticky; top: 0; z-index: 30; background: var(--bg); transition: box-shadow 200ms; }
+  @media (min-width: 480px) {
+    @supports ((-webkit-backdrop-filter: blur(8px)) or (backdrop-filter: blur(8px))) {
+      header.top { background: color-mix(in srgb, var(--bg) 86%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+    }
+  }
+  header.top.scrolled { box-shadow: 0 1px 0 var(--line), var(--shadow-sm); }
+  .top .wrap { display: flex; align-items: center; gap: 8px; height: 56px; }
+  @media (min-width: 601px) { .top .wrap { height: 64px; gap: 12px; } }
+  .brand { display: flex; align-items: center; min-height: 44px; text-decoration: none; margin-right: auto; }
+  /* The wordmark: the emblem is the V of "Voluta", a blue left arm and a green arm rolling into the Ionic scroll
+     ("voluta" is Latin for that scroll), before the royal-blue letters. Its size and place are the approved sheet's:
+     the V's top 0.8 em above the baseline, its foot just below it, the scroll almost touching the o. The drawing sits
+     on the baseline as flex items do, so it is moved down by position (a bottom margin has no effect there). */
+  .wm { display: inline-flex; align-items: baseline; color: var(--accent); font-weight: 600; }
+  .wm svg { position: relative; top: 0.064em; width: 0.914em; height: 0.868em; margin-right: -0.035em; flex: none; overflow: visible; }
+  .wm .vl { stroke: var(--logo-b); }
+  .wm .vr { stroke: var(--logo-g); }
+  .brand .wm { font-size: 24px; }
+  nav.links { display: none; }
+  .links a, .menu a { color: var(--muted); text-decoration: none; position: relative; }
+  .links a:hover, .menu a:hover { color: var(--ink); }
+  .links a[aria-current], .menu a[aria-current] { color: var(--ink); }
+  .links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 6px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+  }
+  .links a[aria-current]::after { transform: scaleX(1); }
+  @media (min-width: 1024px) {
+    nav.links { display: flex; gap: 22px; margin-right: 8px; font-size: 15px; }
+    .links a { padding: 12px 0; }
+    .menu-btn { display: none !important; }
+  }
+  .top .btn { min-height: 44px; padding: 0 14px; font-size: 15px; }
+  .menu-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1.5px solid var(--field);
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+    padding: 0;
+  }
+  .menu { display: none; }
+  .menu:popover-open { display: block; }
+  .menu {
+    position: fixed;
+    inset: 60px 12px auto auto;
+    margin: 0;
+    width: min(280px, calc(100vw - 24px));
+    /* on a short screen (a phone turned sideways, or 400 percent zoom) the menu scrolls, so every link can be reached */
+    max-height: calc(100vh - 72px);
+    max-height: calc(100dvh - 72px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: var(--shadow-lg);
+  }
+  .menu a { display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 8px; font-size: 16px; }
+  .menu a:hover { background: var(--accent-soft); }
+  .progress { display: none; }
 
   /* hero */
-  .hero { padding: 56px 0 72px; }
-  .hero .wrap { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
-  @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } }
-  .lockup { display: flex; align-items: center; gap: 18px; margin-bottom: 22px; }
-  .mark { width: 64px; height: 64px; flex: none; }
-  .lockup .name { font-size: 40px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
-  .lockup .name span { display: block; font-size: 14px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--teal); margin-top: 6px; font-weight: 500; }
-  .status { display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; color: var(--muted); background: var(--panel); margin-bottom: 18px; }
-  .status .dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 4px var(--amber-soft); }
-  .hero h1 { font-size: clamp(34px, 5.4vw, 56px); line-height: 1.08; letter-spacing: -0.025em; margin: 0 0 18px; font-weight: 600; }
-  .hero h1 em { font-style: normal; color: var(--teal); }
-  .hero .lede { font-size: 19px; color: var(--muted); margin: 0 0 26px; max-width: 560px; }
-  .hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; }
-  .hero .by { margin: 22px 0 0; font-size: 15px; color: var(--muted); }
-  .shot { position: relative; }
-  .frame { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 60px var(--shade); background: var(--panel); }
-  .frame .bar { display: flex; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
-  .frame .bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
-  .callout { position: absolute; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; font-size: 14px; line-height: 1.35; box-shadow: 0 12px 30px var(--shade); max-width: 230px; }
-  .callout b { display: block; font-size: 14px; color: var(--teal); }
-  .callout.c1 { left: -28px; top: 18%; }
-  .callout.c2 { right: -24px; top: 46%; }
-  .callout.c3 { left: -16px; bottom: 8%; }
-  @media (max-width: 1100px) { .callout { position: static; max-width: none; margin-top: 10px; box-shadow: none; } }
-  .pretend { font-size: 13px; color: var(--muted); margin-top: 10px; text-align: center; }
+  .hero {
+    padding: clamp(32px, 6vw, 72px) 0 clamp(64px, 8vw, 104px);
+    background-color: var(--bg);
+    background-image: var(--hero-glow);
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
+  .hero .wrap { display: grid; gap: 48px; align-items: center; }
+  /* the wide gap leaves room for the left callout to float clear of the words */
+  @media (min-width: 900px) { .hero .wrap { grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: 72px; } }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 14px;
+    color: var(--muted);
+    background: var(--surface);
+    margin: 0 0 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .status .dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--dot-dev); box-shadow: 0 0 0 4px var(--draft-bg); }
+  .hero h1 { font-size: clamp(2.25rem, 1.35rem + 3.6vw, 3.75rem); line-height: 1.06; letter-spacing: -0.025em; margin: 0 0 20px; font-weight: 600; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .lede { font-size: clamp(1.125rem, 1rem + .45vw, 1.3125rem); line-height: 1.55; color: var(--muted); margin: 0 0 28px; max-width: 58ch; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+  .sound-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 16px; }
+  .sound-row.off { visibility: hidden; }
+  html:not(.js) .sound-row { display: none; }
+  .sound-note { margin: 0; font-size: 13px; line-height: 1.45; color: var(--muted); flex: 1 1 260px; max-width: 46ch; }
+  /* on phones the hero's three buttons share one width, so the edge under the main action is straight */
+  @media (max-width: 599px) { .ctas .btn, #hear-hero { width: 100%; } }
+  .by { margin: 24px 0 0; font-size: 15px; color: var(--muted); }
+  .shot { position: relative; isolation: isolate; }
+  .volute { position: absolute; z-index: -1; width: 135%; left: -18%; top: -24%; pointer-events: none; }
+  /* beside the text, the spiral sweeps out from behind the picture's top-right corner, clear of the words; on phones
+     its top sits just above the picture, below the byline (the arc's top is 24.7% of the shot's width into the drawing) */
+  @media (min-width: 900px) { .volute { width: 120%; left: 30%; top: -260px; } }
+  @media (max-width: 599px) { .volute { top: calc(-14px - 24.7vw); } }
+  .volute path { fill: none; stroke: var(--logo-g); stroke-opacity: .3; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+  .frame { margin: 0; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow-lg); }
+  .frame figcaption { padding: 8px 14px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line); }
+  .pic { position: relative; }
+  .pic img { width: 100%; }
+  .ring {
+    position: absolute;
+    left: var(--x, 0);
+    top: var(--y, 0);
+    width: var(--w, 0);
+    height: var(--h, 0);
+    border: 3px solid var(--ring);
+    border-radius: 10px;
+    box-shadow: 0 0 0 4px var(--ring-halo);
+    pointer-events: none;
+  }
+  .shot.h1 .ring { --x: 24.65%; --y: 12.3%; --w: 45.56%; --h: 17.54%; }
+  .shot.h2 .ring { --x: 25.65%; --y: 48.86%; --w: 43.56%; --h: 23.27%; }
+  .shot.h3 .ring { --x: 25.96%; --y: 77.82%; --w: 42.94%; --h: 15.43%; }
+  .callouts { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 10px; }
+  .callout {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin: 0;
+    padding: 12px 14px;
+  }
+  /* without the script the callouts are plain text; the script makes them buttons that move the ring */
+  button.callout { cursor: pointer; }
+  .callout b { display: block; font-size: 15px; color: var(--ink); margin-bottom: 2px; }
+  .callout[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .callout[aria-pressed="true"] b { color: var(--accent-strong); }
+  /* Below the picture they sit as a list (three across while the picture has the full width). From 1280 px, where
+     the page has its full width, they float over the frame's edges: the right ones 16 px inside the screen and clear
+     of the rings, the left one inside the gap and clear of the words. */
+  @media (min-width: 601px) and (max-width: 899px) { .callouts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 1280px) {
+    .callouts { margin: 0; display: block; }
+    .callouts li { position: absolute; width: 190px; }
+    .callout { box-shadow: var(--shadow-md); }
+    .callouts li:nth-child(1) { right: -24px; top: 2%; }
+    .callouts li:nth-child(2) { left: -48px; top: 47%; }
+    .callouts li:nth-child(3) { right: -24px; bottom: 6%; }
+    /* the note under the picture keeps left of the third callout, which floats over the frame's lower right corner */
+    .shot .pretend { text-align: left; max-width: calc(100% - 200px); }
+  }
+  .pretend { font-size: 13px; color: var(--muted); margin: 12px 0 0; text-align: center; }
+  @media (max-width: 600px) {
+    .hero .frame { max-width: 300px; margin-inline: auto; }
+    .shot.h1 .ring { --x: 5.13%; --y: 1.18%; --w: 89.74%; --h: 46.23%; }
+    .shot.h2 .ring { --x: 5.13%; --y: 62.59%; --w: 89.74%; --h: 32.83%; }
+    .shot.h3 .ring { --x: 5.64%; --y: 65.77%; --w: 88.72%; --h: 29.31%; }
+    /* the phone picture has no note, so the third callout (the boxes and the note in step) is left out */
+    .callouts li:nth-child(3) { display: none; }
+  }
 
-  /* fact strip */
-  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  @media (max-width: 900px) { .facts { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 520px) { .facts { grid-template-columns: 1fr; } }
-  .fact { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
-  .fact .big { font-size: 26px; font-weight: 600; color: var(--teal); line-height: 1.1; margin-bottom: 6px; }
-  .fact p { margin: 0; color: var(--muted); font-size: 15px; }
+  /* facts strip */
+  .alt { background: var(--bg-alt); }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  @media (max-width: 899px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 519px) { .facts { grid-template-columns: minmax(0, 1fr); } }
+  .fact { background: var(--surface); padding: 24px; }
+  .fact .big { font-size: 26px; font-weight: 600; color: var(--accent-strong); line-height: 1.15; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+  .fact p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.5; }
 
-  /* gallery */
-  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-  .tab { font: inherit; font-size: 15px; font-weight: 500; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); cursor: pointer; }
-  .tab[aria-selected="true"] { background: var(--teal); color: var(--ground); border-color: var(--teal); }
-  .pane { display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px; align-items: start; }
-  .pane[hidden] { display: none; }
-  @media (max-width: 900px) { .pane { grid-template-columns: 1fr; } }
-  .pane ul { margin: 12px 0 0; padding-left: 20px; color: var(--muted); }
-  .pane li { margin-bottom: 8px; }
-  .pane .frame img { width: 100%; }
+  /* the AI scribe: what it does and never does, and the Try it illustration */
+  .ai-grid { display: grid; gap: 40px; align-items: start; margin-top: 32px; }
+  @media (min-width: 900px) { .ai-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; } }
+  @media (max-width: 899px) { .ai-grid .try { order: -1; } }
+  .lists h3 { margin-top: 0; }
+  .lists ul { list-style: none; margin: 0 0 28px; padding: 0; }
+  .lists li { position: relative; padding-left: 30px; margin-bottom: 12px; }
+  .lists li::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: .45em;
+    width: 6px;
+    height: 11px;
+    border: solid var(--accent);
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg);
+  }
+  .lists .never li::before { left: 0; top: .78em; width: 14px; height: 0; border-width: 2.5px 0 0; transform: none; border-color: var(--muted); }
+  .lists .chip { margin-right: 6px; }
+  .caveat { color: var(--muted); font-size: 15px; margin: 0; max-width: 62ch; }
+  .try { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-md); padding: 24px; }
+  .try-label { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+  .try h3 { margin: 0 0 12px; }
+  .try-part { border-top: 1px solid var(--line); padding: 14px 0; }
+  .try-h { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 13px; font-weight: 600; color: var(--muted); margin: 0 0 6px; }
+  .try-part p { margin: 0; }
+  .fold { display: grid; grid-template-rows: 1fr; }
+  .fold > * { min-height: 0; overflow: hidden; }
+  .try-part.undone .fold { grid-template-rows: 0fr; }
+  .try-part.undone .fold > * { visibility: hidden; }
+  .try-part.gone { display: none; }
+  .ai {
+    background: var(--draft-bg);
+    color: var(--ink);
+    text-decoration-line: underline;
+    text-decoration-style: dashed;
+    text-decoration-color: var(--draft-line);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding: 1px 2px;
+    border-radius: 3px;
+  }
+  .reviewed .ai { background: transparent; text-decoration-color: transparent; }
+  .ai-line { margin-top: 4px; }
+  .chk { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .try-part:not(.reviewed) .chk { display: none; }
+  /* the chip may wrap, so with wider text spacing at 320 px the card still fits the screen */
+  .try-chip { white-space: normal; }
+  .try-part.reviewed .try-chip { background: var(--done-bg); color: var(--done-ink); }
+  .try-part.undone .try-chip { display: none; }
+  .try-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .try-status { margin: 12px 0 0; font-size: 15px; color: var(--muted); min-height: 1.5em; }
 
-  /* flow */
-  .flow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; counter-reset: step; }
-  @media (max-width: 1000px) { .flow { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 560px) { .flow { grid-template-columns: 1fr; } }
-  .step { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; position: relative; }
-  .step::before { counter-increment: step; content: counter(step); display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--teal-soft); color: var(--teal); font-weight: 600; font-size: 14px; margin-bottom: 8px; }
-  .step h3 { font-size: 17px; }
-  .step p { margin: 0; font-size: 14.5px; color: var(--muted); }
+  /* the navy bands: the walkthrough and Security */
+  .band { background: var(--band); color: var(--band-ink); }
+  .band.deep { background-color: var(--band); background-image: linear-gradient(180deg, var(--band-2), var(--band)); }
+  @media (prefers-color-scheme: dark) { .band { border-block: 1px solid var(--band-line); } }
+  .band .kicker { color: var(--band-accent); }
+  .band .sub { color: var(--band-muted); }
+  .band a { color: var(--band-accent); }
+  .band .btn.pri { background: var(--band-btn); color: var(--band-btn-ink); }
+  .band .btn.pri:hover { background: var(--band-btn-hover); }
+  .band .btn.sec, .band .btn.quiet { background: var(--band-card); color: var(--band-ink); border-color: var(--band-edge); }
+  .band .btn.sec:hover, .band .btn.quiet:hover { border-color: var(--band-accent); }
+  .band .chip.test { background: var(--draft-bg); color: var(--draft-ink); }
 
-  /* cards */
-  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  @media (max-width: 900px) { .cards { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
-  .card svg { width: 30px; height: 30px; stroke: var(--teal); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 10px; }
-  .card p { margin: 0; color: var(--muted); font-size: 15.5px; }
-  .card .law { display: block; margin-top: 8px; font-size: 13px; color: var(--teal); }
+  /* walk through a visit: without the script, a plain list of steps with their pictures */
+  .walk { display: grid; gap: 32px; align-items: start; }
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 40px; grid-column: 1 / -1; }
+  .step h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+  .step-n {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--band-accent);
+    color: var(--band-btn-ink);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .step p { color: var(--band-muted); max-width: 62ch; margin: 0 0 16px; }
+  .step picture img { max-width: 584px; width: 100%; border-radius: 12px; }
+  .step .pic-note, .now-note { font-size: 14px; line-height: 1.5; color: var(--band-muted); }
+  .step .pic-note { margin: -8px 0 16px; }
+  .now-note { margin: 10px 0 0; }
+  .walk-close { margin: 0; color: var(--band-muted); grid-column: 1 / -1; }
+  .walk.live .steps, .walk.live .walk-close { display: none; }
+  .walk-side { display: flex; flex-direction: column; gap: 20px; }
+  /* the step's text shares one grid cell with invisible copies of every step's text, so the box is always as tall as
+     the longest step and nothing below it moves from step to step */
+  .now-box { display: grid; }
+  .now-box > * { grid-area: 1 / 1; min-width: 0; }
+  .now-size { visibility: hidden; }
+  /* Back, Next and Hear it come first in the page's order and stay put; beside the stage the step's text sits above
+     them, level with the picture, and on phones it follows them under the stage. The steps list comes last. */
+  @media (min-width: 900px) { .now-box { order: -1; } }
+  .now-k { margin: 0 0 4px; font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--band-accent); }
+  .walk-now h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 8px; font-size: 1.375rem; }
+  .now-t { margin: 0; color: var(--band-muted); font-size: 17px; }
+  .say { border-radius: 4px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .say.speaking { background: rgb(147 197 253 / .2); color: var(--band-ink); }
+  .sub .say.speaking { padding: 0 2px; }
+  .now-msg { margin: 12px 0 0; font-size: 15px; color: var(--band-ink); }
+  .now-msg:empty { margin: 0; }
+  .now-end { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .walk-ctl { display: flex; flex-wrap: wrap; gap: 8px; }
+  .walk-note, .walk-hint { margin: 0; font-size: 13px; line-height: 1.45; color: var(--band-muted); }
+  .rail { list-style: none; margin: 0; padding: 0; position: relative; display: grid; gap: 4px; --p: 0; }
+  .rail::before, .rail::after { content: ""; position: absolute; left: 24px; top: 24px; bottom: 24px; width: 2px; background: var(--band-line); }
+  .rail::after { background: var(--band-accent); transform: scaleY(var(--p)); transform-origin: 50% 0; }
+  .rail-b {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 44px;
+    padding: 6px 12px 6px 8px;
+    background: none;
+    border: 0;
+    border-left: 3px solid transparent;
+    border-radius: 10px;
+    color: var(--band-muted);
+    font: inherit;
+    font-size: 15px;
+    line-height: 1.3;
+    text-align: left;
+    cursor: pointer;
+  }
+  .rail-b:hover { color: var(--band-ink); }
+  .rail-b .n {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--band);
+    border: 2px solid var(--band-edge);
+    color: var(--band-ink);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .band.deep .rail-b .n { background: var(--band-2); }
+  .rail-b.done .n, .rail-b[aria-current] .n { background: var(--band-accent); border-color: var(--band-accent); color: var(--band-btn-ink); }
+  .rail-b[aria-current] { background: var(--band-card); border-left-color: var(--sky); color: var(--band-ink); font-weight: 600; }
+  .rail-b .chip { font-weight: 600; }
+  .stage {
+    position: relative;
+    background: var(--stage);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px -30px rgb(0 0 0 / .65), 0 0 0 1px var(--band-line);
+  }
+  .stage-strip { display: grid; margin: 0; padding: 8px 14px; font-size: 13px; color: var(--muted); background: var(--surface); border-bottom: 1px solid var(--line); }
+  /* every step's strip shares one grid cell, so the strip is as tall as the longest and the stage never moves */
+  .stage-strip > span { grid-area: 1 / 1; }
+  .stage-strip > span:not(.on) { visibility: hidden; }
+  .stage-view {
+    position: relative;
+    height: clamp(520px, 72svh, 700px);
+    overflow: hidden;
+    contain: layout paint;
+    -webkit-mask-image: linear-gradient(#000 calc(100% - 48px), transparent);
+    mask-image: linear-gradient(#000 calc(100% - 48px), transparent);
+  }
+  .fr {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    width: var(--fw, 584px);
+    max-width: calc(100% - 32px);
+    transform: translate(-50%, var(--pan, 0px));
+    opacity: 0;
+    visibility: hidden;
+  }
+  .fr.on { opacity: 1; visibility: visible; }
+  .fr img { width: 100%; border-radius: 10px; background: #FFFFFF; box-shadow: var(--shadow-md); }
+  .fr-1, .fr-3 { --fw: 584px; } .fr-4 { --fw: 582px; } .fr-5 { --fw: 380px; } .fr-6 { --fw: 390px; }
+  .fr .ring { box-shadow: 0 0 0 4px var(--ring-halo), 0 0 0 200vmax var(--dim); }
+  .edge { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--dot-dev); opacity: 0; pointer-events: none; }
+  .stage[data-at="1"] .fr-1 .ring { --x: 1.37%; --y: 42.48%; --w: 97.26%; --h: 8.99%; }
+  .stage[data-at="2"] .fr-1 .ring { --x: .68%; --y: .27%; --w: 98.63%; --h: 19.89%; }
+  .fr-3 .ring { --x: 2.23%; --y: 91.33%; --w: 95.55%; --h: 7.08%; }
+  .fr-4 .ring { --x: 1.2%; --y: 36.18%; --w: 97.6%; --h: 14.18%; }
+  .fr-5 .ring { --x: 3.68%; --y: 5.19%; --w: 91.32%; --h: 23.66%; }
+  .fr-6 .ring { --x: 3.59%; --y: 58.2%; --w: 92.82%; --h: 41.02%; }
+  /* While the tour speaks on a phone, the line being said shows over the stage's bottom edge, since the step text
+     below the stage can be off screen. The frames pan so the ring stays above it. */
+  .cap { display: none; }
+  @media (max-width: 899px) {
+    .stage.capt .cap {
+      display: block;
+      position: absolute;
+      z-index: 2;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      margin: 0;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgb(11 24 56 / .92);
+      color: #F1F5FF;
+      font-size: 15px;
+      line-height: 1.45;
+      box-shadow: 0 8px 24px -8px rgb(0 0 0 / .5);
+    }
+  }
+  .speak-pill {
+    position: fixed;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 40;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: 1px solid var(--band-edge);
+    background: var(--band);
+    color: var(--band-ink);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: var(--shadow-lg);
+    cursor: pointer;
+  }
+  @media (min-width: 900px) { .walk { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 48px; } }
+  @media (max-width: 899px) {
+    .stage { order: -1; }
+    .stage-view { height: clamp(420px, 62svh, 560px); }
+    .rail { display: flex; justify-content: space-between; gap: 0; }
+    .rail::before, .rail::after { left: 22px; right: 22px; top: 21px; bottom: auto; width: auto; height: 2px; }
+    .rail::after { transform: scaleX(var(--p)); transform-origin: 0 50%; }
+    .rail li { flex: none; }
+    .rail-b { width: 44px; height: 44px; padding: 0; justify-content: center; border-left: 0; border-radius: 50%; }
+    .rail-b[aria-current] { background: none; }
+    .rail-b .t, .rail-b .chip { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .rail-b .n { width: 32px; height: 32px; }
+    .rail-b[aria-current] .n { box-shadow: 0 0 0 4px rgb(147 197 253 / .35); }
+  }
+  @media (max-width: 600px) {
+    .fr { --fw: 100%; max-width: calc(100% - 24px); top: 12px; }
+    .stage[data-at="1"] .fr-1 .ring { --x: 5.13%; --y: 62.59%; --w: 89.74%; --h: 11.83%; }
+    .stage[data-at="2"] .fr-1 .ring { --x: 5.13%; --y: 1.18%; --w: 89.74%; --h: 46.23%; }
+    .fr-3 .ring { --x: 6.41%; --y: 83.65%; --w: 87.18%; --h: 15.16%; }
+    .fr-4 .ring { --x: 6.41%; --y: 86.23%; --w: 87.18%; --h: 13.11%; }
+  }
+
+  /* real screens: the gallery */
+  .tabs { position: relative; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .tab {
+    position: relative;
+    z-index: 1;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: 1.5px solid var(--field);
+    background: var(--surface);
+    color: var(--muted);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .tabs.pilled .tab { background: transparent; }
+  .tabs.pilled .tab[aria-selected="true"] { background: transparent; border-color: transparent; }
+  .pill {
+    position: absolute;
+    z-index: 0;
+    left: 0;
+    top: 0;
+    width: var(--pw, 0);
+    height: var(--ph, 0);
+    transform: translate(var(--px, 0), var(--py, 0));
+    border-radius: 999px;
+    background: var(--accent);
+  }
+  .gal-note { margin: -24px 0 32px; max-width: 72ch; font-size: 15px; color: var(--muted); }
+  /* Without the script every screen shows in turn, under its own heading. With it they become tabs: until the
+     gallery is set up, only the first shows, so the page does not jump. */
+  html:not(.js) .pane + .pane { margin-top: 64px; }
+  html.js #see:not(.live) .pane ~ .pane { display: none; }
+  .pane-text { display: grid; gap: 8px 48px; margin-bottom: 24px; }
+  @media (min-width: 900px) { .pane-text { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); } .pane-text ul { columns: 2; column-gap: 40px; } }
+  .pane-text p { margin: 0; color: var(--muted); }
+  .pane-text ul { margin: 0; padding-left: 20px; color: var(--muted); font-size: 15px; }
+  .pane-text li { margin-bottom: 8px; break-inside: avoid; }
+  .shotframe { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow-lg); }
+  .shotframe img { width: 100%; }
+  @media (max-width: 600px) { .shotframe { max-width: 390px; margin-inline: auto; } }
+  .enlarge { display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px; font-size: 15px; font-weight: 600; }
+  .viewer {
+    width: min(1400px, calc(100vw - 24px));
+    max-width: none;
+    height: calc(100vh - 24px);
+    height: calc(100dvh - 24px);
+    max-height: none;
+    padding: 0;
+    border: 0;
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: var(--shadow-lg);
+  }
+  .viewer[open] { display: flex; flex-direction: column; }
+  .viewer::backdrop { background: rgb(11 24 56 / .72); }
+  .viewer-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 8px 8px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .viewer-bar p { margin: 0; font-weight: 600; }
+  .viewer-body { flex: 1; overflow: auto; background: var(--bg-alt); }
+  /* the screen's box takes focus so the arrow keys scroll it; its ring is drawn inside, where the dialog shows it */
+  .viewer-body:focus-visible { outline-offset: -3px; }
+  .viewer-body img { max-width: none; margin: 16px; }
+
+  /* cards: California and Security */
+  .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 899px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 599px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+  .card { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; box-shadow: var(--shadow-sm); }
+  .card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: var(--shadow-md); opacity: 0; pointer-events: none; }
+  .ico { width: 30px; height: 30px; stroke: var(--accent); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 12px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.5; }
+  .card .law { margin-top: 12px; font-size: 13px; font-weight: 600; }
+  .ca-note { margin: 24px 0 0; max-width: 70ch; font-size: 14px; color: var(--muted); }
+  .card .more { display: inline-flex; align-items: center; min-height: 44px; margin-top: 4px; font-size: 15px; font-weight: 600; }
+  .band .card { background: var(--band-card); border-color: var(--band-line); box-shadow: none; }
+  .band .card p { color: var(--band-muted); }
+  .band .ico { stroke: var(--band-accent); }
+  .site-note { margin: 32px 0 0; color: var(--band-muted); font-size: 15px; max-width: 62ch; }
 
   /* roadmap */
-  .road { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  @media (max-width: 900px) { .road { grid-template-columns: 1fr; } }
-  .col { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
-  .col .tag { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
-  .col.built .tag { background: var(--teal-soft); color: var(--teal); }
-  .col.next .tag { background: var(--amber-soft); color: var(--amber); }
-  .col.plan .tag { background: var(--ground); color: var(--muted); border: 1px solid var(--line); }
-  .col ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); font-size: 15.5px; }
-  .col li { margin-bottom: 6px; }
-
-  /* pilot form */
-  .pilot { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 40px; }
-  @media (max-width: 900px) { .pilot { grid-template-columns: 1fr; } }
-  form { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; display: grid; gap: 14px; }
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 560px) { .row2 { grid-template-columns: 1fr; } }
-  label { display: grid; gap: 6px; font-size: 15px; font-weight: 500; }
-  input, select, textarea { font: inherit; font-size: 16px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--ground); color: var(--ink); width: 100%; }
-  textarea { min-height: 110px; resize: vertical; }
-  fieldset { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin: 0; }
-  legend { font-size: 15px; font-weight: 500; padding: 0 4px; }
-  .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
-  @media (max-width: 560px) { .checks { grid-template-columns: 1fr; } }
-  .checks label { display: flex; align-items: center; gap: 8px; font-weight: 400; }
-  .checks input { width: auto; }
-  .note { font-size: 13.5px; color: var(--muted); margin: 0; }
-  .sent { display: none; background: var(--teal-soft); border-radius: 10px; padding: 12px 14px; font-size: 15px; }
-  .sent.on { display: block; }
-
-  footer { padding: 36px 0 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
-  footer p { margin: 0 0 8px; }
-
-  /* the serpent draws itself up the staff, then keeps a slow, gentle sway */
-  @media (prefers-reduced-motion: no-preference) {
-    .mark .rod { transform-origin: 60px 154px; animation: rise 0.7s ease-out both; }
-    .mark .serpent { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.2s 0.5s ease-in-out forwards; }
-    .mark .head { opacity: 0; animation: show 0.4s 2.5s ease-out forwards; }
-    .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
-    .reveal.in { opacity: 1; transform: none; }
+  .road { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  @media (max-width: 899px) { .road { grid-template-columns: minmax(0, 1fr); gap: 16px; } }
+  .col {
+    position: relative;
+    z-index: 1;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
   }
-  @keyframes rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  .tag {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+  .built .tag { background: var(--done-bg); color: var(--done-ink); }
+  .next .tag { background: var(--draft-bg); color: var(--draft-ink); }
+  .plan .tag { background: var(--plan-bg); color: var(--plan-ink); }
+  .col ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); font-size: 15px; }
+  .col li { margin-bottom: 8px; }
+  /* side by side, a track runs above the three columns from built to planned, with a dot over each column's tag */
+  @media (min-width: 900px) {
+    .road { padding-top: 34px; }
+    .road::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 30px;
+      right: calc((100% - 48px) / 3 - 30px);
+      height: 2px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--done-ink), var(--draft-line) 50%, var(--plan-ink));
+      transform-origin: 0 50%;
+    }
+    .col::before {
+      content: "";
+      position: absolute;
+      top: -29px;
+      left: 24px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--done-ink);
+      box-shadow: 0 0 0 4px var(--bg);
+    }
+    .col.next::before { background: var(--draft-line); }
+    .col.plan::before { background: var(--plan-ink); }
+  }
+
+  /* the pilot band */
+  .pilot-band { background-color: var(--pilot-2); background-image: linear-gradient(135deg, var(--pilot-1), var(--pilot-2)); color: var(--pilot-ink); }
+  .pilot-band .kicker { color: var(--pilot-muted); }
+  .pilot-band .sub, .pilot-band .lead-note { color: var(--pilot-muted); }
+  .pilot { display: grid; gap: 40px; align-items: start; }
+  @media (min-width: 900px) { .pilot { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); } }
+  .lead-note { font-size: 15px; margin: 0; max-width: 52ch; }
+  .pilot-band .lead-note a { color: var(--pilot-ink); }
+  form { background: var(--surface); color: var(--ink); border-radius: 18px; padding: 24px; display: grid; gap: 16px; box-shadow: var(--shadow-lg); }
+  .row2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 599px) { .row2 { grid-template-columns: minmax(0, 1fr); } }
+  label { display: grid; gap: 6px; font-size: 15px; font-weight: 600; }
+  .req { font-weight: 400; color: var(--muted); }
+  input, select, textarea {
+    font: inherit;
+    font-size: 16px;
+    font-weight: 400;
+    min-height: 48px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--field);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink);
+    width: 100%;
+  }
+  input[aria-invalid="true"] { border-color: var(--err); box-shadow: 0 0 0 1px var(--err); }
+  /* a field that is missing or wrong says why just under it, where focus lands */
+  .field { display: grid; gap: 6px; }
+  .field-err { margin: 0; font-size: 15px; font-weight: 600; color: var(--err); }
+  textarea { min-height: 110px; resize: vertical; }
+  ::placeholder { color: var(--placeholder); opacity: 1; }
+  fieldset { border: 1.5px solid var(--field); border-radius: 8px; padding: 8px 14px 10px; margin: 0; }
+  legend { font-size: 15px; font-weight: 600; padding: 0 4px; }
+  .checks { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 14px; }
+  @media (max-width: 599px) { .checks { grid-template-columns: minmax(0, 1fr); } }
+  .checks label { display: flex; align-items: center; gap: 10px; min-height: 44px; font-weight: 400; }
+  .checks input { width: 20px; height: 20px; min-height: 0; margin: 0; flex: none; accent-color: var(--accent); }
+  .note { font-size: 13px; color: var(--muted); margin: 0; }
+  .sent { display: none; margin: 0; border-radius: 8px; padding: 12px 14px; font-size: 15px; background: var(--accent-soft); color: var(--ink); }
+  .sent.on { display: flex; gap: 10px; align-items: flex-start; }
+  .sent .chk { width: 20px; height: 20px; flex: none; margin-top: 2px; color: var(--done-ink); }
+
+  .info { display: grid; gap: 56px; align-items: start; }
+  @media (min-width: 900px) { .info { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; } }
+  .info h2 { font-size: clamp(1.5rem, 1.2rem + 1vw, 1.875rem); }
+  .info h3 { font-size: 1.0625rem; margin: 24px 0 6px; }
+  .info p, .info li { font-size: 15px; line-height: 1.55; color: var(--muted); }
+  .info p { margin: 0 0 8px; max-width: 64ch; }
+  .info ul { margin: 0; padding-left: 20px; max-width: 64ch; }
+  .info li { margin-bottom: 6px; }
+  .info .dated { font-size: 14px; font-weight: 600; }
+
+  footer { background: var(--band); color: var(--band-muted); padding: 48px 0 56px; font-size: 14px; }
+  @media (prefers-color-scheme: dark) { footer { border-top: 1px solid var(--band-line); } }
+  footer p { margin: 0 0 8px; max-width: 70ch; }
+  footer a { color: var(--band-accent); }
+  .foot-brand { display: flex; align-items: baseline; gap: 6px; color: var(--band-ink); font-weight: 600; font-size: 18px; margin-bottom: 16px; }
+  footer .wm { color: var(--band-accent); --logo-b: #3D93D6; --logo-g: #8FD16A; }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-top: 12px; }
+  .foot-links a { display: inline-flex; align-items: center; min-height: 44px; }
+
+  /* Motion: everything below runs only for visitors who have not asked their device for reduced motion. Each movement
+     shows something true; nothing that starts on its own lasts more than five seconds. */
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+    .top .wm path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+    .top .wm .vl { animation: draw 400ms var(--ease-in-out) 150ms forwards; }
+    .top .wm .vr { animation: draw 1000ms var(--ease-in-out) 500ms forwards; }
+    .hero-copy > * { animation: rise 600ms var(--ease-out) both; }
+    .hero-copy > :nth-child(2) { animation-delay: 70ms; }
+    .hero-copy > :nth-child(3) { animation-delay: 140ms; }
+    .hero-copy > :nth-child(4) { animation-delay: 210ms; }
+    .hero-copy > :nth-child(5) { animation-delay: 280ms; }
+    .hero-copy > :nth-child(6) { animation-delay: 350ms; }
+    .hero .frame { animation: lift 800ms var(--ease-out) 150ms both; }
+    .volute path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.8s var(--ease-in-out) 300ms forwards; }
+    .callouts li { animation: fade 320ms var(--ease-out) both; }
+    .callouts li:nth-child(1) { animation-delay: 950ms; }
+    .callouts li:nth-child(2) { animation-delay: 1070ms; }
+    .callouts li:nth-child(3) { animation-delay: 1190ms; }
+    .ring { transition: left 520ms var(--ease-in-out), top 520ms var(--ease-in-out), width 520ms var(--ease-in-out), height 520ms var(--ease-in-out); }
+    .callout { transition: border-color 200ms, box-shadow 200ms; }
+    header.top .wrap { transition: height 200ms; }
+    .links a::after { transition: transform 200ms var(--ease-out); }
+    html.rv .reveal { transition: opacity 600ms var(--ease-out) var(--d, 0ms), transform 600ms var(--ease-out) var(--d, 0ms); }
+    html.rv .reveal:not(.in) { opacity: 0; transform: translateY(16px); }
+    html.rv .card .ico path { stroke-dasharray: 1; transition: stroke-dashoffset 700ms var(--ease-out) calc(var(--d, 0ms) + 150ms); }
+    html.rv .card:not(.in) .ico path { stroke-dashoffset: 1; }
+    @media (hover: hover) and (pointer: fine) {
+      .card { transition: transform 200ms var(--ease-out); }
+      .card::after { transition: opacity 200ms var(--ease-out); }
+      .card:hover { transform: translateY(-2px); }
+      .card:hover::after { opacity: 1; }
+    }
+    .btn, .tab, .rail-b, .callout { transition: background-color 200ms, border-color 200ms, color 200ms, transform 100ms; }
+    .btn:active, .tab:active, .rail-b:active, .callout:active { transform: scale(.98); }
+    .ai, .try-chip { transition: background-color 400ms, color 400ms, text-decoration-color 400ms; }
+    .fold { transition: grid-template-rows 300ms var(--ease-std); }
+    .try.armed:not(.wiped) .ai-line { clip-path: inset(0 100% 0 0); }
+    .try.armed .ai-line { transition: clip-path 900ms var(--ease-out); }
+    .fr { transition: opacity 360ms var(--ease-in-out), visibility 0s linear 360ms, transform 600ms var(--ease-in-out); }
+    .fr.on { transition: opacity 360ms var(--ease-in-out), visibility 0s, transform 600ms var(--ease-in-out); }
+    .fr.now { transition: transform 600ms var(--ease-in-out); }
+    .stage.pop .fr.on .ring { animation: pop 320ms var(--ease-out); }
+    .rail::after { transition: transform 320ms var(--ease-std); }
+    .rail-b .n { transition: background-color 320ms, border-color 320ms, color 320ms; }
+    .pill { transition: transform 320ms var(--ease-in-out), width 320ms var(--ease-in-out), height 320ms var(--ease-in-out); }
+    .tab { transition: color 320ms, border-color 200ms; }
+    .pane img.loading { opacity: 0; }
+    .pane img { transition: opacity 200ms; }
+    html.rv .road::before { transition: transform 900ms var(--ease-out) 360ms; }
+    html.rv .road:not(:has(.in))::before { transform: scaleX(0); }
+    .hear.on .bars i, .speak-pill .bars i { animation: level 900ms ease-in-out infinite alternate; }
+    .hear.on .bars i:nth-child(2), .speak-pill .bars i:nth-child(2) { animation-delay: -300ms; }
+    .hear.on .bars i:nth-child(3), .speak-pill .bars i:nth-child(3) { animation-delay: -600ms; }
+    input, select, textarea { transition: outline-offset 160ms, border-color 160ms; }
+    input:focus-visible, select:focus-visible, textarea:focus-visible { outline-offset: 4px; }
+    .sent.on { animation: drop 240ms var(--ease-out); }
+    .sent.on .chk path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 300ms var(--ease-out) 120ms forwards; }
+    @supports (animation-timeline: scroll()) {
+      .progress {
+        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 2px;
+        background: var(--accent);
+        transform-origin: 0 50%;
+        animation: grow linear both;
+        animation-timeline: scroll(root);
+      }
+    }
+  }
   @keyframes draw { to { stroke-dashoffset: 0; } }
-  @keyframes show { to { opacity: 1; } }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+  @keyframes lift { from { transform: translateY(20px) scale(.985); } }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } }
+  @keyframes pop { from { transform: scale(.9); opacity: 0; } }
+  @keyframes level { from { transform: scaleY(.3); } to { transform: scaleY(1); } }
+  @keyframes drop { from { opacity: 0; transform: translateY(-6px); } }
+  @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* On paper or in a saved PDF: the light look, every part shown whether or not it was scrolled to, the walkthrough as
+     its list of steps, and none of the controls that need a screen. */
+  @media print {
+    :root {
+      color-scheme: light;
+      --bg: #FFFFFF; --bg-alt: #FFFFFF; --surface: #FFFFFF; --ink: #0E1A33; --muted: #414D64; --line: #DCE4F0; --field: #7A879E; --placeholder: #5B677D;
+      --accent: #1D4ED8; --accent-strong: #1E40AF; --accent-soft: #E8EFFF; --on-accent: #FFFFFF;
+      --draft-bg: #FFECB8; --draft-line: #8A4F00; --draft-ink: #7A4500;
+      --done-bg: #D1FADF; --done-ink: #065F3A; --plan-bg: #EEF1F6; --plan-ink: #414D64;
+      --band-ink: #0E1A33; --band-muted: #414D64; --band-accent: #1D4ED8; --band-card: #FFFFFF; --band-line: #DCE4F0;
+      --pilot-ink: #0E1A33; --pilot-muted: #414D64;
+      --shadow-sm: none; --shadow-md: none; --shadow-lg: none; --hero-glow: none;
+      --logo-b: #196BAC; --logo-g: #4B9E37;
+    }
+    footer .wm { --logo-b: #196BAC; --logo-g: #4B9E37; }
+    .hero, .alt, .band, .band.deep, .pilot-band, footer { background: none; border: 0; }
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+    html.rv .reveal { opacity: 1 !important; transform: none !important; }
+    html.rv .card .ico path { stroke-dashoffset: 0 !important; }
+    .try.armed .ai-line { clip-path: none !important; }
+    .walk.live .steps { display: grid; }
+    .walk.live .walk-close { display: block; }
+    .step-n { background: none; border: 1.5px solid var(--ink); color: var(--ink); }
+    .btn.pri { background: none; color: var(--accent); border-color: var(--accent); }
+    header.top, .skip, .volute, .sound-row, .try-btns, .walk-side, .stage, .speak-pill, .tabs, .enlarge { display: none !important; }
+    section { padding: 32px 0; }
+    .card, .col, .fact, .step, .callout, .frame, .shotframe { break-inside: avoid; }
+  }
 </style>
+<script>
+  document.documentElement.classList.add('js');
+  (() => {
+    'use strict';
+    const $ = (q, r) => (r || document).querySelector(q);
+    const $$ = (q, r) => Array.from((r || document).querySelectorAll(q));
+    // Motion is asked of the device at each use, so turning on reduced motion mid-visit takes effect at once.
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const still = () => reduce.matches;
+    const observer = (cb, opts) => ('IntersectionObserver' in window ? new IntersectionObserver(cb, opts) : null);
+    const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; };
+
+    // When reduced motion is turned on mid-visit, every movement jumps to its end.
+    function motionPref() {
+      const settle = () => {
+        if (!still()) return;
+        if (document.getAnimations) document.getAnimations().forEach(a => { try { a.finish(); } catch (e) { a.cancel(); } });
+        $$('.reveal').forEach(r => r.classList.add('in'));
+      };
+      if (reduce.addEventListener) reduce.addEventListener('change', settle); else if (reduce.addListener) reduce.addListener(settle);
+    }
+
+    // Sections and cards rise into place once, as they come into view; siblings follow 60 ms apart (at most six).
+    // They are hidden only once this has run, so a page whose script is refused shows everything.
+    function reveal() {
+      const els = $$('.reveal');
+      els.forEach(r => {
+        const sibs = Array.from(r.parentElement.children).filter(c => c.classList.contains('reveal'));
+        r.style.setProperty('--d', Math.min(sibs.indexOf(r), 5) * (r.parentElement.classList.contains('road') ? 120 : 60) + 'ms');
+      });
+      const o = observer(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); o.unobserve(e.target); } }), { threshold: 0.12 });
+      if (!o || still()) { els.forEach(r => r.classList.add('in')); return; }
+      document.documentElement.classList.add('rv');
+      els.forEach(r => o.observe(r));
+    }
+
+    // The header gains its edge once the page has scrolled past it.
+    function header() {
+      const top = $('header.top'), mark = el('div', 'sentinel');
+      mark.setAttribute('aria-hidden', 'true');
+      document.body.prepend(mark);
+      const o = observer(es => top.classList.toggle('scrolled', !es[0].isIntersecting));
+      if (o) o.observe(mark);
+    }
+
+    // The section in view is marked in the navigation.
+    function navCurrent() {
+      const links = $$('a[data-nav]');
+      const ids = ['top'].concat(links.map(a => a.getAttribute('href').slice(1)));
+      const o = observer(es => es.forEach(e => {
+        if (!e.isIntersecting) return;
+        links.forEach(a => (a.getAttribute('href') === '#' + e.target.id ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')));
+      }), { rootMargin: '-45% 0px -50% 0px' });
+      if (o) Array.from(new Set(ids)).forEach(id => { const s = document.getElementById(id); if (s) o.observe(s); });
+    }
+
+    // The hero's callouts: tapping, hovering or focusing one moves the ring to what it names on the screen. Without the
+    // script they are plain text, so here each becomes a button.
+    function heroRing() {
+      const shot = $('#shot'), bs = $$('.callout', shot).map(c => {
+        const b = el('button', 'callout');
+        b.type = 'button';
+        b.dataset.h = c.dataset.h;
+        b.append(...c.childNodes);
+        c.replaceWith(b);
+        return b;
+      });
+      const pick = b => {
+        shot.classList.remove('h1', 'h2', 'h3');
+        shot.classList.add('h' + b.dataset.h);
+        bs.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      };
+      bs.forEach(b => ['click', 'focus', 'mouseenter'].forEach(t => b.addEventListener(t, () => pick(b))));
+      pick(bs[0]);
+    }
+
+    // Try it: the AI's words stay tinted until marked reviewed, or are taken out with Undo, as in Voluta.
+    function tryIt() {
+      const card = $('#try'), parts = $$('.try-part', card), status = $('#try-status');
+      const mark = $('#try-mark'), undo = $('#try-undo'), again = $('#try-again');
+      $('#try-btns').hidden = false;
+      const open = () => parts.filter(p => !p.classList.contains('reviewed') && !p.classList.contains('undone'));
+      // the chip, and the unseen words before each tinted sentence, say whose words they are for a screen reader too
+      const chip = (p, text) => {
+        $('.cl', p).textContent = text;
+        $$('.ai-k', p).forEach(k => { k.textContent = p.classList.contains('reviewed') ? 'Reviewed: ' : 'AI draft: '; });
+      };
+      const done = from => {
+        mark.hidden = true; undo.hidden = true; again.hidden = false;
+        if (document.activeElement === from || document.activeElement === document.body) again.focus();
+      };
+      mark.addEventListener('click', () => {
+        const p = open()[0];
+        if (!p) return;
+        p.classList.add('reviewed');
+        chip(p, 'Reviewed');
+        const path = $('.chk path', p);
+        if (!still() && path.animate) path.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 300, easing: 'cubic-bezier(.2,.7,.2,1)' });
+        const n = open().length;
+        status.textContent = n ? p.dataset.name + ' marked reviewed. ' + n + (n === 1 ? ' part left.' : ' parts left.') : 'Reviewed. Nothing left to check.';
+        if (!n) done(mark);
+      });
+      undo.addEventListener('click', () => {
+        parts.forEach(p => { p.classList.add('undone'); if (p.dataset.allAi) setTimeout(() => p.classList.add('gone'), still() ? 0 : 300); });
+        status.textContent = "The AI's words were taken out. Your words stay.";
+        done(undo);
+      });
+      again.addEventListener('click', () => {
+        parts.forEach(p => { p.classList.remove('reviewed', 'undone', 'gone'); chip(p, 'AI draft: check before signing'); });
+        status.textContent = '';
+        mark.hidden = false; undo.hidden = false; again.hidden = true;
+        mark.focus();
+      });
+      if (still()) return;
+      // the tinted words wipe in once, when the card is well in view
+      const o = observer(es => { if (es[0].isIntersecting) { card.classList.add('wiped'); o.disconnect(); } }, { threshold: 0.4 });
+      if (o) { card.classList.add('armed'); o.observe(card); }
+    }
+
+    // Walk through a visit: the steps list becomes a stage with a rail. Each step shows its real screen, pans to what
+    // the step is about, and rings it while the rest dims. Returns the controls the spoken tour uses.
+    function walk() {
+      const box = $('#walk'), steps = $$('.step', $('#steps')), stage = $('#stage'), view = $('.stage-view', stage);
+      const rail = $('#rail'), back = $('#w-back'), next = $('#w-next'), close = $('#walk-close'), cap = $('#cap');
+      const N = steps.length, frames = [], frameOf = [], railBtns = [];
+      // The strip over the stage says what each step's picture leaves out or stands in for (its data-strip), so on a
+      // phone, where the step's text is below the stage, the note is still on the stage itself.
+      const strip = $('.stage-strip', stage), labels = steps.map(li => li.dataset.strip);
+      strip.replaceChildren(...Array.from(new Set(labels), t => el('span', '', t)));
+      steps.forEach((li, i) => {
+        const pic = $('picture', li);
+        if (pic) {
+          const fr = el('div', 'fr fr-' + (i + 1)), ring = el('span', 'ring'), edge = el('span', 'edge');
+          ring.setAttribute('aria-hidden', 'true'); edge.setAttribute('aria-hidden', 'true');
+          fr.append(pic, ring, edge);
+          view.append(fr);
+          frames.push(fr);
+        }
+        frameOf.push(frames.length - 1);
+        const b = el('button', 'rail-b'), item = el('li');
+        b.type = 'button';
+        b.append(el('span', 'n', String(i + 1)), el('span', 't', $('.step-t', li).textContent));
+        const c = $('.chip', li);
+        if (c) b.append(c.cloneNode(true));
+        b.addEventListener('click', () => api.nav(i));
+        item.append(b); rail.append(item); railBtns.push(b);
+      });
+      const words = i => $$('.say', i >= N ? close : steps[i]);
+      let cur = -1, shown = null, token = 0, near = false;
+
+      // the text beside the stage is the step's own words, so what is spoken is what is on screen
+      const kicker = i => (i >= N ? 'After the visit' : 'Step ' + (i + 1) + ' of ' + N);
+      function title(i, h) {
+        h.replaceChildren($('.step-t', steps[i]).textContent);
+        const c = $('.chip', steps[i]);
+        if (c) h.append(' ', c.cloneNode(true));
+      }
+      function text(i, t) {
+        t.replaceChildren();
+        words(i).forEach((s, k) => { if (k) t.append(' '); t.append(s.cloneNode(true)); });
+      }
+      // what a step's picture leaves out or stands in for (a sentence left out, sample text, time shortened)
+      function picNote(i, p) {
+        const n = i < N ? $('.pic-note', steps[i]) : null;
+        p.textContent = n ? n.textContent : '';
+        p.hidden = !n;
+      }
+      function render(i) {
+        const end = i >= N, h = $('#now-h');
+        $('#now-k').textContent = kicker(i);
+        h.hidden = end;
+        if (!end) title(i, h);
+        text(i, $('#now-t'));
+        picNote(i, $('#now-note'));
+        $('#now-end').hidden = !end;
+      }
+      // an invisible copy of every step's text, in the same grid cell, holds the box at the longest step's height
+      function sizers() {
+        for (let i = 0; i <= N; i++) {
+          const s = el('div', 'walk-now now-size'), t = el('p', 'now-t');
+          s.setAttribute('aria-hidden', 'true');
+          s.append(el('p', 'now-k', kicker(i)));
+          if (i < N) { const h = el('h3'); title(i, h); s.append(h); }
+          text(i, t);
+          s.append(t);
+          const pn = el('p', 'now-note');
+          picNote(i, pn);
+          s.append(pn);
+          if (i === N) {
+            const e = $('#now-end').cloneNode(true);
+            e.hidden = false;
+            [e].concat($$('[id]', e)).forEach(x => x.removeAttribute('id'));
+            s.append(e);
+          }
+          $('#now-box').append(s);
+        }
+      }
+      // pan the frame so the ringed part sits about two thirds down what can be seen of the stage, above its faded
+      // bottom edge or, while the tour speaks on a phone, above the caption
+      function pan(fr) {
+        const cs = getComputedStyle($('.ring', fr)), vh = view.clientHeight, fh = fr.offsetHeight, off = fr.offsetTop;
+        const y = parseFloat(cs.getPropertyValue('--y')) / 100 * fh, h = parseFloat(cs.getPropertyValue('--h')) / 100 * fh;
+        const room = vh - (cap.offsetHeight ? cap.offsetHeight + 24 : 52);
+        let p = Math.min(0, Math.max(room * 0.66 - off - (y + h / 2), room - 4 - off - fh));
+        if (off + y + h + p > room) p = room - off - y - h;
+        if (off + y + p < 8) p = 8 - off - y;
+        fr.style.setProperty('--pan', Math.round(Math.min(0, p)) + 'px');
+      }
+      // A step's picture, and the next one's, load at once only when the walkthrough is near the screen or the visitor
+      // has used it; before that they wait, so the first view of the page loads only what it shows.
+      function warm(fr) {
+        if (!near || !fr) return;
+        $('img', fr).loading = 'eager';
+        const nx = frames[frames.indexOf(fr) + 1];
+        if (nx) $('img', nx).loading = 'eager';
+      }
+      // the next screen is decoded before it is shown; the draft wipes down over the recording (step 3 to 4)
+      function swap(fr) {
+        const my = ++token, img = $('img', fr);
+        warm(fr);
+        const go = () => {
+          if (my !== token || fr === shown) return;
+          const old = shown;
+          shown = fr;
+          const wipe = old && !still() && old.classList.contains('fr-3') && fr.classList.contains('fr-4') && fr.animate;
+          if (!wipe) { frames.forEach(f => f.classList.toggle('on', f === fr)); return; }
+          frames.forEach(f => f.classList.toggle('on', f === fr || f === old));
+          fr.classList.add('now');
+          const ease = 'cubic-bezier(.65,0,.35,1)';
+          let a = null;
+          try {
+            a = fr.animate([{ clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)' }], { duration: 1100, easing: ease });
+            $('.edge', fr).animate([{ opacity: 1, transform: 'translateY(0)' }, { opacity: 1, transform: 'translateY(' + fr.offsetHeight + 'px)' }], { duration: 1100, easing: ease });
+          } catch (e) { a = null; }
+          const end = () => { fr.classList.remove('now'); if (shown === fr) old.classList.remove('on'); };
+          if (a && a.finished) a.finished.then(end, end); else end();
+        };
+        const ready = img.decode ? Promise.race([img.decode(), new Promise(r => setTimeout(r, 700))]) : Promise.resolve();
+        ready.then(go, go);
+      }
+      function show(i) {
+        i = Math.max(0, Math.min(N, i));
+        if (i === cur) return;
+        cur = i;
+        stage.dataset.at = String(Math.min(i + 1, N));
+        railBtns.forEach((b, k) => { if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); b.classList.toggle('done', k < i); });
+        rail.style.setProperty('--p', String(Math.min(i, N - 1) / (N - 1)));
+        $$('span', strip).forEach(s => s.classList.toggle('on', s.textContent === labels[Math.min(i, N - 1)]));
+        render(i);
+        back.disabled = i === 0;
+        next.hidden = i >= N;
+        const fr = frames[frameOf[Math.min(i, N - 1)]];
+        pan(fr);
+        swap(fr);
+      }
+      const frameNow = () => frames[frameOf[Math.min(Math.max(cur, 0), N - 1)]];
+      const api = { N, show, words, get cur() { return cur; }, hook: null,
+        // a step chosen by the visitor; the spoken tour, when on, starts again from there
+        nav(i) { near = true; i = Math.max(0, Math.min(N, i)); if (!(api.hook && api.hook(i))) show(i); },
+        // pans again, for when the caption comes or goes
+        refit() { pan(frameNow()); } };
+      // Back is turned off at step 1 and Next is hidden at the end, so focus moves to the control that takes over
+      back.addEventListener('click', () => { api.nav(cur - 1); if (cur === 0) next.focus(); });
+      next.addEventListener('click', () => { api.nav(cur + 1); if (cur >= N) $('#w-again').focus(); });
+      $('#w-again').addEventListener('click', () => { api.nav(0); next.focus(); });
+      // the arrows move from the step that has focus
+      rail.addEventListener('keydown', e => {
+        const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0, at = railBtns.indexOf(e.target);
+        if (!d || at < 0) return;
+        e.preventDefault();
+        const j = Math.max(0, Math.min(N - 1, at + d));
+        api.nav(j);
+        railBtns[j].focus();
+      });
+      if ('ResizeObserver' in window) new ResizeObserver(() => { if (shown) pan(shown); }).observe(view);
+      const o = observer(es => { if (es[0].isIntersecting) { stage.classList.add('pop'); o.disconnect(); } }, { threshold: 0.35 });
+      if (o && !still()) o.observe(stage);
+      const soon = observer(es => { if (es[0].isIntersecting) { near = true; warm(frameNow()); soon.disconnect(); } }, { rootMargin: '100% 0px' });
+      if (soon) soon.observe(box); else near = true;
+      sizers();
+      [rail, stage, $('#now-box'), $('#walk-ctl')].forEach(x => { x.hidden = false; });
+      box.classList.add('live');
+      show(0);
+      return api;
+    }
+
+    // The spoken walkthrough: only after a tap, only with a voice on the device itself, never the microphone.
+    function tour(W) {
+      const synth = window.speechSynthesis, Utter = window.SpeechSynthesisUtterance;
+      if (!synth || !Utter || !W) return;
+      const row = $('#sound-row'), heroB = $('#hear-hero'), walkB = $('#hear-walk'), pill = $('#speak-pill');
+      const now = $('#walk-now'), msg = $('#now-msg'), intro = $('#walk-sub [data-say]'), stage = $('#stage'), cap = $('#cap');
+      const NOVELTY = /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox)\b/i;
+      const PREFER = /Samantha|Ava|Allison|Susan|Zoe|Evan|Nathan|Tom|Alex|Microsoft (Zira|David|Mark)/;
+      const wide = window.matchMedia('(min-width: 900px)');
+      let run = 0, speaking = false, keep = [], timers = [], ctx = null, master = null, stopSeen = true, pillT = 0;
+
+      // Only voices that run on the device: a voice that works through a server could send the words away.
+      function pickVoice() {
+        const all = synth.getVoices().filter(v => v.localService === true && /^en([-_]|$)/i.test(v.lang) && !NOVELTY.test(v.name));
+        const us = all.filter(v => /^en[-_]US$/i.test(v.lang)), pool = us.length ? us : all;
+        return pool.find(v => PREFER.test(v.name)) || pool.find(v => v.default) || pool[0] || null;
+      }
+      const ready = () => { row.classList.remove('off'); walkB.hidden = false; $('#walk-note').hidden = false; };
+      if (pickVoice()) ready();
+      else {
+        let waiting = true;
+        const watch = () => { if (waiting && pickVoice()) { waiting = false; ready(); } };
+        if (synth.addEventListener) synth.addEventListener('voiceschanged', watch); else synth.onvoiceschanged = watch;
+        setTimeout(() => { waiting = false; }, 3000);
+      }
+
+      // Soft tones made in the page (no sound files): a start, a step and an end, each under a second.
+      function tones() {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        if (!ctx) {
+          ctx = new AC();
+          master = ctx.createGain();
+          const lp = ctx.createBiquadFilter();
+          lp.type = 'lowpass'; lp.frequency.value = 4000;
+          master.connect(lp); lp.connect(ctx.destination);
+        }
+        master.gain.cancelScheduledValues(ctx.currentTime);
+        master.gain.setValueAtTime(0.8, ctx.currentTime);
+        if (ctx.state !== 'running') ctx.resume();
+        return ctx;
+      }
+      function note(f, at, len, peak) {
+        const t = ctx.currentTime + at;
+        [[1, 1], [2, 0.15]].forEach(([m, lv]) => {
+          const o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = 'sine'; o.frequency.value = f * m;
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(peak * lv, t + 0.01);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+          o.connect(g); g.connect(master);
+          o.start(t); o.stop(t + len + 0.02);
+        });
+      }
+      const tone = kind => {
+        if (!ctx || ctx.state === 'closed') return;
+        if (kind === 'step') note(659.25, 0, 0.22, 0.02);
+        else { const [a, b] = kind === 'start' ? [523.25, 783.99] : [783.99, 523.25]; note(a, 0, 0.45, 0.05); note(b, 0.12, 0.45, 0.05); }
+      };
+      function hush(after) {
+        if (!ctx || ctx.state === 'closed') return;
+        const t = ctx.currentTime, r = run;
+        master.gain.cancelScheduledValues(t);
+        master.gain.setValueAtTime(master.gain.value, t + after);
+        master.gain.linearRampToValueAtTime(0, t + after + 0.06);
+        setTimeout(() => { if (r === run && !speaking && ctx && ctx.state === 'running') ctx.suspend(); }, after * 1000 + 90);
+      }
+
+      function lines(from) {
+        const out = [];
+        if (from === 0) out.push({ text: intro.textContent, step: 0, node: () => intro });
+        for (let s = from; s <= W.N; s++) {
+          W.words(s).forEach((w, k) => out.push({ text: w.textContent.replace(/\s+/g, ' ').trim(), step: s, node: () => $$('#now-t .say')[k] }));
+        }
+        return out;
+      }
+      const unmark = () => $$('.say.speaking').forEach(s => s.classList.remove('speaking'));
+      function onLine(line) {
+        cap.textContent = line.text;
+        if (line.step !== W.cur) { W.show(line.step); if (line.step > 0 && line.step < W.N) tone('step'); }
+        unmark();
+        const n = line.node();
+        if (n) n.classList.add('speaking');
+      }
+      // The caption over the stage (phones only, by the style) is held at the height of the longest line, so the
+      // frames pan once for it and not again line by line.
+      function caption(L) {
+        stage.classList.add('capt');
+        cap.style.minHeight = '';
+        let tall = 0;
+        L.forEach(l => { cap.textContent = l.text; tall = Math.max(tall, cap.offsetHeight); });
+        cap.style.minHeight = tall ? tall + 'px' : '';
+        cap.textContent = L.length ? L[0].text : '';
+      }
+      // The Stop pill shows while speaking whenever the walkthrough's own Stop button is out of view, after a short
+      // wait so it does not flash during the scroll from the hero.
+      function setPill() {
+        clearTimeout(pillT);
+        if (!(speaking && !stopSeen)) { pill.hidden = true; return; }
+        pillT = setTimeout(() => { pill.hidden = !(speaking && !stopSeen); }, 700);
+      }
+      // The Hear buttons read Stop while speaking; the label alone tells the state, so there is no pressed state too.
+      function busy(on) {
+        speaking = on;
+        [heroB, walkB].forEach(b => {
+          b.classList.toggle('on', on);
+          $('.lbl', b).textContent = on ? 'Stop' : b.dataset.idle;
+        });
+        now.setAttribute('aria-live', on ? 'off' : 'polite');
+        $('#walk-hint').hidden = !(on && window.matchMedia('(pointer: coarse)').matches);
+        setPill();
+        if (!on) { unmark(); stage.classList.remove('capt'); cap.textContent = ''; }
+        W.refit();
+      }
+      function start(from, fromHero) {
+        const voice = pickVoice();
+        if (!voice) return;
+        stop();
+        const my = ++run;
+        // a Resume button goes away here; if it had focus, focus moves on to the walkthrough's Stop (below)
+        const resumed = msg.contains(document.activeElement);
+        msg.replaceChildren();
+        tones();
+        tone('start');
+        try { if (synth.speaking || synth.pending) synth.cancel(); } catch (e) { /* nothing queued */ }
+        // every line is queued inside the tap, which is what iPhone and iPad need
+        const L = lines(from);
+        caption(L);
+        keep = L.map((line, n) => {
+          const u = new Utter(line.text);
+          u.voice = voice; u.lang = voice.lang; u.rate = 1; u.pitch = 1; u.volume = 1;
+          u.onstart = () => { if (run === my) onLine(line); };
+          u.onend = () => { if (run === my && n === L.length - 1) finish(); };
+          u.onerror = e => { if (run === my && e.error !== 'interrupted' && e.error !== 'canceled') wordsOnly(L, n); };
+          synth.speak(u);
+          return u;
+        });
+        W.show(from);
+        busy(true);
+        if (resumed) walkB.focus();
+        // From the hero, the page scrolls so the first spoken line, the stage and the Stop button are in view: on a
+        // computer from the line under the heading, on a phone from the stage, whose caption then shows each line.
+        // Focus follows to the walkthrough's own Stop button, so the next Tab stays with the tour.
+        if (!fromHero) return;
+        (wide.matches ? $('#walk-sub') : $('#walk')).scrollIntoView({ behavior: still() ? 'auto' : 'smooth', block: 'start' });
+        if (document.activeElement === heroB) walkB.focus({ preventScroll: true });
+      }
+      // if the device's voice fails, the tour goes on with the words on screen, at a reading pace
+      function wordsOnly(L, n) {
+        const my = ++run;
+        try { synth.cancel(); } catch (e) { /* already stopped */ }
+        keep = [];
+        msg.replaceChildren("Your device's voice stopped; continuing with the words on screen.");
+        let t = 0;
+        L.slice(n).forEach(line => {
+          timers.push(setTimeout(() => { if (run === my) onLine(line); }, t));
+          t += (line.text.split(/\s+/).length / 2.6 + 0.8) * 1000;
+        });
+        timers.push(setTimeout(() => { if (run === my) finish(); }, t));
+      }
+      function finish() {
+        run++;
+        keep = [];
+        tone('end');
+        busy(false);
+        hush(0.7);
+      }
+      function stop() {
+        if (!speaking) return;
+        run++;
+        try { synth.cancel(); } catch (e) { /* already stopped */ }
+        keep = [];
+        timers.forEach(clearTimeout); timers = [];
+        busy(false);
+        hush(0);
+      }
+      [heroB, walkB].forEach(b => {
+        b.dataset.idle = $('.lbl', b).textContent;
+        b.addEventListener('click', () => (speaking ? stop() : start(b === heroB ? 0 : W.cur >= W.N ? 0 : W.cur, b === heroB)));
+      });
+      pill.addEventListener('click', stop);
+      W.hook = i => { if (!speaking) return false; start(i); return true; };
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') stop(); });
+      $('#inq').addEventListener('focusin', stop);
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden || !speaking) return;
+        const at = Math.min(W.cur, W.N - 1);
+        stop();
+        const b = el('button', 'btn sm sec', 'Resume from step ' + (at + 1));
+        b.type = 'button';
+        b.addEventListener('click', () => start(at));
+        msg.replaceChildren(b);
+      });
+      window.addEventListener('pagehide', () => { stop(); if (ctx && ctx.state !== 'closed') ctx.close(); ctx = null; });
+      // "In view" means at least half of the walkthrough's Stop button shows below the sticky header
+      const o = observer(es => { stopSeen = es[0].isIntersecting && es[0].intersectionRatio >= 0.5; setPill(); }, { threshold: [0, 0.5, 1], rootMargin: '-64px 0px 0px 0px' });
+      if (o) o.observe(walkB);
+    }
+
+    // The screen gallery: without the script every screen shows in turn; here they become tabs, with the arrow, Home
+    // and End keys, and the selected pill slides between them.
+    function gallery() {
+      const box = $('#see'), list = $('.tabs', box), tabs = $$('[role="tab"]', list), pill = el('span', 'pill');
+      tabs.forEach(t => {
+        const pane = document.getElementById(t.getAttribute('aria-controls'));
+        pane.setAttribute('role', 'tabpanel');
+        pane.setAttribute('aria-labelledby', t.id);
+        pane.tabIndex = 0;
+        pane.hidden = t.getAttribute('aria-selected') !== 'true';
+      });
+      list.hidden = false;
+      box.classList.add('live');
+      pill.setAttribute('aria-hidden', 'true');
+      list.prepend(pill);
+      list.classList.add('pilled');
+      const place = () => {
+        const t = tabs.find(x => x.getAttribute('aria-selected') === 'true');
+        [['--px', t.offsetLeft], ['--py', t.offsetTop], ['--pw', t.offsetWidth], ['--ph', t.offsetHeight]].forEach(([k, v]) => pill.style.setProperty(k, v + 'px'));
+      };
+      const pick = (t, focus) => {
+        tabs.forEach(x => {
+          const on = x === t, pane = document.getElementById(x.getAttribute('aria-controls'));
+          x.setAttribute('aria-selected', String(on));
+          x.tabIndex = on ? 0 : -1;
+          if (pane.hidden !== on) return;
+          pane.hidden = !on;
+          if (on && !still() && pane.animate) pane.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 280, easing: 'cubic-bezier(.2,.7,.2,1)' });
+        });
+        place();
+        if (focus) t.focus();
+      };
+      tabs.forEach((t, i) => {
+        t.addEventListener('click', () => pick(t));
+        t.addEventListener('keydown', e => {
+          const j = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+          if (j === undefined) return;
+          e.preventDefault();
+          pick(tabs[(j + tabs.length) % tabs.length], true);
+        });
+        // the next screen starts loading as soon as its tab is pointed at or focused
+        const warm = () => { const img = $('#' + t.getAttribute('aria-controls') + ' img'); if (img) img.loading = 'eager'; };
+        t.addEventListener('pointerenter', warm);
+        t.addEventListener('focus', warm);
+      });
+      if (!still()) $$('.pane img').forEach(img => {
+        if (img.complete && img.naturalWidth) return;
+        img.classList.add('loading');
+        const shown = () => img.classList.remove('loading');
+        img.addEventListener('load', shown, { once: true });
+        img.addEventListener('error', shown, { once: true });
+      });
+      place();
+      if ('ResizeObserver' in window) new ResizeObserver(place).observe(list);
+      if (document.fonts) document.fonts.ready.then(place);
+    }
+
+    // Enlarge opens the screen at its own size in a dialog; without the script the link opens the picture itself.
+    function viewer() {
+      const links = $$('.enlarge');
+      if (!links.length || typeof HTMLDialogElement !== 'function') return;
+      const d = el('dialog', 'viewer'), bar = el('div', 'viewer-bar'), title = el('p'), shut = el('button', 'btn sm sec', 'Close');
+      const body = el('div', 'viewer-body'), img = new Image();
+      title.id = 'viewer-t'; shut.type = 'button';
+      d.setAttribute('aria-labelledby', 'viewer-t');
+      // a screen larger than the dialog scrolls inside it; its box takes focus, so the arrow keys scroll it everywhere
+      body.tabIndex = 0;
+      body.setAttribute('role', 'region');
+      body.setAttribute('aria-labelledby', 'viewer-t');
+      bar.append(title, shut); body.append(img); d.append(bar, body);
+      document.body.append(d);
+      let from = null;
+      links.forEach(a => a.addEventListener('click', e => {
+        e.preventDefault();
+        from = a;
+        const src = $('img', a.closest('.pane'));
+        img.alt = src.alt;
+        img.width = Math.round(src.getAttribute('width') / 2);
+        img.src = a.getAttribute('href');
+        title.textContent = a.dataset.title;
+        d.showModal();
+        if (!still() && d.animate) d.animate([{ opacity: 0, transform: 'scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: 220, easing: 'cubic-bezier(.2,.7,.2,1)' });
+        shut.focus();
+      }));
+      shut.addEventListener('click', () => d.close());
+      d.addEventListener('click', e => { if (e.target === d) d.close(); });
+      d.addEventListener('close', () => { if (from) from.focus(); });
+    }
+
+    // The phone menu, where the browser has popovers; a tapped link closes it.
+    function menu() {
+      const b = $('.menu-btn'), m = $('#menu');
+      if (!Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover')) return;
+      b.hidden = false;
+      $$('a', m).forEach(a => a.addEventListener('click', () => m.hidePopover()));
+    }
+
+    // The address is put together here, so it is not sitting in the page for address collectors.
+    const to = ['reynaga', 'volutahealth.com'].join('@');
+    function address() {
+      $$('#addr, [data-addr]').forEach(s => {
+        const link = el('a', '', to);
+        link.href = 'mailto:' + to;
+        s.replaceChildren(link);
+      });
+    }
+
+    // The pilot form writes an email in the visitor's own email app: nothing is sent or stored by this page.
+    function pilotForm() {
+      const f = $('#inq'), sent = $('#sent'), say = $('#sent-t');
+      // A field that is missing or wrong says why just under it, where focus lands, and the field points to those
+      // words for a screen reader, until it is edited.
+      const flag = (input, why) => {
+        const err = $('#' + input.name + '-err');
+        input.setAttribute('aria-invalid', String(!!why));
+        if (why) input.setAttribute('aria-describedby', err.id); else input.removeAttribute('aria-describedby');
+        err.textContent = why;
+        err.hidden = !why;
+      };
+      f.addEventListener('input', e => { if (e.target.getAttribute('aria-invalid') === 'true') flag(e.target, ''); });
+      f.addEventListener('submit', e => {
+        e.preventDefault();
+        const v = n => (f.elements[n].value || '').trim();
+        const mail = v('email'), nameWhy = v('name') ? '' : 'Add your name.';
+        const mailWhy = !mail ? 'Add an email address we can reply to.'
+          : /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail) ? '' : 'Check the email address: it should look like name@example.com.';
+        flag(f.elements.name, nameWhy);
+        flag(f.elements.email, mailWhy);
+        sent.classList.remove('on');
+        void sent.offsetWidth;
+        if (nameWhy || mailWhy) {
+          say.textContent = '';
+          (nameWhy ? f.elements.name : f.elements.email).focus();
+          return;
+        }
+        const ints = $$('input[name="int"]:checked', f).map(c => c.value);
+        const body = [
+          'Name: ' + v('name'),
+          'Role: ' + v('role'),
+          'Practice: ' + v('practice'),
+          'City: ' + v('city'),
+          'Clinicians: ' + v('size'),
+          'Email: ' + v('email'),
+          'Most interested in: ' + (ints.join(', ') || 'not said'),
+          '',
+          v('msg')
+        ].join('\n');
+        const subject = 'Voluta pilot list: ' + (v('practice') || v('name'));
+        window.location.href = 'mailto:' + to + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        say.textContent = 'Your email app should open with the message ready. Press Send there. If nothing opened, write to ' + to + '.';
+        sent.classList.add('on');
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // each part runs on its own, so one that fails leaves the others working (and its error still shows)
+      const safe = f => { try { return f(); } catch (e) { setTimeout(() => { throw e; }); return null; } };
+      [motionPref, reveal, header, navCurrent, heroRing, tryIt, gallery, viewer, menu, address, pilotForm].forEach(safe);
+      const W = safe(walk);
+      safe(() => tour(W));
+    });
+  })();
+</script>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#top" aria-label="Voluta Health, back to the top">
-      <img src="/favicon.svg" alt="" width="26" height="26">
-      Voluta
+      <span class="wm"><svg viewBox="3 3 60 57" aria-hidden="true" focusable="false"><g fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path class="vr" pathLength="1" d="M23.4 54.6L36.3 16.0A11.2 11.2 0 0 1 46.8 8.4A10.8 10.8 0 0 1 57.6 19.2A8.6 8.6 0 0 1 49.0 27.8A4.4 4.4 0 0 1 44.6 23.4"/><path class="vl" pathLength="1" d="M8.2 9.6L22.6 54.4"/></g></svg>oluta</span>
     </a>
     <nav class="links" aria-label="Sections">
-      <a href="#see">See it work</a>
-      <a href="#visit">A visit</a>
-      <a href="#california">California</a>
-      <a href="#security">Security</a>
-      <a href="#roadmap">Roadmap</a>
+      <a href="#ai" data-nav>The AI scribe</a>
+      <a href="#visit" data-nav>A visit</a>
+      <a href="#see" data-nav>Screens</a>
+      <a href="#california" data-nav>California</a>
+      <a href="#security" data-nav>Security</a>
+      <a href="#roadmap" data-nav>Roadmap</a>
     </nav>
     <a class="btn pri" href="#pilot">Join the pilot list</a>
+    <button class="menu-btn" type="button" popovertarget="menu" aria-label="Menu" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <div class="menu" id="menu" popover>
+      <nav aria-label="Sections, menu">
+        <a href="#ai" data-nav>The AI scribe</a>
+        <a href="#visit" data-nav>A visit</a>
+        <a href="#see" data-nav>Screens</a>
+        <a href="#california" data-nav>California</a>
+        <a href="#security" data-nav>Security</a>
+        <a href="#roadmap" data-nav>Roadmap</a>
+      </nav>
+    </div>
   </div>
+  <span class="progress" aria-hidden="true"></span>
 </header>
 
-<main id="top">
-  <section class="hero">
+<main id="main" tabindex="-1">
+  <section class="hero" id="top" aria-labelledby="hero-h">
     <div class="wrap">
-      <div>
-        <div class="lockup">
-          <svg class="mark" viewBox="0 0 64 64" role="img" aria-label="Voluta logo: a V whose right arm is a staff with a serpent winding up it">
-            <rect width="64" height="64" rx="14" fill="#1d4ed8"/>
-            <path d="M10 12 L30 54" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round"/>
-            <g transform="rotate(25 32 32) translate(22 1.5) scale(.34)">
-              <path class="rod" d="M60 10 L60 154" stroke="#fff" stroke-width="24" stroke-linecap="round"/>
-              <path class="serpent" pathLength="1" d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke="#93c5fd" stroke-width="18" fill="none" stroke-linecap="round" stroke-linejoin="round"><animate class="sway" attributeName="d" dur="5s" begin="2.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22;M43 139 C79 136 93 114 60 102 S27 82 60 68 S93 48 62 36 C54 33 48 28 52 22;M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22"/></path>
-              <ellipse class="head" cx="53" cy="20" rx="12" ry="10" fill="#93c5fd"/>
-            </g>
-          </svg>
-          <div class="name">Voluta<span>Health</span></div>
-        </div>
+      <div class="hero-copy">
         <p class="status"><span class="dot" aria-hidden="true"></span>In development · Inviting California primary care practices to the pilot list</p>
-        <h1>The medical record where <em>the visit writes itself</em>, and nothing falls through.</h1>
-        <p class="lede">Voluta is a medical record system for primary care, built by a practicing family physician. One tap starts the AI scribe, with the patient's consent recorded in the note. The chief complaint and history are kept for every visit. Every result is followed until someone closes it. California's rules are built in, not bolted on.</p>
+        <h1 id="hero-h">The AI drafts the visit. <em>You decide what is signed.</em></h1>
+        <p class="lede">Voluta is a medical record system for primary care, built by a practicing family physician. One tap starts the AI scribe, with everyone's consent recorded in the note, and its words stay marked until you review them.</p>
         <div class="ctas">
           <a class="btn pri" href="#pilot">Join the pilot list</a>
-          <a class="btn ghost" href="#see">See it work</a>
+          <a class="btn sec" href="#visit">Walk through a visit</a>
+        </div>
+        <div class="sound-row off" id="sound-row">
+          <button class="btn quiet hear" id="hear-hero" type="button"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">Hear the visit</span></button>
+          <p class="sound-note">Read aloud by your device's own voice, with the words on screen. Nothing plays until you tap; this page never uses your microphone.</p>
         </div>
         <p class="by">Built by Dr. Reynaga, MD, MS, DABFM, a board-certified family physician.</p>
       </div>
-      <div class="shot">
-        <div class="frame">
-          <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
-          <picture>
-            <source srcset="img/note-panel.webp" type="image/webp">
-            <img src="img/note-panel.jpg" width="1298" height="1492" alt="Voluta's visit note for a pretend patient: the AI scribe bar with the consent recorded, an 'AI draft to check' bar with Mark reviewed and Undo the AI draft, the chief complaint and history boxes, and the note with bold CHIEF COMPLAINT and HISTORY OF PRESENT ILLNESS sections, the AI's words tinted until reviewed" fetchpriority="high">
-          </picture>
-        </div>
-        <div class="callout c1"><b>One tap, consent recorded</b>The question to ask is on screen; the yes goes into the note with the date, time and who asked.</div>
-        <div class="callout c2"><b>Tinted until reviewed</b>Everything the AI wrote stays marked until a physician or APP reviews it. Undo takes it all back out.</div>
-        <div class="callout c3"><b>Typed once, kept for history</b>The chief complaint and HPI boxes and the note follow each other as you type.</div>
-        <p class="pretend">Screens show pretend patients and pretend data.</p>
+      <div class="shot h1" id="shot">
+        <svg class="volute" viewBox="0 0 600 600" aria-hidden="true"><path pathLength="1" d="M306.0 300.0C306.3 301.6 306.0 303.4 305.0 305.0C303.9 306.5 302.2 307.8 300.0 308.2C297.8 308.7 295.4 308.2 293.2 306.8C291.0 305.4 289.3 303.0 288.8 300.0C288.2 297.0 288.7 293.7 290.7 290.7C292.7 287.7 295.9 285.4 300.0 284.6C304.1 283.8 308.7 284.6 312.7 287.3C316.8 290.0 320.0 294.4 321.1 300.0C322.2 305.6 321.1 311.9 317.4 317.4C313.7 323.0 307.7 327.3 300.0 328.9C292.3 330.4 283.7 328.9 276.1 323.9C268.5 318.8 262.6 310.5 260.5 300.0C258.4 289.5 260.4 277.7 267.3 267.3C274.2 256.9 285.7 248.8 300.0 245.9C314.3 243.0 330.5 245.7 344.8 255.2C359.0 264.7 370.1 280.4 374.1 300.0C378.0 319.6 374.3 341.8 361.3 361.3C348.3 380.8 326.9 396.0 300.0 401.4C273.1 406.8 242.8 401.7 216.1 383.9C189.4 366.1 168.5 336.8 161.2 300.0C153.8 263.2 160.7 221.7 185.1 185.1C209.5 148.6 249.6 120.0 300.0 109.9C350.4 99.8 407.2 109.4 457.3 142.7C507.3 176.1 546.5 231.0 560.3 300.0"/></svg>
+        <figure class="frame">
+          <figcaption>Pretend patient · From the version in testing, Nov 18, 2026</figcaption>
+          <div class="pic">
+            <picture>
+              <source media="(max-width: 600px)" srcset="img/hero-phone.webp" type="image/webp" width="780" height="1156">
+              <source media="(max-width: 600px)" srcset="img/hero-phone.jpg" width="780" height="1156">
+              <source srcset="img/hero-visit-800.webp 800w, img/hero-visit-1200.webp 1200w, img/hero-visit.webp 1686w" sizes="(min-width: 1240px) 630px, (min-width: 900px) 52vw, 100vw" type="image/webp" width="1686" height="1139">
+              <img src="img/hero-visit.jpg" width="1686" height="1139" fetchpriority="high" alt="Voluta's visit note for a pretend patient: the AI scribe buttons (Everyone agreed: start recording, They declined), Draft with AI and Pre-filled notes; the AI scribe line saying to ask everyone in the room out loud first; the chief complaint box marked From check-in, Staff Eli Mockley, and the history box marked By Test User, MD.">
+            </picture>
+            <span class="ring" aria-hidden="true"></span>
+          </div>
+        </figure>
+        <ul class="callouts">
+          <li><p class="callout" data-h="1"><b>One tap, consent recorded</b>The question to ask is on screen; the yes goes into the note with the date, time and who asked.</p></li>
+          <li><p class="callout" data-h="2"><b>Credited to who wrote it</b>The chief complaint shows who took it at check-in; the history shows who wrote it.</p></li>
+          <li><p class="callout" data-h="3"><b>Typed once, kept for history</b>The chief complaint and HPI boxes and the note follow each other as you type.</p></li>
+        </ul>
+        <p class="pretend">Screens show pretend patients and pretend data; Voluta sends nothing to a pharmacy or lab yet. One sentence, about deleting the recording, is left out of this picture until it is confirmed.</p>
       </div>
     </div>
   </section>
 
-  <section aria-labelledby="facts-h">
+  <section class="alt" aria-labelledby="facts-h">
     <div class="wrap">
       <h2 id="facts-h" class="reveal">Built the way a clinic actually works</h2>
-      <p class="sub reveal">Every part of Voluta came from a real clinic day: the huddle before the first patient, rooming, the visit, the results that come back after the patient leaves, and the office work around it.</p>
-      <div class="facts">
-        <div class="fact reveal"><div class="big">1 tap</div><p>to start the AI scribe, with the consent question on screen and the answer recorded in the note.</p></div>
-        <div class="fact reveal"><div class="big">0 copy-paste</div><p>The chief complaint, history, review of systems and exam boxes and the note stay in step by themselves.</p></div>
-        <div class="fact reveal"><div class="big">Every result</div><p>followed from order to a closed loop, with critical results escalated until someone acts.</p></div>
-        <div class="fact reveal"><div class="big">No third-party code</div><p>in the page. Records are encrypted, and every chart opened is in a sealed audit log.</p></div>
+      <p class="sub reveal">Every part of Voluta came from a real clinic day: the huddle before the first patient, rooming, the visit, the results that come back after the patient leaves, and the office work around it. It is built to help a practice follow California's rules as part of that day.</p>
+      <div class="facts reveal">
+        <div class="fact"><div class="big">1 tap</div><p>to start the AI scribe, with the consent question on screen and the answer recorded in the note.</p></div>
+        <div class="fact"><div class="big">Typed once</div><p>and kept in step: the chief complaint, history, review of systems and exam boxes and the note follow each other.</p></div>
+        <div class="fact"><div class="big">Each result</div><p>waits for review. A test with no result yet is listed after 14 days (a lab) or 30 (a study), and a critical result is escalated until it is reviewed.</p></div>
+        <div class="fact"><div class="big">No outside scripts</div><p>in Voluta's page or on this website, and nothing loaded from other sites. Records are encrypted, and every chart opened is in a sealed audit log.</p></div>
       </div>
     </div>
   </section>
 
-  <section id="see" aria-labelledby="see-h">
+  <section id="ai" aria-labelledby="ai-h">
+    <div class="wrap">
+      <p class="kicker">AI scribe</p>
+      <h2 id="ai-h">What the AI scribe does, and never does</h2>
+      <div class="ai-grid">
+        <div class="lists reveal">
+          <h3>What the AI scribe does</h3>
+          <ul>
+            <li>Records only after a tap on Everyone agreed, and writes that consent into the note with the date, the time and who asked.</li>
+            <li>Drafts the history, review of systems, exam and each diagnosis's plan from the visit conversation. When the draft is ready, it goes into their boxes and the note together. Nothing you wrote is replaced.</li>
+            <li>Marks every word it wrote until a physician or APP reviews it. Signing asks first while any are left.</li>
+            <li><span class="chip test soon">In testing</span>Puts the orders you said aloud in the orders cart, with their diagnosis, marked as added by the AI for you to sign.</li>
+          </ul>
+          <h3>What it never does</h3>
+          <ul class="never">
+            <li>Signs, sends or places anything.</li>
+            <li>Keeps the recording: it is sent only to write the draft and is never saved by Voluta.</li>
+            <li><span class="chip test soon">In testing</span>Pends a controlled substance, or an order already in the cart.</li>
+          </ul>
+          <p class="caveat">No AI is perfect. Voluta's scribe is told to write only what was said; the one thing it may add is a diagnosis's code, when it is sure of it. Everything it writes stays marked for you to check.</p>
+        </div>
+        <div class="try reveal" id="try">
+          <p class="try-label">Illustration with pretend data. This is not Voluta itself; nothing here is saved, and the AI's words are sample text written for it.</p>
+          <h3>Tinted until reviewed</h3>
+          <div class="try-part" data-name="History">
+            <p class="try-h">History of present illness <span class="chip test try-chip"><svg class="chk" viewBox="0 0 16 16" aria-hidden="true"><path pathLength="1" d="M3 8.5l3 3 7-7"/></svg><span class="cl">AI draft: check before signing</span></span></p>
+            <p>Six days of cough with clear sputum and nasal congestion. No fever at home. Using honey and fluids.</p>
+            <div class="fold"><p class="ai-line"><span class="ai"><span class="vh ai-k">AI draft: </span>She reports six days of cough, worse at night, with sinus pressure and clear nasal drainage.</span></p></div>
+          </div>
+          <div class="try-part" data-name="Review of systems" data-all-ai="1">
+            <p class="try-h">Review of systems <span class="chip test try-chip"><svg class="chk" viewBox="0 0 16 16" aria-hidden="true"><path pathLength="1" d="M3 8.5l3 3 7-7"/></svg><span class="cl">AI draft: check before signing</span></span></p>
+            <div class="fold"><p class="ai-line"><span class="ai"><span class="vh ai-k">AI draft: </span>Respiratory: Reports cough; denies shortness of breath or wheezing.</span></p></div>
+          </div>
+          <div class="try-btns" id="try-btns" hidden>
+            <button class="btn pri sm" id="try-mark" type="button">Mark reviewed</button>
+            <button class="btn sec sm" id="try-undo" type="button">Undo the AI draft</button>
+            <button class="btn sec sm" id="try-again" type="button" hidden>Show again</button>
+          </div>
+          <p class="try-status" id="try-status" role="status"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="visit" class="band" aria-labelledby="visit-h">
+    <div class="wrap">
+      <p class="kicker">One visit, one note</p>
+      <h2 id="visit-h">Walk through a visit</h2>
+      <p class="sub" id="walk-sub"><span class="say" data-say>A pretend visit with a pretend patient, on Voluta's real screens.</span> This page only shows pictures; it never uses your microphone.</p>
+      <div class="walk" id="walk">
+        <div class="walk-side">
+          <div class="walk-ctl" id="walk-ctl" hidden>
+            <button class="btn sec" id="w-back" type="button">Back</button>
+            <button class="btn pri" id="w-next" type="button">Next</button>
+            <button class="btn quiet hear" id="hear-walk" type="button" hidden><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">Hear it</span></button>
+          </div>
+          <div class="now-box" id="now-box" hidden>
+            <div class="walk-now" id="walk-now" aria-live="polite">
+              <p class="now-k" id="now-k"></p>
+              <h3 id="now-h"></h3>
+              <p class="now-t" id="now-t"></p>
+              <p class="now-note" id="now-note" hidden></p>
+              <p class="now-msg" id="now-msg" role="status"></p>
+              <div class="now-end" id="now-end" hidden>
+                <button class="btn sec" id="w-again" type="button">Start over</button>
+                <a class="btn pri" href="#pilot">Join the pilot list</a>
+              </div>
+            </div>
+          </div>
+          <p class="walk-note" id="walk-note" hidden>Read aloud by your device's own voice, with the words on screen. Nothing plays until you tap; this page never uses your microphone.</p>
+          <p class="walk-hint" id="walk-hint" hidden>No sound? Check the volume and any silent switch.</p>
+          <ol class="rail" id="rail" aria-label="Steps of the visit" hidden></ol>
+        </div>
+        <div class="stage" id="stage" hidden>
+          <p class="stage-strip"></p>
+          <div class="stage-view"></div>
+          <p class="cap" id="cap" aria-hidden="true"></p>
+        </div>
+        <ol class="steps" id="steps">
+          <li class="step" data-strip="Pretend patient · One sentence, about deleting the recording, is left out">
+            <h3><span class="step-n" aria-hidden="true">1</span><span class="step-t">Check-in and rooming</span></h3>
+            <p><span class="say">At check-in, the reason for the visit becomes the chief complaint, with the name of who took it.</span> <span class="say">While rooming, the medical assistant can start a brief history.</span></p>
+            <p class="pic-note">One sentence, about deleting the recording, is left out of this picture until it is confirmed.</p>
+            <picture>
+              <source media="(max-width: 600px)" srcset="img/hero-phone.webp" type="image/webp" width="780" height="1156">
+              <source media="(max-width: 600px)" srcset="img/hero-phone.jpg" width="780" height="1156">
+              <source srcset="img/visit-1.webp" type="image/webp" width="1168" height="1488">
+              <img src="img/visit-1.jpg" width="1168" height="1488" loading="lazy" decoding="async" alt="Voluta's Note panel for a pretend patient: the AI scribe buttons (Everyone agreed: start recording, They declined), Draft with AI and Pre-filled notes; the AI scribe line saying to ask everyone in the room out loud first; the chief complaint box marked From check-in, Staff Eli Mockley, and the history box marked By Test User, MD.">
+            </picture>
+          </li>
+          <li class="step" data-strip="Pretend patient · One sentence, about deleting the recording, is left out">
+            <h3><span class="step-n" aria-hidden="true">2</span><span class="step-t">Ask, then one tap</span></h3>
+            <p><span class="say">Before recording, the physician asks everyone in the room out loud, because California needs everyone's yes.</span> <span class="say">Then one tap on Everyone agreed starts the AI scribe.</span></p>
+            <p class="pic-note">One sentence, about deleting the recording, is left out of this picture until it is confirmed.</p>
+          </li>
+          <li class="step" data-strip="Pretend patient · Version in testing">
+            <h3><span class="step-n" aria-hidden="true">3</span><span class="step-t">Consent in the note</span></h3>
+            <p><span class="say">The note records the consent, with the date, the time and who asked.</span> <span class="say">Voluta keeps no recording: it is sent only to write the draft and is never saved by Voluta.</span></p>
+            <picture>
+              <source media="(max-width: 600px)" srcset="img/visit-3-phone.webp" type="image/webp" width="780" height="1372">
+              <source media="(max-width: 600px)" srcset="img/visit-3-phone.jpg" width="780" height="1372">
+              <source srcset="img/visit-3.webp" type="image/webp" width="1168" height="1512">
+              <img src="img/visit-3.jpg" width="1168" height="1512" loading="lazy" decoding="async" alt="The AI scribe recording a pretend visit: the line saying consent was recorded Nov 18, 2026, 10:42 AM and that Stop and draft writes the note from it; the chief complaint and history boxes; and the note's AI SCRIBE CONSENT line: the AI scribe was explained, everyone in the room agreed out loud to recording, asked by Test User, MD.">
+            </picture>
+          </li>
+          <li class="step" data-strip="Pretend patient · Time shortened · The AI's words are sample text">
+            <h3><span class="step-n" aria-hidden="true">4</span><span class="step-t">The draft, tinted until reviewed</span></h3>
+            <p><span class="say">Stop and draft ends the recording; when the draft is ready, it fills the history, review of systems, exam and plans, in their boxes and in the note.</span> <span class="say">The AI's words stay tinted until a physician, nurse practitioner or physician assistant marks them reviewed.</span></p>
+            <p class="pic-note">Time shortened. The AI's words in this picture are sample text written for it, not output from a recording.</p>
+            <picture>
+              <source media="(max-width: 600px)" srcset="img/visit-4-phone.webp" type="image/webp" width="780" height="1952">
+              <source media="(max-width: 600px)" srcset="img/visit-4-phone.jpg" width="780" height="1952">
+              <source srcset="img/visit-4.webp" type="image/webp" width="985" height="1605">
+              <img src="img/visit-4.jpg" width="985" height="1605" loading="lazy" decoding="async" alt="The AI draft waiting for review in a pretend visit: a bar listing the parts to check with Next part, Mark reviewed and Undo the AI draft, saying 3 orders are in the orders cart, not signed (in the version now in testing), and that nothing is placed until a physician signs; below, the drafted words tinted and underlined in the note.">
+            </picture>
+          </li>
+          <li class="step" data-strip="Pretend patient · Orders from the sample text in step 4">
+            <h3><span class="step-n" aria-hidden="true">5</span><span class="step-t">Orders wait for you</span> <span class="chip test soon">In testing</span></h3>
+            <p><span class="say">In the version now in testing, orders said aloud wait in the orders cart, marked as added by the AI.</span> <span class="say">Nothing is placed until a physician signs.</span></p>
+            <p class="pic-note">These orders come from the sample text written for the picture of step 4.</p>
+            <picture>
+              <source srcset="img/visit-5.webp" type="image/webp" width="760" height="1266">
+              <img src="img/visit-5.jpg" width="760" height="1266" loading="lazy" decoding="async" alt="Voluta's orders cart for a pretend patient: three orders the AI scribe pended, each labeled 'Suggested by the AI scribe: check before signing', in the cart and not signed, with Sign, Edit and Remove; the prescription notes that no quantity was said.">
+            </picture>
+          </li>
+          <li class="step" data-strip="Pretend patients · Pretend lab entries: no lab is connected yet">
+            <h3><span class="step-n" aria-hidden="true">6</span><span class="step-t">Follow-up</span></h3>
+            <p><span class="say">After the visit, each result waits for review, and a test with no result yet is listed for follow-up.</span></p>
+            <p class="pic-note">The lab results shown are pretend entries: no lab is connected to Voluta yet.</p>
+            <picture>
+              <source srcset="img/visit-6.webp" type="image/webp" width="780" height="1292">
+              <img src="img/visit-6.jpg" width="780" height="1292" loading="lazy" decoding="async" alt="Voluta's results inbox on a phone, for pretend patients: 3 normal lab results waiting with Review the normal ones, then the first abnormal result, a potassium of 5.9 mmol/L flagged High with its reference range, and its one-tap actions: Normal, no change to plan; Discuss at next visit; Call patient with result; Review and tell the patient; Message patient; Order; Show visit.">
+            </picture>
+          </li>
+        </ol>
+        <p class="walk-close" id="walk-close"><span class="say">Voluta is in development and is not yet used with real patients.</span> <span class="say">California practices can join the pilot list below.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="see" class="alt" aria-labelledby="see-h">
     <div class="wrap">
       <p class="kicker">See it work</p>
       <h2 id="see-h">Real screens, pretend patients</h2>
       <p class="sub">These are Voluta's own screens, filled with invented patients for testing.</p>
-      <div class="tabs" role="tablist" aria-label="Voluta screens">
+      <p class="gal-note">Voluta is not yet connected to any lab, pharmacy or immunization registry: the lab results shown are pretend entries, and what is built for prescribing and the registry sends nothing yet (see the <a href="#roadmap">roadmap</a>). Telehealth visits are scheduled and documented in Voluta, which has no video calling of its own.</p>
+      <div class="tabs" role="tablist" aria-label="Voluta screens" hidden>
         <button class="tab" role="tab" id="t-huddle" aria-controls="p-huddle" aria-selected="true">Team huddle</button>
         <button class="tab" role="tab" id="t-chart" aria-controls="p-chart" aria-selected="false" tabindex="-1">Chart at a glance</button>
+        <button class="tab" role="tab" id="t-results" aria-controls="p-results" aria-selected="false" tabindex="-1">Results inbox</button>
         <button class="tab" role="tab" id="t-gaps" aria-controls="p-gaps" aria-selected="false" tabindex="-1">Care gaps</button>
-        <button class="tab" role="tab" id="t-inbox" aria-controls="p-inbox" aria-selected="false" tabindex="-1">Results inbox</button>
         <button class="tab" role="tab" id="t-schedule" aria-controls="p-schedule" aria-selected="false" tabindex="-1">Schedule</button>
+        <button class="tab" role="tab" id="t-encounters" aria-controls="p-encounters" aria-selected="false" tabindex="-1">Encounters</button>
       </div>
-      <div class="pane" role="tabpanel" id="p-huddle" aria-labelledby="t-huddle">
-        <div class="frame"><picture><source srcset="img/huddle.webp" type="image/webp"><img src="img/huddle.jpg" width="2752" height="1280" loading="lazy" alt="The team huddle for today: each appointment with what is due, results not reviewed, referrals still open and insurance to check"></picture></div>
-        <div><h3>Ready before the first patient</h3><p>The huddle lists what each visit needs before it starts.</p><ul><li>Care due: vaccines, screenings and annual wellness parts</li><li>Results not yet reviewed, referrals still open, insurance not checked</li><li>Visit prep: the plan from the last visit, ready to print</li></ul></div>
+      <div class="pane" id="p-huddle">
+        <div class="pane-text">
+          <div><h3>Ready before the first patient</h3><p>The huddle lists what each visit needs before it starts.</p></div>
+          <ul>
+            <li>Care due: vaccines, screenings and annual wellness parts</li>
+            <li>Results not yet reviewed, referrals still open, insurance not checked, an order waiting for a signature</li>
+            <li>Visit prep: the plan from the last visit, ready to print</li>
+          </ul>
+        </div>
+        <div class="shotframe"><picture>
+          <source media="(max-width: 600px)" srcset="img/phone-huddle.webp" type="image/webp" width="780" height="1456">
+          <source media="(max-width: 600px)" srcset="img/phone-huddle.jpg" width="780" height="1456">
+          <source srcset="img/screen-huddle-1200.webp 1200w, img/screen-huddle.webp 2201w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2201" height="1270">
+          <img src="img/screen-huddle.jpg" width="2201" height="1270" loading="lazy" decoding="async" alt="The daily huddle for a pretend clinic: today's visits in time order, each with what the chart says to prepare, such as care and screenings due, a result not reviewed, an order waiting for a signature and insurance not checked lately, and Visit prep.">
+        </picture></div>
+        <a class="enlarge" href="img/screen-huddle.webp" data-title="Team huddle">Enlarge</a>
       </div>
-      <div class="pane" role="tabpanel" id="p-chart" aria-labelledby="t-chart" hidden>
-        <div class="frame"><picture><source srcset="img/chart.webp" type="image/webp"><img src="img/chart.jpg" width="2752" height="1280" loading="lazy" alt="A pretend patient's chart summary: what changed since the last visit, care gaps, the problem list and recall"></picture></div>
-        <div><h3>The whole patient on one screen</h3><p>The chart opens on what matters today.</p><ul><li>What changed since the last visit</li><li>Care gaps with one tap to order, and a problem list with each diagnosis's history</li><li>Search the whole record, with quotes for a phrase</li></ul></div>
+      <div class="pane" id="p-chart">
+        <div class="pane-text">
+          <div><h3>The whole patient on one screen</h3><p>The chart opens on what matters today.</p></div>
+          <ul>
+            <li>What changed since the last visit</li>
+            <li>Care gaps with one tap to put the order in the cart, and a problem list with each diagnosis's history</li>
+            <li>Search the whole record, with quotes for a phrase</li>
+          </ul>
+        </div>
+        <div class="shotframe"><picture>
+          <source media="(max-width: 600px)" srcset="img/phone-chart.webp" type="image/webp" width="780" height="1546">
+          <source media="(max-width: 600px)" srcset="img/phone-chart.jpg" width="780" height="1546">
+          <source srcset="img/screen-chart-1200.webp 1200w, img/screen-chart.webp 1863w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="1863" height="1689">
+          <img src="img/screen-chart.jpg" width="1863" height="1689" loading="lazy" decoding="async" alt="A pretend patient's chart summary: the banner with the allergy and code status, today's chief complaint taken at check-in and the visit status, and what changed since the last visit.">
+        </picture></div>
+        <a class="enlarge" href="img/screen-chart.webp" data-title="Chart at a glance">Enlarge</a>
       </div>
-      <div class="pane" role="tabpanel" id="p-gaps" aria-labelledby="t-gaps" hidden>
-        <div class="frame"><picture><source srcset="img/gaps.webp" type="image/webp"><img src="img/gaps.jpg" width="2752" height="1120" loading="lazy" alt="The care gaps worklist across the practice, each gap with the order and the diagnosis code ready"></picture></div>
-        <div><h3>Care gaps across the practice</h3><p>Every screening, monitoring test and vaccine due, for every patient.</p><ul><li>Filter by gap, insurance or primary care provider</li><li>One click places the order with its diagnosis code attached</li><li>Mark "done elsewhere" with where and when</li></ul></div>
+      <div class="pane" id="p-results">
+        <div class="pane-text">
+          <div><h3>Results with one-tap next steps</h3><p>Each result is shown with the actions a clinician takes most.</p></div>
+          <ul>
+            <li>Normal, discuss at the next visit, call the patient, review and tell</li>
+            <li>A test with no result yet is listed after 14 days (a lab) or 30 (a study), for up to a year</li>
+            <li>Critical results escalate until they are reviewed; the normal ones are reviewed together</li>
+          </ul>
+        </div>
+        <div class="shotframe"><picture>
+          <source media="(max-width: 600px)" srcset="img/visit-6.webp" type="image/webp" width="780" height="1292">
+          <source media="(max-width: 600px)" srcset="img/visit-6.jpg" width="780" height="1292">
+          <source srcset="img/screen-results-1200.webp 1200w, img/screen-results.webp 2201w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2201" height="1259">
+          <img src="img/screen-results.jpg" width="2201" height="1259" loading="lazy" decoding="async" alt="The results inbox for pretend patients: Review the normal ones for the 3 normal lab results, and the abnormal results first, with values, units, flags and reference ranges and one-tap actions for each.">
+        </picture></div>
+        <a class="enlarge" href="img/screen-results.webp" data-title="Results inbox">Enlarge</a>
       </div>
-      <div class="pane" role="tabpanel" id="p-inbox" aria-labelledby="t-inbox" hidden>
-        <div class="frame"><picture><source srcset="img/inbox.webp" type="image/webp"><img src="img/inbox.jpg" width="2752" height="660" loading="lazy" alt="The results inbox: each abnormal result with one-tap actions to file it, discuss it, call the patient, review and tell the patient, message or order"></picture></div>
-        <div><h3>Results with one-tap next steps</h3><p>Each result arrives with the actions a clinician takes most.</p><ul><li>Normal, discuss at the next visit, call the patient, review and tell</li><li>Each test followed until someone closes it</li><li>Critical results escalate until someone acts</li></ul></div>
+      <div class="pane" id="p-gaps">
+        <div class="pane-text">
+          <div><h3>Care gaps across the practice</h3><p>Screenings, monitoring tests and vaccines due, for each patient in the practice.</p></div>
+          <ul>
+            <li>Filter by gap, insurance or primary care provider</li>
+            <li>One click puts the order in the cart with its diagnosis code, for the physician to sign</li>
+            <li>Mark "done elsewhere" with where and when</li>
+            <li>The rules shown are simplified for testing and must be validated before real use</li>
+            <li>The screen's line "Click a gap to place its order" is older wording: a click puts the order in the cart, and nothing is placed until a physician signs</li>
+          </ul>
+        </div>
+        <div class="shotframe"><picture>
+          <source media="(max-width: 600px)" srcset="img/phone-gaps.webp" type="image/webp" width="780" height="1520">
+          <source media="(max-width: 600px)" srcset="img/phone-gaps.jpg" width="780" height="1520">
+          <source srcset="img/screen-gaps-1200.webp 1200w, img/screen-gaps.webp 2392w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2392" height="1634">
+          <img src="img/screen-gaps.jpg" width="2392" height="1634" loading="lazy" decoding="async" alt="Care gaps across a pretend practice, by patient: filters by gap, insurance and primary care provider, the note that the rules are simplified for practice and must be validated before real use, and each gap due with Click to order, its screening diagnosis code, and Done already.">
+        </picture></div>
+        <a class="enlarge" href="img/screen-gaps.webp" data-title="Care gaps">Enlarge</a>
       </div>
-      <div class="pane" role="tabpanel" id="p-schedule" aria-labelledby="t-schedule" hidden>
-        <div class="frame"><picture><source srcset="img/schedule.webp" type="image/webp"><img src="img/schedule.jpg" width="2752" height="1240" loading="lazy" alt="The day's schedule with each visit's type, provider and rooming status"></picture></div>
-        <div><h3>A schedule that knows the visit</h3><p>Booking, check-in and rooming flow into the visit note.</p><ul><li>The reason for the visit and the chief complaint carry into the note</li><li>Rooming status for each patient at a glance</li><li>Blocked time, waitlist and reminders</li></ul></div>
+      <div class="pane" id="p-schedule">
+        <div class="pane-text">
+          <div><h3>A schedule that knows the visit</h3><p>Booking, check-in and rooming flow into the visit note.</p></div>
+          <ul>
+            <li>The reason for the visit and the chief complaint carry into the note</li>
+            <li>Rooming status for each patient at a glance</li>
+            <li>Blocked time, waitlist and reminders</li>
+          </ul>
+        </div>
+        <div class="shotframe"><picture>
+          <source media="(max-width: 600px)" srcset="img/phone-schedule.webp" type="image/webp" width="780" height="1468">
+          <source media="(max-width: 600px)" srcset="img/phone-schedule.jpg" width="780" height="1468">
+          <source srcset="img/screen-schedule-1200.webp 1200w, img/screen-schedule.webp 2201w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2201" height="1287">
+          <img src="img/screen-schedule.jpg" width="2201" height="1287" loading="lazy" decoding="async" alt="The schedule for a pretend clinic day: today's visits by time, each with its status, such as Visit complete and With physician.">
+        </picture></div>
+        <a class="enlarge" href="img/screen-schedule.webp" data-title="Schedule">Enlarge</a>
       </div>
-    </div>
-  </section>
-
-  <section id="visit" aria-labelledby="visit-h">
-    <div class="wrap">
-      <p class="kicker">One visit, one note</p>
-      <h2 id="visit-h">From check-in to signature, nothing typed twice</h2>
-      <p class="sub">The medical assistant's work, the AI scribe's draft and the physician's words all land in the same note, each credited to who wrote it.</p>
-      <div class="flow">
-        <div class="step reveal"><h3>Check-in</h3><p>The reason for the visit becomes the chief complaint.</p></div>
-        <div class="step reveal"><h3>Rooming</h3><p>Vitals, screenings and an optional brief HPI, written into the visit's note.</p></div>
-        <div class="step reveal"><h3>AI scribe</h3><p>One tap after everyone agrees out loud. The consent is recorded with the time.</p></div>
-        <div class="step reveal"><h3>Draft in place</h3><p>History, review of systems, exam and plans go into their boxes and the note at once.</p></div>
-        <div class="step reveal"><h3>Review and sign</h3><p>AI words stay tinted until reviewed. Signing asks if any are left.</p></div>
-        <div class="step reveal"><h3>Follow-up</h3><p>Orders, results and recalls are tracked until each is closed.</p></div>
+      <div class="pane" id="p-encounters">
+        <div class="pane-text">
+          <div><h3>Pick up where you left off</h3><p>A draft visit opens straight into its note.</p></div>
+          <ul>
+            <li>Open encounter returns to today's draft</li>
+            <li>Earlier visits open their signed note</li>
+            <li>Drafts are saved as they are written and come back after a reload</li>
+          </ul>
+        </div>
+        <div class="shotframe"><picture>
+          <source media="(max-width: 600px)" srcset="img/phone-encounters.webp" type="image/webp" width="780" height="980">
+          <source media="(max-width: 600px)" srcset="img/phone-encounters.jpg" width="780" height="980">
+          <source srcset="img/screen-encounters-1200.webp 1200w, img/screen-encounters.webp 2544w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2544" height="528">
+          <img src="img/screen-encounters.jpg" width="2544" height="528" loading="lazy" decoding="async" alt="Encounters for a pretend patient: today's draft visit with Open encounter, and an earlier signed visit with Open note.">
+        </picture></div>
+        <a class="enlarge" href="img/screen-encounters.webp" data-title="Encounters">Enlarge</a>
       </div>
     </div>
   </section>
@@ -324,32 +1979,89 @@
   <section id="california" aria-labelledby="ca-h">
     <div class="wrap">
       <p class="kicker">Built for California</p>
-      <h2 id="ca-h">California's rules, built in</h2>
-      <p class="sub">Small practices in California carry rules most systems leave to binders and spreadsheets. Voluta builds them into the day's work.</p>
+      <h2 id="ca-h">Built to help you follow California's rules</h2>
+      <p class="sub">Small practices in California follow many state rules. Voluta is built to help a practice follow them as part of the day's work.</p>
       <div class="cards">
-        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a4 4 0 0 1 4 4v4a4 4 0 0 1-8 0V7a4 4 0 0 1 4-4zM5 11a7 7 0 0 0 14 0M12 18v3"/></svg><h3>Recording consent</h3><p>Everyone in the room agrees before the AI scribe records, and the note says when and who asked.</p><span class="law">Penal Code 632</span></div>
-        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><h3>Protected care kept separate</h3><p>Reproductive and gender-affirming care is held apart from staff who do not need it, while prior authorizations and referrals still get worked.</p><span class="law">California health privacy law</span></div>
-        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg><h3>AI messages, disclosed</h3><p>AI-written handouts carry the required notice in English and Spanish, with a way to reach a person.</p><span class="law">AB 3030</span></div>
-        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4a2 2 0 0 1 4 0v10.3a4 4 0 1 1-4 0z"/><path d="M12 10v7"/></svg><h3>Vaccine fridge failures</h3><p>A temperature excursion puts the affected lots on hold, with the VFC steps to follow.</p><span class="law">VFC program</span></div>
-        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6-9 9H5v-6z"/><path d="M12 6l6 6"/></svg><h3>Sharps injury log</h3><p>Each exposure recorded within the deadline, with the follow-up owed.</p><span class="law">Cal/OSHA, 8 CCR 5193</span></div>
-        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><h3>Prenatal care on time</h3><p>A prenatal due list by gestational age, including the California Prenatal Screening Program.</p><span class="law">CDPH</span></div>
+        <div class="card reveal">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M12 3a4 4 0 0 1 4 4v4a4 4 0 0 1-8 0V7a4 4 0 0 1 4-4zM5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          <h3>Recording consent</h3>
+          <p>Everyone in the room agrees before the AI scribe records, and the note says when and who asked.</p>
+          <p class="law">Built around: Penal Code 632</p>
+          <a class="more" href="#visit">See it in a visit →</a>
+        </div>
+        <div class="card reveal">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M12 3l8 3v6c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V6z"/><path pathLength="1" d="M9 12l2 2 4-4"/></svg>
+          <h3>Protected care kept separate</h3>
+          <p>Reproductive and gender-affirming care is held apart from staff who do not need it, while prior authorizations and referrals still get worked. A change history and the self-pay restriction are next on the roadmap.</p>
+          <p class="law">Built around: California health privacy law</p>
+        </div>
+        <div class="card reveal">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M4 5h16v11H8l-4 4z"/><path pathLength="1" d="M8 9h8M8 12h5"/></svg>
+          <h3>AI handouts, disclosed</h3>
+          <p>AI-written handouts carry the notice California requires, in English and Spanish with a way to reach a person, until a licensed clinician approves them.</p>
+          <p class="law">Built around: AB 3030</p>
+        </div>
+        <div class="card reveal">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M10 4a2 2 0 0 1 4 0v10.3a4 4 0 1 1-4 0z"/><path pathLength="1" d="M12 10v7"/></svg>
+          <h3>Vaccine fridge failures</h3>
+          <p>A temperature excursion puts the affected lots on hold, with the CDC's storage and handling steps, and a reminder to report VFC vaccine in myCAvax.</p>
+          <p class="law">Built around: CDC storage and handling; California's VFC program</p>
+        </div>
+        <div class="card reveal">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M14 4l6 6-9 9H5v-6z"/><path pathLength="1" d="M12 6l6 6"/></svg>
+          <h3>Sharps injury log</h3>
+          <p>Each exposure recorded within the deadline, with the follow-up owed.</p>
+          <p class="law">Built around: Cal/OSHA, 8 CCR 5193</p>
+        </div>
+        <div class="card reveal">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M21 12a9 9 0 1 1-18 0a9 9 0 1 1 18 0z"/><path pathLength="1" d="M12 7v5l3 2"/></svg>
+          <h3>Prenatal care on time</h3>
+          <p>A prenatal due list by gestational age, including the California Prenatal Screening Program.</p>
+          <p class="law">Built around: California Prenatal Screening Program (CDPH)</p>
+        </div>
       </div>
+      <p class="ca-note">Voluta is not affiliated with, approved by or endorsed by the CDC, the California Department of Public Health, Cal/OSHA or any other government agency. Law and program names show what each feature is built to help a practice follow.</p>
     </div>
   </section>
 
-  <section id="security" aria-labelledby="sec-h">
+  <section id="security" class="band deep" aria-labelledby="sec-h">
     <div class="wrap">
       <p class="kicker">Security and privacy</p>
       <h2 id="sec-h">Designed to be trusted with a chart</h2>
-      <p class="sub">An independent review of Voluta was done before any real patient, and its fixes are being made in order. A professional penetration test and an attorney's review come before the pilot.</p>
+      <p class="sub">A full review of Voluta's code, safety and security was done before any real patient, and its fixes are being made in order. A professional penetration test and an attorney's review come before any real patient.</p>
       <div class="cards">
-        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><h3>Encrypted records</h3><p>AES-256 encryption with the key kept in Google's Secret Manager, never on the disk with the data.</p></div>
-        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><h3>A sealed audit log</h3><p>Every chart opened and every change is logged, sealed with a key and checked against copies kept off the server.</p></div>
-        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M17 8h4M19 6v4"/></svg><h3>Each role sees its part</h3><p>The front desk, billing, referrals and the clinical team each receive only what their work needs.</p></div>
-        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg><h3>Sign-in that holds</h3><p>Two-step codes, growing waits after wrong passwords, and a screen lock enforced by the server.</p></div>
-        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.7M4 4v4h4"/></svg><h3>Backups you can restore</h3><p>Nightly encrypted backups with a restore drill, and every release can be rolled back.</p></div>
-        <div class="card reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6L5 19a1.5 1.5 0 0 0 1.3 2h11.4a1.5 1.5 0 0 0 1.3-2L14 9V3"/></svg><h3>Tested before every release</h3><p>Hundreds of server checks and thousands of browser test steps run in Chrome and Safari before each version.</p></div>
+        <div class="card reveal">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M7 10h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <h3>Encrypted records</h3>
+          <p>AES-256 encryption. In Voluta's cloud setup, the key is kept in Google's Secret Manager, never on the disk with the data.</p>
+        </div>
+        <div class="card reveal">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path pathLength="1" d="M9 8h6M9 12h6"/></svg>
+          <h3>A sealed audit log</h3>
+          <p>Every chart opened and every change is logged, sealed with a key and checked against copies kept off the server.</p>
+        </div>
+        <div class="card reveal">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M12.5 8a3.5 3.5 0 1 1-7 0a3.5 3.5 0 1 1 7 0z"/><path pathLength="1" d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M17 8h4M19 6v4"/></svg>
+          <h3>Each role sees its part</h3>
+          <p>The front desk, billing, referrals and the clinical team each receive only what their work needs.</p>
+        </div>
+        <div class="card reveal">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M7 4h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z"/><path pathLength="1" d="M8 12l3 3 5-6"/></svg>
+          <h3>Sign-in that holds</h3>
+          <p>Two-step codes, growing waits after wrong passwords, and a screen lock enforced by the server.</p>
+        </div>
+        <div class="card reveal">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M4 12a8 8 0 1 0 2.3-5.7M4 4v4h4"/></svg>
+          <h3>Backups you can restore</h3>
+          <p>Nightly encrypted backups with a restore drill, and every release can be rolled back.</p>
+        </div>
+        <div class="card reveal">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M9 3h6M10 3v6L5 19a1.5 1.5 0 0 0 1.3 2h11.4a1.5 1.5 0 0 0 1.3-2L14 9V3"/></svg>
+          <h3>Tested before every release</h3>
+          <p>Hundreds of server checks and thousands of browser test steps run in Chrome and in Safari's engine before each version.</p>
+        </div>
       </div>
+      <p class="site-note">This website sets no cookies and loads nothing from other sites. The spoken tour uses your device's own voice. See <a href="#privacy">Privacy</a>.</p>
     </div>
   </section>
 
@@ -359,24 +2071,24 @@
       <h2 id="road-h">What's built, what's next, what's planned</h2>
       <p class="sub">Voluta is in development and is not yet used with real patients. Here is where it stands.</p>
       <div class="road">
-        <div class="col built reveal"><span class="tag">Built, in testing</span><h3>The clinic day</h3><ul><li>AI scribe with recorded consent, drafting the whole visit</li><li>One note per visit from rooming to signature</li><li>Team huddle, care gaps and recalls</li><li>Results inbox with follow-up until closed</li><li>Prenatal due list, wellness visits, care management</li><li>Patient portal, standing orders and refill protocols</li><li>Office safety checks, vaccine fridge, sharps log</li></ul></div>
-        <div class="col next reveal"><span class="tag">Next</span><h3>Safety before patients</h3><ul><li>Lab results filed on the server the moment they arrive</li><li>Patient matching by record number, name and date of birth</li><li>Prescribing checks for allergies, pregnancy and children's doses</li><li>Privacy-law features: change history, self-pay restriction</li><li>Independent penetration test and attorney's review</li><li>A pilot with pretend patients, then a small live pilot</li></ul></div>
+        <div class="col built reveal"><span class="tag">Built, in testing</span><h3>The clinic day</h3><ul><li>AI scribe with recorded consent, drafting the whole visit</li><li>One note per visit from rooming to signature</li><li>Draft visits open straight into the note</li><li>Diagnoses discussed but not on the problem list, offered to add or dismiss</li><li>Team huddle, care gaps and recalls</li><li>Results inbox, a list of tests with no result yet, and critical results escalated</li><li>Prenatal due list, wellness visits, care management</li><li>Patient portal, standing orders and refill protocols</li><li>Office safety checks, vaccine fridge, sharps log</li><li>Protected care held apart from staff who do not need it</li><li>California's notice on AI-written handouts</li><li>Encryption, a sealed audit log, a part for each role, two-step sign-in and nightly backups</li></ul></div>
+        <div class="col next reveal"><span class="tag">Next</span><h3>Safety before patients</h3><ul><li>Orders said aloud during a scribed visit, pended for the physician's signature (in testing now)</li><li>Dictation of your own voice into any field, from the top bar</li><li>Lab results filed on the server the moment they arrive</li><li>Patient matching by record number, name and date of birth</li><li>Prescribing checks for allergies, pregnancy and children's doses</li><li>Privacy-law features: change history, self-pay restriction</li><li>Independent penetration test and attorney's review</li><li>A pilot with pretend patients, then a small live pilot</li></ul></div>
         <div class="col plan reveal"><span class="tag">Planned, with partners</span><h3>Connected care</h3><ul><li>Electronic prescribing, including controlled substances</li><li>Claims, eligibility and payment posting</li><li>California's Data Exchange Framework and national networks</li><li>CAIR immunization registry, two-way</li><li>Electronic lab orders and results</li><li>Spanish-language scribe visits and two-way texting</li></ul></div>
       </div>
     </div>
   </section>
 
-  <section id="pilot" aria-labelledby="pilot-h">
+  <section id="pilot" class="pilot-band" aria-labelledby="pilot-h">
     <div class="wrap pilot">
       <div>
         <p class="kicker">Pilot</p>
         <h2 id="pilot-h">Join the pilot list</h2>
         <p class="sub">We are looking for a few California primary care practices to help shape Voluta before it opens. Tell us about your practice and what you would want from your medical record.</p>
-        <p class="note">The form opens a ready-to-send email in your email app. Please do not include any patient information.</p>
+        <p class="lead-note">The form opens a ready-to-send email in your email app. Please do not include any patient information. How we handle your email: <a href="#privacy">Privacy</a>.</p>
       </div>
       <form id="inq" novalidate>
         <div class="row2">
-          <label>Your name<input name="name" autocomplete="name" required></label>
+          <div class="field"><label><span>Your name <span class="req" aria-hidden="true">(required)</span></span><input name="name" autocomplete="name" required></label><p class="field-err" id="name-err" hidden></p></div>
           <label>Your role<select name="role"><option>Physician</option><option>Nurse practitioner or physician assistant</option><option>Practice owner or manager</option><option>Nurse or medical assistant</option><option>Other</option></select></label>
         </div>
         <div class="row2">
@@ -384,7 +2096,7 @@
           <label>City<input name="city" autocomplete="address-level2"></label>
         </div>
         <div class="row2">
-          <label>Email<input name="email" type="email" autocomplete="email" required></label>
+          <div class="field"><label><span>Email <span class="req" aria-hidden="true">(required)</span></span><input name="email" type="email" autocomplete="email" required></label><p class="field-err" id="email-err" hidden></p></div>
           <label>Clinicians in the practice<select name="size"><option>1</option><option>2 to 5</option><option>6 to 15</option><option>More than 15</option></select></label>
         </div>
         <fieldset>
@@ -395,96 +2107,84 @@
             <label><input type="checkbox" name="int" value="Prenatal care">Prenatal care</label>
             <label><input type="checkbox" name="int" value="Care gaps and quality">Care gaps and quality</label>
             <label><input type="checkbox" name="int" value="Billing and MIPS">Billing and MIPS</label>
-            <label><input type="checkbox" name="int" value="California compliance">California compliance</label>
+            <label><input type="checkbox" name="int" value="California rules">California rules</label>
           </div>
         </fieldset>
         <label>Anything else<textarea name="msg" placeholder="What does your current system make hard?"></textarea></label>
         <div><button class="btn pri" type="submit">Write the email</button></div>
-        <p class="sent" id="sent" role="status" aria-live="polite"></p>
+        <p class="sent" id="sent" role="status" aria-live="polite"><svg class="chk" viewBox="0 0 16 16" aria-hidden="true"><path pathLength="1" d="M3 8.5l3 3 7-7"/></svg><span id="sent-t"></span></p>
         <p class="note">Or email <span id="addr">us</span> directly.</p>
       </form>
+    </div>
+  </section>
+
+  <section class="alt site-info" aria-label="Accessibility and privacy">
+    <div class="wrap info">
+      <article id="accessibility" aria-labelledby="acc-h">
+        <h2 id="acc-h">Accessibility</h2>
+        <p class="dated">Last checked: November 18, 2026</p>
+        <p>We want everyone to be able to use this site, including people who use a screen reader, a keyboard alone, magnification or voice control. We design it to the Web Content Accessibility Guidelines (WCAG) 2.2, Level AA, published by the W3C, and test it as described here.</p>
+        <h3>How we check</h3>
+        <p>For this version of the page, we tested it in Chrome and in Safari's engine, at phone and computer widths and at 320 pixels wide (as at 400 percent zoom), with wider text spacing, in the light and dark looks, with reduced motion on and off, with JavaScript off, with a keyboard alone, and with automated accessibility checks (axe-core). No outside audit has been done.</p>
+        <h3>What to expect</h3>
+        <ul>
+          <li>Movement that starts on its own ends within five seconds, and nothing moves if your device asks for reduced motion. Nothing flashes.</li>
+          <li>Sound plays only when you press Hear the visit, Hear it or Resume; Stop or the Escape key ends it. Every word it reads is on the page.</li>
+          <li>Every picture of Voluta has a text description of what it shows, and Enlarge shows a screen at full size. The descriptions summarize each screen rather than reading every word on it. Decorative pictures are hidden from screen readers.</li>
+        </ul>
+        <h3>Known limits</h3>
+        <ul>
+          <li>We have not yet tested the page with a screen reader, such as VoiceOver or NVDA.</li>
+          <li>Hear it needs a voice on your device. Without one, the button does not appear; the same words are on the page.</li>
+          <li>With JavaScript off, every section, picture and screen still shows, as one long page. Our email address does not (the page's script puts it together, to keep it from address-collecting robots), the pilot form does not work, phones have no section menu, and the buttons of Try it and Hear it are left out.</li>
+        </ul>
+        <h3>Found a problem?</h3>
+        <p>Write to <span class="addr" data-addr>us at the address this page shows when JavaScript is on</span>, and tell us which part of the page and what happened. We aim to reply within five business days. If you need anything on this page in another form, tell us.</p>
+      </article>
+      <article id="privacy" aria-labelledby="priv-h">
+        <h2 id="priv-h">Privacy</h2>
+        <p class="dated">Effective November 18, 2026</p>
+        <p>This notice covers volutahealth.com only.</p>
+        <h3>What this site does not do</h3>
+        <ul>
+          <li>It sets no cookies and saves nothing in your browser's storage. Like any website, your browser may keep a copy of the page and its pictures in its cache for a while.</li>
+          <li>It has no analytics, ads, tracking pixels, chat or social media widgets, and it loads nothing from other sites, its font included. We do not track you over time or across other sites.</li>
+          <li>Hear the visit reads the page aloud with a voice on your device. The page never uses your microphone.</li>
+        </ul>
+        <h3>Who else receives information when you visit</h3>
+        <ul>
+          <li>GitHub hosts this site. GitHub logs the IP address of every visitor to a GitHub Pages site and keeps it for security. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noreferrer">GitHub's privacy statement</a>.</li>
+          <li>If you share a link to this page, the site you share it on fetches the page's title, description and preview picture.</li>
+        </ul>
+        <h3>The pilot form and your email</h3>
+        <ul>
+          <li>The form sends nothing to us. Write the email opens your own email app with a message filled in, and nothing is sent until you press Send there.</li>
+          <li>The email the form writes holds what you type: your name, role, practice, city, email address, number of clinicians, interests and message.</li>
+          <li>Your email arrives in our mailbox, which Google Workspace stores for us. It is read only by the people working on the pilot and, when needed, our attorney or advisers. We never sell it or use it for advertising, and we give it to no one else unless the law requires it.</li>
+          <li>It stays in our mailbox until we delete it, and you can ask us to delete it at any time.</li>
+          <li>Please do not send any patient information. If some arrives, we delete it and tell you.</li>
+        </ul>
+        <h3>Other points</h3>
+        <ul>
+          <li>Because we do not track you, the site works the same whether or not your browser sends Do Not Track or Global Privacy Control.</li>
+          <li>This site is for medical practices and is not meant for children.</li>
+          <li>If we change this notice, we change its date.</li>
+        </ul>
+        <p>Questions, or to ask us to delete your email: write to <span class="addr" data-addr>us at the address this page shows when JavaScript is on</span>.</p>
+      </article>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <p>Voluta is in development and is not yet used with real patients. Every screen on this page shows pretend patients and pretend data.</p>
+    <p class="foot-brand"><span class="wm" role="img" aria-label="Voluta"><svg viewBox="3 3 60 57" aria-hidden="true" focusable="false"><g fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path class="vr" pathLength="1" d="M23.4 54.6L36.3 16.0A11.2 11.2 0 0 1 46.8 8.4A10.8 10.8 0 0 1 57.6 19.2A8.6 8.6 0 0 1 49.0 27.8A4.4 4.4 0 0 1 44.6 23.4"/><path class="vl" pathLength="1" d="M8.2 9.6L22.6 54.4"/></g></svg>oluta</span><span>Health</span></p>
+    <p>Voluta is in development and is not yet used with real patients, and it is not yet connected to any lab, pharmacy or immunization registry. Every screen on this page shows pretend patients and pretend data.</p>
+    <p>Screens captured Nov 18, 2026 from the version in testing. Where they show the AI's words, those are sample text written for the pictures, not output from a recording.</p>
     <p>&copy; 2026 Voluta Health</p>
+    <p class="foot-links"><a href="#top">Back to the top</a><a href="#pilot">Join the pilot list</a><a href="#accessibility">Accessibility</a><a href="#privacy">Privacy</a></p>
   </div>
 </footer>
-
-<script>
-  (function () {
-    // People who ask their device for reduced motion get the still logo and no fade-ins.
-    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (still) document.querySelectorAll('animate.sway').forEach(function (a) { a.remove(); });
-
-    // Sections fade in as they come into view.
-    var rev = document.querySelectorAll('.reveal');
-    if (!still && 'IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
-      rev.forEach(function (el) { io.observe(el); });
-    } else rev.forEach(function (el) { el.classList.add('in'); });
-
-    // The screen gallery: tabs, with the arrow keys moving between them.
-    var tabs = [].slice.call(document.querySelectorAll('[role="tab"]'));
-    function pick(t) {
-      tabs.forEach(function (x) {
-        var on = x === t;
-        x.setAttribute('aria-selected', on ? 'true' : 'false');
-        x.tabIndex = on ? 0 : -1;
-        document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
-      });
-    }
-    tabs.forEach(function (t, i) {
-      t.addEventListener('click', function () { pick(t); });
-      t.addEventListener('keydown', function (e) {
-        var j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : -9;
-        if (j === -9) return;
-        e.preventDefault();
-        var n = tabs[(j + tabs.length) % tabs.length];
-        pick(n); n.focus();
-      });
-    });
-
-    // The address is put together here, so it is not sitting in the page for address collectors.
-    var to = ['reynaga', 'volutahealth.com'].join('@');
-    var a = document.getElementById('addr');
-    a.innerHTML = '';
-    var link = document.createElement('a');
-    link.href = 'mailto:' + to; link.textContent = to;
-    a.appendChild(link);
-
-    // The pilot form writes an email in the visitor's own email app: nothing is sent or stored by this page.
-    var f = document.getElementById('inq'), sent = document.getElementById('sent');
-    f.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var v = function (n) { return (f.elements[n].value || '').trim(); };
-      if (!v('name') || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v('email'))) {
-        sent.textContent = 'Please add your name and an email address we can reply to.';
-        sent.classList.add('on');
-        (v('name') ? f.elements.email : f.elements.name).focus();
-        return;
-      }
-      var ints = [].slice.call(f.querySelectorAll('input[name="int"]:checked')).map(function (c) { return c.value; });
-      var body = [
-        'Name: ' + v('name'),
-        'Role: ' + v('role'),
-        'Practice: ' + v('practice'),
-        'City: ' + v('city'),
-        'Clinicians: ' + v('size'),
-        'Email: ' + v('email'),
-        'Most interested in: ' + (ints.join(', ') || 'not said'),
-        '',
-        v('msg')
-      ].join('\n');
-      var subject = 'Voluta pilot list: ' + (v('practice') || v('name'));
-      window.location.href = 'mailto:' + to + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-      sent.textContent = 'Your email app should open with the message ready. Press Send there. If nothing opened, write to ' + to + '.';
-      sent.classList.add('on');
-    });
-  })();
-</script>
+<button class="speak-pill" id="speak-pill" type="button" hidden><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Speaking · Stop</button>
 </body>
 </html>
