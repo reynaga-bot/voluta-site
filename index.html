@@ -5,7 +5,7 @@
 <!-- Only this page's own style and script, Google Fonts and the site's own pictures may load: anything else, such as
      a script slipped into the page, is refused by the browser. When the style or script below changes, its sha256 in
      this line must be updated (tools: openssl dgst -sha256 -binary | base64). -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-JFsTtYS8ufqKvNrJjMkoMdstObw471MSYs8KArXD6BA='; style-src 'sha256-E3sxd7jb40K7n+zz/ozC6N0VuFkz93oW5G3TdiAWGs4=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-JFsTtYS8ufqKvNrJjMkoMdstObw471MSYs8KArXD6BA='; style-src 'sha256-XzFOnsyxtYIcD5hxUhMtwLvQ3JQqHu/5XORud83vkjs=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voluta Health · A medical record for primary care, built by a physician</title>
@@ -81,7 +81,7 @@
   header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
   header.top .wrap { display: flex; align-items: center; gap: 18px; height: 64px; }
   .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 21px; }
-  .brand svg { width: 22px; height: auto; }
+  .brand img { width: 26px; height: 26px; border-radius: 6px; flex: none; }
   nav.links { display: flex; gap: 18px; margin-left: auto; font-size: 15px; }
   nav.links a { color: var(--muted); text-decoration: none; }
   nav.links a:hover { color: var(--ink); }
@@ -93,15 +93,11 @@
   .hero .wrap { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
   @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } }
   .lockup { display: flex; align-items: center; gap: 18px; margin-bottom: 22px; }
-  .mark { width: 54px; height: auto; flex: none; }
-  .mark .rod { stroke: var(--ink); }
-  .mark .halo { stroke: var(--ground); }
-  .mark .serpent { stroke: var(--teal); }
-  .mark .head { fill: var(--teal); }
+  .mark { width: 64px; height: 64px; flex: none; }
   .lockup .name { font-size: 40px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
   .lockup .name span { display: block; font-size: 14px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--teal); margin-top: 6px; font-weight: 500; }
   .status { display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; color: var(--muted); background: var(--panel); margin-bottom: 18px; }
-  .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 4px var(--amber-soft); }
+  .status .dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 4px var(--amber-soft); }
   .hero h1 { font-size: clamp(34px, 5.4vw, 56px); line-height: 1.08; letter-spacing: -0.025em; margin: 0 0 18px; font-weight: 600; }
   .hero h1 em { font-style: normal; color: var(--teal); }
   .hero .lede { font-size: 19px; color: var(--muted); margin: 0 0 26px; max-width: 560px; }
@@ -192,7 +188,7 @@
   /* the serpent draws itself up the staff, then keeps a slow, gentle sway */
   @media (prefers-reduced-motion: no-preference) {
     .mark .rod { transform-origin: 60px 154px; animation: rise 0.7s ease-out both; }
-    .mark .halo, .mark .serpent { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.2s 0.5s ease-in-out forwards; }
+    .mark .serpent { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.2s 0.5s ease-in-out forwards; }
     .mark .head { opacity: 0; animation: show 0.4s 2.5s ease-out forwards; }
     .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
     .reveal.in { opacity: 1; transform: none; }
@@ -206,7 +202,7 @@
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#top" aria-label="Voluta Health, back to the top">
-      <svg viewBox="0 0 120 164" fill="none" aria-hidden="true"><path d="M60 10 L60 154" stroke="currentColor" stroke-width="10" stroke-linecap="round"/><path d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke="#1B6F73" stroke-width="10" stroke-linecap="round"/></svg>
+      <img src="/favicon.svg" alt="" width="26" height="26">
       Voluta
     </a>
     <nav class="links" aria-label="Sections">
@@ -225,11 +221,14 @@
     <div class="wrap">
       <div>
         <div class="lockup">
-          <svg class="mark" viewBox="0 0 120 164" fill="none" role="img" aria-label="Voluta Health logo: a single serpent winding up a staff">
-            <path class="rod" d="M60 10 L60 154" stroke-width="6" stroke-linecap="round"/>
-            <path class="halo" pathLength="1" d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"><animate class="sway" attributeName="d" dur="5s" begin="2.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22;M43 139 C79 136 93 114 60 102 S27 82 60 68 S93 48 62 36 C54 33 48 28 52 22;M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22"/></path>
-            <path class="serpent" pathLength="1" d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><animate class="sway" attributeName="d" dur="5s" begin="2.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22;M43 139 C79 136 93 114 60 102 S27 82 60 68 S93 48 62 36 C54 33 48 28 52 22;M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22"/></path>
-            <ellipse class="head" cx="53" cy="20" rx="6" ry="4.5"/>
+          <svg class="mark" viewBox="0 0 64 64" role="img" aria-label="Voluta logo: a V whose right arm is a staff with a serpent winding up it">
+            <rect width="64" height="64" rx="14" fill="#1d4ed8"/>
+            <path d="M10 12 L30 54" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round"/>
+            <g transform="rotate(25 32 32) translate(22 1.5) scale(.34)">
+              <path class="rod" d="M60 10 L60 154" stroke="#fff" stroke-width="24" stroke-linecap="round"/>
+              <path class="serpent" pathLength="1" d="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22" stroke="#93c5fd" stroke-width="18" fill="none" stroke-linecap="round" stroke-linejoin="round"><animate class="sway" attributeName="d" dur="5s" begin="2.9s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" values="M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22;M43 139 C79 136 93 114 60 102 S27 82 60 68 S93 48 62 36 C54 33 48 28 52 22;M46 140 C86 132 86 110 60 102 S34 78 60 68 S86 44 62 36 C54 33 48 28 52 22"/></path>
+              <ellipse class="head" cx="53" cy="20" rx="12" ry="10" fill="#93c5fd"/>
+            </g>
           </svg>
           <div class="name">Voluta<span>Health</span></div>
         </div>
