@@ -6,26 +6,26 @@
      script slipped into the page or a request to another site, is refused by the browser. When the style or the script
      below changes, its sha256 in this line must be updated, from the exact text between the tags:
      python3 -c "import re,hashlib,base64;h=open('index.html',encoding='utf-8').read();[print(t,'sha256-'+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()) for t in ('style','script') for m in re.findall('<'+t+'>(.*?)</'+t+'>',h,re.S)]" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-JL0oqZTwzzEJ2bZz+5/zvLqwxgzYGrXB0FjafUJsEtQ='; style-src 'sha256-VfbmoHtREhWhfYmiMCgKhOeZStENykX+afl1wTrIvXk='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-njzkPyilroSylPKi1Vjov03c2+PvWEvl7xCL28+U7N4='; style-src 'sha256-gm7YKLGlWkvXB7OVRNRHkifWlA5jai2khy6SbRD6sR8='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voluta Health · A medical record for primary care, built by a physician</title>
-<meta name="description" content="Voluta is a medical record system for primary care, built by a practicing physician: an AI scribe with consent built in whose words stay marked until you review them, a visit note that keeps the chief complaint and history for every visit, results followed until closed, and tools built to help a practice follow California's rules. In development and not yet used with real patients; inviting California practices to the pilot list.">
+<meta name="description" content="Voluta is a medical record system for primary care, built by a practicing physician: an AI scribe with consent built in whose words stay marked until you review them, a visit note that keeps the chief complaint and history for every visit, results that wait for review with tests followed up when no result comes, and tools built to help a practice follow California's rules. In development and not yet used with real patients; inviting California practices to the pilot list.">
 <meta name="theme-color" content="#F7F9FC" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0A0F1D" media="(prefers-color-scheme: dark)">
 <meta property="og:title" content="Voluta Health · In development · A medical record for primary care, built by a physician">
-<meta property="og:description" content="In development, not yet used with real patients. An AI scribe with consent built in that drafts the visit while you decide what is signed, one visit note from rooming to signing, results followed until closed, and tools built to help a practice follow California's rules.">
+<meta property="og:description" content="In development, not yet used with real patients. An AI scribe with consent built in that drafts the visit while you decide what is signed, one visit note from rooming to signing, results that wait for review with tests followed up when no result comes, and tools built to help a practice follow California's rules.">
 <meta property="og:image" content="https://volutahealth.com/img/og-chart.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="A strip reading Pretend patient · Voluta is in development, over Voluta's chart for a pretend patient: the banner with the allergy and code status, today's chief complaint taken at check-in, the chart's tabs and search, and its first boxes: since the last visit, care gaps, problems and recall.">
 <meta property="og:url" content="https://volutahealth.com/">
 <meta property="og:type" content="website">
-<link rel="icon" href="/favicon.ico" sizes="48x48">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/favicon-96.png" sizes="96x96" type="image/png">
-<link rel="icon" href="/favicon-192.png" sizes="192x192" type="image/png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="/favicon-96.png?v=2" sizes="96x96" type="image/png">
+<link rel="icon" href="/favicon-192.png?v=2" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 <link rel="preload" href="/fonts/IBMPlexSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/IBMPlexSans-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -269,6 +269,11 @@
     inset: 60px 12px auto auto;
     margin: 0;
     width: min(280px, calc(100vw - 24px));
+    /* on a short screen (a phone turned sideways, or 400 percent zoom) the menu scrolls, so every link can be reached */
+    max-height: calc(100vh - 72px);
+    max-height: calc(100dvh - 72px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 8px;
     border: 1px solid var(--line);
     border-radius: 14px;
@@ -353,9 +358,11 @@
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 14px;
+    margin: 0;
     padding: 12px 14px;
-    cursor: pointer;
   }
+  /* without the script the callouts are plain text; the script makes them buttons that move the ring */
+  button.callout { cursor: pointer; }
   .callout b { display: block; font-size: 15px; color: var(--ink); margin-bottom: 2px; }
   .callout[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
   .callout[aria-pressed="true"] b { color: var(--accent-strong); }
@@ -450,6 +457,8 @@
   .ai-line { margin-top: 4px; }
   .chk { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
   .try-part:not(.reviewed) .chk { display: none; }
+  /* the chip may wrap, so with wider text spacing at 320 px the card still fits the screen */
+  .try-chip { white-space: normal; }
   .try-part.reviewed .try-chip { background: var(--done-bg); color: var(--done-ink); }
   .try-part.undone .try-chip { display: none; }
   .try-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
@@ -506,6 +515,7 @@
   .say.speaking { background: rgb(147 197 253 / .2); color: var(--band-ink); }
   .sub .say.speaking { padding: 0 2px; }
   .now-msg { margin: 12px 0 0; font-size: 15px; color: var(--band-ink); }
+  .now-msg:empty { margin: 0; }
   .now-end { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
   .walk-ctl { display: flex; flex-wrap: wrap; gap: 8px; }
   .walk-note, .walk-hint { margin: 0; font-size: 13px; line-height: 1.45; color: var(--band-muted); }
@@ -557,7 +567,10 @@
     overflow: hidden;
     box-shadow: 0 30px 80px -30px rgb(0 0 0 / .65), 0 0 0 1px var(--band-line);
   }
-  .stage-strip { margin: 0; padding: 8px 14px; font-size: 13px; color: var(--muted); background: var(--surface); border-bottom: 1px solid var(--line); }
+  .stage-strip { display: grid; margin: 0; padding: 8px 14px; font-size: 13px; color: var(--muted); background: var(--surface); border-bottom: 1px solid var(--line); }
+  /* every step's strip shares one grid cell, so the strip is as tall as the longest and the stage never moves */
+  .stage-strip > span { grid-area: 1 / 1; }
+  .stage-strip > span:not(.on) { visibility: hidden; }
   .stage-view {
     position: relative;
     height: clamp(520px, 72svh, 700px);
@@ -682,6 +695,10 @@
     background: var(--accent);
   }
   .gal-note { margin: -24px 0 32px; max-width: 72ch; font-size: 15px; color: var(--muted); }
+  /* Without the script every screen shows in turn, under its own heading. With it they become tabs: until the
+     gallery is set up, only the first shows, so the page does not jump. */
+  html:not(.js) .pane + .pane { margin-top: 64px; }
+  html.js #see:not(.live) .pane ~ .pane { display: none; }
   .pane-text { display: grid; gap: 8px 48px; margin-bottom: 24px; }
   @media (min-width: 900px) { .pane-text { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); } .pane-text ul { columns: 2; column-gap: 40px; } }
   .pane-text p { margin: 0; color: var(--muted); }
@@ -716,6 +733,8 @@
   }
   .viewer-bar p { margin: 0; font-weight: 600; }
   .viewer-body { flex: 1; overflow: auto; background: var(--bg-alt); }
+  /* the screen's box takes focus so the arrow keys scroll it; its ring is drawn inside, where the dialog shows it */
+  .viewer-body:focus-visible { outline-offset: -3px; }
   .viewer-body img { max-width: none; margin: 16px; }
 
   /* cards: California and Security */
@@ -799,7 +818,7 @@
   .lead-note { font-size: 15px; margin: 0; max-width: 52ch; }
   .pilot-band .lead-note a { color: var(--pilot-ink); }
   form { background: var(--surface); color: var(--ink); border-radius: 18px; padding: 24px; display: grid; gap: 16px; box-shadow: var(--shadow-lg); }
-  .row2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+  .row2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
   @media (max-width: 599px) { .row2 { grid-template-columns: minmax(0, 1fr); } }
   label { display: grid; gap: 6px; font-size: 15px; font-weight: 600; }
   .req { font-weight: 400; color: var(--muted); }
@@ -816,6 +835,9 @@
     width: 100%;
   }
   input[aria-invalid="true"] { border-color: var(--err); box-shadow: 0 0 0 1px var(--err); }
+  /* a field that is missing or wrong says why just under it, where focus lands */
+  .field { display: grid; gap: 6px; }
+  .field-err { margin: 0; font-size: 15px; font-weight: 600; color: var(--err); }
   textarea { min-height: 110px; resize: vertical; }
   ::placeholder { color: var(--placeholder); opacity: 1; }
   fieldset { border: 1.5px solid var(--field); border-radius: 8px; padding: 8px 14px 10px; margin: 0; }
@@ -827,9 +849,7 @@
   .note { font-size: 13px; color: var(--muted); margin: 0; }
   .sent { display: none; margin: 0; border-radius: 8px; padding: 12px 14px; font-size: 15px; background: var(--accent-soft); color: var(--ink); }
   .sent.on { display: flex; gap: 10px; align-items: flex-start; }
-  .sent.err { background: var(--draft-bg); }
   .sent .chk { width: 20px; height: 20px; flex: none; margin-top: 2px; color: var(--done-ink); }
-  .sent:not(.ok) .chk { display: none; }
 
   .info { display: grid; gap: 56px; align-items: start; }
   @media (min-width: 900px) { .info { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; } }
@@ -907,7 +927,7 @@
     input, select, textarea { transition: outline-offset 160ms, border-color 160ms; }
     input:focus-visible, select:focus-visible, textarea:focus-visible { outline-offset: 4px; }
     .sent.on { animation: drop 240ms var(--ease-out); }
-    .sent.ok .chk path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 300ms var(--ease-out) 120ms forwards; }
+    .sent.on .chk path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 300ms var(--ease-out) 120ms forwards; }
     @supports (animation-timeline: scroll()) {
       .progress {
         display: block;
@@ -1017,9 +1037,17 @@
       if (o) Array.from(new Set(ids)).forEach(id => { const s = document.getElementById(id); if (s) o.observe(s); });
     }
 
-    // The hero's callouts: tapping, hovering or focusing one moves the ring to what it names on the screen.
+    // The hero's callouts: tapping, hovering or focusing one moves the ring to what it names on the screen. Without the
+    // script they are plain text, so here each becomes a button.
     function heroRing() {
-      const shot = $('#shot'), bs = $$('.callout', shot);
+      const shot = $('#shot'), bs = $$('.callout', shot).map(c => {
+        const b = el('button', 'callout');
+        b.type = 'button';
+        b.dataset.h = c.dataset.h;
+        b.append(...c.childNodes);
+        c.replaceWith(b);
+        return b;
+      });
       const pick = b => {
         shot.classList.remove('h1', 'h2', 'h3');
         shot.classList.add('h' + b.dataset.h);
@@ -1078,6 +1106,10 @@
       const box = $('#walk'), steps = $$('.step', $('#steps')), stage = $('#stage'), view = $('.stage-view', stage);
       const rail = $('#rail'), back = $('#w-back'), next = $('#w-next'), close = $('#walk-close'), cap = $('#cap');
       const N = steps.length, frames = [], frameOf = [], railBtns = [];
+      // The strip over the stage says what each step's picture leaves out or stands in for (its data-strip), so on a
+      // phone, where the step's text is below the stage, the note is still on the stage itself.
+      const strip = $('.stage-strip', stage), labels = steps.map(li => li.dataset.strip);
+      strip.replaceChildren(...Array.from(new Set(labels), t => el('span', '', t)));
       steps.forEach((li, i) => {
         const pic = $('picture', li);
         if (pic) {
@@ -1196,6 +1228,7 @@
         stage.dataset.at = String(Math.min(i + 1, N));
         railBtns.forEach((b, k) => { if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); b.classList.toggle('done', k < i); });
         rail.style.setProperty('--p', String(Math.min(i, N - 1) / (N - 1)));
+        $$('span', strip).forEach(s => s.classList.toggle('on', s.textContent === labels[Math.min(i, N - 1)]));
         render(i);
         back.disabled = i === 0;
         next.hidden = i >= N;
@@ -1353,7 +1386,9 @@
         if (!voice) return;
         stop();
         const my = ++run;
-        msg.hidden = true;
+        // a Resume button goes away here; if it had focus, focus moves on to the walkthrough's Stop (below)
+        const resumed = msg.contains(document.activeElement);
+        msg.replaceChildren();
         tones();
         tone('start');
         try { if (synth.speaking || synth.pending) synth.cancel(); } catch (e) { /* nothing queued */ }
@@ -1371,9 +1406,13 @@
         });
         W.show(from);
         busy(true);
+        if (resumed) walkB.focus();
         // From the hero, the page scrolls so the first spoken line, the stage and the Stop button are in view: on a
         // computer from the line under the heading, on a phone from the stage, whose caption then shows each line.
-        if (fromHero) (wide.matches ? $('#walk-sub') : $('#walk')).scrollIntoView({ behavior: still() ? 'auto' : 'smooth', block: 'start' });
+        // Focus follows to the walkthrough's own Stop button, so the next Tab stays with the tour.
+        if (!fromHero) return;
+        (wide.matches ? $('#walk-sub') : $('#walk')).scrollIntoView({ behavior: still() ? 'auto' : 'smooth', block: 'start' });
+        if (document.activeElement === heroB) walkB.focus({ preventScroll: true });
       }
       // if the device's voice fails, the tour goes on with the words on screen, at a reading pace
       function wordsOnly(L, n) {
@@ -1381,7 +1420,6 @@
         try { synth.cancel(); } catch (e) { /* already stopped */ }
         keep = [];
         msg.replaceChildren("Your device's voice stopped; continuing with the words on screen.");
-        msg.hidden = false;
         let t = 0;
         L.slice(n).forEach(line => {
           timers.push(setTimeout(() => { if (run === my) onLine(line); }, t));
@@ -1421,7 +1459,6 @@
         b.type = 'button';
         b.addEventListener('click', () => start(at));
         msg.replaceChildren(b);
-        msg.hidden = false;
       });
       window.addEventListener('pagehide', () => { stop(); if (ctx && ctx.state !== 'closed') ctx.close(); ctx = null; });
       // "In view" means at least half of the walkthrough's Stop button shows below the sticky header
@@ -1429,9 +1466,19 @@
       if (o) o.observe(walkB);
     }
 
-    // The screen gallery: tabs with the arrow, Home and End keys; the selected pill slides between them.
+    // The screen gallery: without the script every screen shows in turn; here they become tabs, with the arrow, Home
+    // and End keys, and the selected pill slides between them.
     function gallery() {
-      const list = $('.tabs'), tabs = $$('[role="tab"]', list), pill = el('span', 'pill');
+      const box = $('#see'), list = $('.tabs', box), tabs = $$('[role="tab"]', list), pill = el('span', 'pill');
+      tabs.forEach(t => {
+        const pane = document.getElementById(t.getAttribute('aria-controls'));
+        pane.setAttribute('role', 'tabpanel');
+        pane.setAttribute('aria-labelledby', t.id);
+        pane.tabIndex = 0;
+        pane.hidden = t.getAttribute('aria-selected') !== 'true';
+      });
+      list.hidden = false;
+      box.classList.add('live');
       pill.setAttribute('aria-hidden', 'true');
       list.prepend(pill);
       list.classList.add('pilled');
@@ -1484,6 +1531,10 @@
       const body = el('div', 'viewer-body'), img = new Image();
       title.id = 'viewer-t'; shut.type = 'button';
       d.setAttribute('aria-labelledby', 'viewer-t');
+      // a screen larger than the dialog scrolls inside it; its box takes focus, so the arrow keys scroll it everywhere
+      body.tabIndex = 0;
+      body.setAttribute('role', 'region');
+      body.setAttribute('aria-labelledby', 'viewer-t');
       bar.append(title, shut); body.append(img); d.append(bar, body);
       document.body.append(d);
       let from = null;
@@ -1525,27 +1576,29 @@
     // The pilot form writes an email in the visitor's own email app: nothing is sent or stored by this page.
     function pilotForm() {
       const f = $('#inq'), sent = $('#sent'), say = $('#sent-t');
-      // a field marked invalid points to the message that says what is missing, until it is edited
-      const flag = (input, ok) => {
-        input.setAttribute('aria-invalid', String(!ok));
-        if (ok) input.removeAttribute('aria-describedby'); else input.setAttribute('aria-describedby', 'sent-t');
+      // A field that is missing or wrong says why just under it, where focus lands, and the field points to those
+      // words for a screen reader, until it is edited.
+      const flag = (input, why) => {
+        const err = $('#' + input.name + '-err');
+        input.setAttribute('aria-invalid', String(!!why));
+        if (why) input.setAttribute('aria-describedby', err.id); else input.removeAttribute('aria-describedby');
+        err.textContent = why;
+        err.hidden = !why;
       };
-      f.addEventListener('input', e => { if (e.target.getAttribute('aria-invalid') === 'true') flag(e.target, true); });
+      f.addEventListener('input', e => { if (e.target.getAttribute('aria-invalid') === 'true') flag(e.target, ''); });
       f.addEventListener('submit', e => {
         e.preventDefault();
         const v = n => (f.elements[n].value || '').trim();
-        const nameOk = !!v('name'), mailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v('email'));
-        flag(f.elements.name, nameOk);
-        flag(f.elements.email, mailOk);
-        sent.classList.remove('on', 'ok', 'err');
+        const mail = v('email'), nameWhy = v('name') ? '' : 'Add your name.';
+        const mailWhy = !mail ? 'Add an email address we can reply to.'
+          : /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail) ? '' : 'Check the email address: it should look like name@example.com.';
+        flag(f.elements.name, nameWhy);
+        flag(f.elements.email, mailWhy);
+        sent.classList.remove('on');
         void sent.offsetWidth;
-        if (!nameOk || !mailOk) {
-          const typed = !!v('email'), miss = [nameOk ? '' : 'your name', mailOk || typed ? '' : 'an email address we can reply to'].filter(Boolean);
-          const asks = miss.length ? ['add ' + miss.join(' and ')] : [];
-          if (!mailOk && typed) asks.push('check the email address: it should look like name@example.com');
-          say.textContent = 'Please ' + asks.join(', and ') + '.';
-          sent.classList.add('on', 'err');
-          (nameOk ? f.elements.email : f.elements.name).focus();
+        if (nameWhy || mailWhy) {
+          say.textContent = '';
+          (nameWhy ? f.elements.name : f.elements.email).focus();
           return;
         }
         const ints = $$('input[name="int"]:checked', f).map(c => c.value);
@@ -1563,7 +1616,7 @@
         const subject = 'Voluta pilot list: ' + (v('practice') || v('name'));
         window.location.href = 'mailto:' + to + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
         say.textContent = 'Your email app should open with the message ready. Press Send there. If nothing opened, write to ' + to + '.';
-        sent.classList.add('on', 'ok');
+        sent.classList.add('on');
       });
     }
 
@@ -1634,17 +1687,17 @@
               <source media="(max-width: 600px)" srcset="img/hero-phone.webp" type="image/webp" width="780" height="1156">
               <source media="(max-width: 600px)" srcset="img/hero-phone.jpg" width="780" height="1156">
               <source srcset="img/hero-visit-800.webp 800w, img/hero-visit-1200.webp 1200w, img/hero-visit.webp 1686w" sizes="(min-width: 1240px) 630px, (min-width: 900px) 52vw, 100vw" type="image/webp" width="1686" height="1139">
-              <img src="img/hero-visit.jpg" width="1686" height="1139" fetchpriority="high" alt="Voluta's visit note for a pretend patient: the AI scribe buttons (Everyone agreed: start recording, They declined), Draft with AI and Pre-filled notes; the AI scribe line saying to ask everyone in the room out loud first; the chief complaint from check-in by the medical assistant, and the history typed by the physician.">
+              <img src="img/hero-visit.jpg" width="1686" height="1139" fetchpriority="high" alt="Voluta's visit note for a pretend patient: the AI scribe buttons (Everyone agreed: start recording, They declined), Draft with AI and Pre-filled notes; the AI scribe line saying to ask everyone in the room out loud first; the chief complaint box marked From check-in, Staff Eli Mockley, and the history box marked By Test User, MD.">
             </picture>
             <span class="ring" aria-hidden="true"></span>
           </div>
         </figure>
         <ul class="callouts">
-          <li><button class="callout" type="button" data-h="1"><b>One tap, consent recorded</b>The question to ask is on screen; the yes goes into the note with the date, time and who asked.</button></li>
-          <li><button class="callout" type="button" data-h="2"><b>Credited to who wrote it</b>The chief complaint shows who took it at check-in; the history shows who wrote it.</button></li>
-          <li><button class="callout" type="button" data-h="3"><b>Typed once, kept for history</b>The chief complaint and HPI boxes and the note follow each other as you type.</button></li>
+          <li><p class="callout" data-h="1"><b>One tap, consent recorded</b>The question to ask is on screen; the yes goes into the note with the date, time and who asked.</p></li>
+          <li><p class="callout" data-h="2"><b>Credited to who wrote it</b>The chief complaint shows who took it at check-in; the history shows who wrote it.</p></li>
+          <li><p class="callout" data-h="3"><b>Typed once, kept for history</b>The chief complaint and HPI boxes and the note follow each other as you type.</p></li>
         </ul>
-        <p class="pretend">Screens show pretend patients and pretend data. One sentence, about deleting the recording, is left out of this picture until it is confirmed.</p>
+        <p class="pretend">Screens show pretend patients and pretend data; Voluta sends nothing to a pharmacy or lab yet. One sentence, about deleting the recording, is left out of this picture until it is confirmed.</p>
       </div>
     </div>
   </section>
@@ -1656,7 +1709,7 @@
       <div class="facts reveal">
         <div class="fact"><div class="big">1 tap</div><p>to start the AI scribe, with the consent question on screen and the answer recorded in the note.</p></div>
         <div class="fact"><div class="big">Typed once</div><p>and kept in step: the chief complaint, history, review of systems and exam boxes and the note follow each other.</p></div>
-        <div class="fact"><div class="big">Every result</div><p>you order is followed until someone closes it, and a critical one is escalated until someone acts.</p></div>
+        <div class="fact"><div class="big">Each result</div><p>waits for review. A test with no result yet is listed after 14 days (a lab) or 30 (a study), and a critical result is escalated until it is reviewed.</p></div>
         <div class="fact"><div class="big">No outside scripts</div><p>in Voluta's page or on this website, and nothing loaded from other sites. Records are encrypted, and every chart opened is in a sealed audit log.</p></div>
       </div>
     </div>
@@ -1724,7 +1777,7 @@
               <h3 id="now-h"></h3>
               <p class="now-t" id="now-t"></p>
               <p class="now-note" id="now-note" hidden></p>
-              <p class="now-msg" id="now-msg" hidden></p>
+              <p class="now-msg" id="now-msg" role="status"></p>
               <div class="now-end" id="now-end" hidden>
                 <button class="btn sec" id="w-again" type="button">Start over</button>
                 <a class="btn pri" href="#pilot">Join the pilot list</a>
@@ -1736,12 +1789,12 @@
           <ol class="rail" id="rail" aria-label="Steps of the visit" hidden></ol>
         </div>
         <div class="stage" id="stage" hidden>
-          <p class="stage-strip">Pretend patient · Version in testing</p>
+          <p class="stage-strip"></p>
           <div class="stage-view"></div>
           <p class="cap" id="cap" aria-hidden="true"></p>
         </div>
         <ol class="steps" id="steps">
-          <li class="step">
+          <li class="step" data-strip="Pretend patient · One sentence, about deleting the recording, is left out">
             <h3><span class="step-n" aria-hidden="true">1</span><span class="step-t">Check-in and rooming</span></h3>
             <p><span class="say">At check-in, the reason for the visit becomes the chief complaint, with the name of who took it.</span> <span class="say">While rooming, the medical assistant can start a brief history.</span></p>
             <p class="pic-note">One sentence, about deleting the recording, is left out of this picture until it is confirmed.</p>
@@ -1752,12 +1805,12 @@
               <img src="img/visit-1.jpg" width="1168" height="1488" loading="lazy" decoding="async" alt="Voluta's Note panel for a pretend patient: the AI scribe buttons (Everyone agreed: start recording, They declined), Draft with AI and Pre-filled notes; the AI scribe line saying to ask everyone in the room out loud first; the chief complaint box marked From check-in, Staff Eli Mockley, and the history box marked By Test User, MD.">
             </picture>
           </li>
-          <li class="step">
+          <li class="step" data-strip="Pretend patient · One sentence, about deleting the recording, is left out">
             <h3><span class="step-n" aria-hidden="true">2</span><span class="step-t">Ask, then one tap</span></h3>
             <p><span class="say">Before recording, the physician asks everyone in the room out loud, because California needs everyone's yes.</span> <span class="say">Then one tap on Everyone agreed starts the AI scribe.</span></p>
             <p class="pic-note">One sentence, about deleting the recording, is left out of this picture until it is confirmed.</p>
           </li>
-          <li class="step">
+          <li class="step" data-strip="Pretend patient · Version in testing">
             <h3><span class="step-n" aria-hidden="true">3</span><span class="step-t">Consent in the note</span></h3>
             <p><span class="say">The note records the consent, with the date, the time and who asked.</span> <span class="say">Voluta keeps no recording: it is sent only to write the draft and is never saved by Voluta.</span></p>
             <picture>
@@ -1767,7 +1820,7 @@
               <img src="img/visit-3.jpg" width="1168" height="1512" loading="lazy" decoding="async" alt="The AI scribe recording a pretend visit: the line saying consent was recorded Nov 18, 2026, 10:42 AM and that Stop and draft writes the note from it; the chief complaint and history boxes; and the note's AI SCRIBE CONSENT line: the AI scribe was explained, everyone in the room agreed out loud to recording, asked by Test User, MD.">
             </picture>
           </li>
-          <li class="step">
+          <li class="step" data-strip="Pretend patient · Time shortened · The AI's words are sample text">
             <h3><span class="step-n" aria-hidden="true">4</span><span class="step-t">The draft, tinted until reviewed</span></h3>
             <p><span class="say">Stop and draft ends the recording; when the draft is ready, it fills the history, review of systems, exam and plans, in their boxes and in the note.</span> <span class="say">The AI's words stay tinted until a physician, nurse practitioner or physician assistant marks them reviewed.</span></p>
             <p class="pic-note">Time shortened. The AI's words in this picture are sample text written for it, not output from a recording.</p>
@@ -1778,7 +1831,7 @@
               <img src="img/visit-4.jpg" width="985" height="1605" loading="lazy" decoding="async" alt="The AI draft waiting for review in a pretend visit: a bar listing the parts to check with Next part, Mark reviewed and Undo the AI draft, saying 3 orders are in the orders cart, not signed (in the version now in testing), and that nothing is placed until a physician signs; below, the drafted words tinted and underlined in the note.">
             </picture>
           </li>
-          <li class="step">
+          <li class="step" data-strip="Pretend patient · Orders from the sample text in step 4">
             <h3><span class="step-n" aria-hidden="true">5</span><span class="step-t">Orders wait for you</span> <span class="chip test soon">In testing</span></h3>
             <p><span class="say">In the version now in testing, orders said aloud wait in the orders cart, marked as added by the AI.</span> <span class="say">Nothing is placed until a physician signs.</span></p>
             <p class="pic-note">These orders come from the sample text written for the picture of step 4.</p>
@@ -1787,9 +1840,9 @@
               <img src="img/visit-5.jpg" width="760" height="1266" loading="lazy" decoding="async" alt="Voluta's orders cart for a pretend patient: three orders the AI scribe pended, each labeled 'Suggested by the AI scribe: check before signing', in the cart and not signed, with Sign, Edit and Remove; the prescription notes that no quantity was said.">
             </picture>
           </li>
-          <li class="step">
+          <li class="step" data-strip="Pretend patients · Pretend lab entries: no lab is connected yet">
             <h3><span class="step-n" aria-hidden="true">6</span><span class="step-t">Follow-up</span></h3>
-            <p><span class="say">After the visit, orders, results and recalls are tracked until each is closed.</span></p>
+            <p><span class="say">After the visit, each result waits for review, and a test with no result yet is listed for follow-up.</span></p>
             <p class="pic-note">The lab results shown are pretend entries: no lab is connected to Voluta yet.</p>
             <picture>
               <source srcset="img/visit-6.webp" type="image/webp" width="780" height="1292">
@@ -1808,7 +1861,7 @@
       <h2 id="see-h">Real screens, pretend patients</h2>
       <p class="sub">These are Voluta's own screens, filled with invented patients for testing.</p>
       <p class="gal-note">Voluta is not yet connected to any lab, pharmacy or immunization registry: the lab results shown are pretend entries, and what is built for prescribing and the registry sends nothing yet (see the <a href="#roadmap">roadmap</a>). Telehealth visits are scheduled and documented in Voluta, which has no video calling of its own.</p>
-      <div class="tabs" role="tablist" aria-label="Voluta screens">
+      <div class="tabs" role="tablist" aria-label="Voluta screens" hidden>
         <button class="tab" role="tab" id="t-huddle" aria-controls="p-huddle" aria-selected="true">Team huddle</button>
         <button class="tab" role="tab" id="t-chart" aria-controls="p-chart" aria-selected="false" tabindex="-1">Chart at a glance</button>
         <button class="tab" role="tab" id="t-results" aria-controls="p-results" aria-selected="false" tabindex="-1">Results inbox</button>
@@ -1816,7 +1869,7 @@
         <button class="tab" role="tab" id="t-schedule" aria-controls="p-schedule" aria-selected="false" tabindex="-1">Schedule</button>
         <button class="tab" role="tab" id="t-encounters" aria-controls="p-encounters" aria-selected="false" tabindex="-1">Encounters</button>
       </div>
-      <div class="pane" role="tabpanel" id="p-huddle" aria-labelledby="t-huddle" tabindex="0">
+      <div class="pane" id="p-huddle">
         <div class="pane-text">
           <div><h3>Ready before the first patient</h3><p>The huddle lists what each visit needs before it starts.</p></div>
           <ul>
@@ -1833,7 +1886,7 @@
         </picture></div>
         <a class="enlarge" href="img/screen-huddle.webp" data-title="Team huddle">Enlarge</a>
       </div>
-      <div class="pane" role="tabpanel" id="p-chart" aria-labelledby="t-chart" tabindex="0" hidden>
+      <div class="pane" id="p-chart">
         <div class="pane-text">
           <div><h3>The whole patient on one screen</h3><p>The chart opens on what matters today.</p></div>
           <ul>
@@ -1850,13 +1903,13 @@
         </picture></div>
         <a class="enlarge" href="img/screen-chart.webp" data-title="Chart at a glance">Enlarge</a>
       </div>
-      <div class="pane" role="tabpanel" id="p-results" aria-labelledby="t-results" tabindex="0" hidden>
+      <div class="pane" id="p-results">
         <div class="pane-text">
           <div><h3>Results with one-tap next steps</h3><p>Each result is shown with the actions a clinician takes most.</p></div>
           <ul>
             <li>Normal, discuss at the next visit, call the patient, review and tell</li>
-            <li>Each test followed until someone closes it</li>
-            <li>Critical results escalate until someone acts; the normal ones are reviewed together</li>
+            <li>A test with no result yet is listed after 14 days (a lab) or 30 (a study), for up to a year</li>
+            <li>Critical results escalate until they are reviewed; the normal ones are reviewed together</li>
           </ul>
         </div>
         <div class="shotframe"><picture>
@@ -1867,7 +1920,7 @@
         </picture></div>
         <a class="enlarge" href="img/screen-results.webp" data-title="Results inbox">Enlarge</a>
       </div>
-      <div class="pane" role="tabpanel" id="p-gaps" aria-labelledby="t-gaps" tabindex="0" hidden>
+      <div class="pane" id="p-gaps">
         <div class="pane-text">
           <div><h3>Care gaps across the practice</h3><p>Screenings, monitoring tests and vaccines due, for each patient in the practice.</p></div>
           <ul>
@@ -1875,6 +1928,7 @@
             <li>One click puts the order in the cart with its diagnosis code, for the physician to sign</li>
             <li>Mark "done elsewhere" with where and when</li>
             <li>The rules shown are simplified for testing and must be validated before real use</li>
+            <li>The screen's line "Click a gap to place its order" is older wording: a click puts the order in the cart, and nothing is placed until a physician signs</li>
           </ul>
         </div>
         <div class="shotframe"><picture>
@@ -1885,7 +1939,7 @@
         </picture></div>
         <a class="enlarge" href="img/screen-gaps.webp" data-title="Care gaps">Enlarge</a>
       </div>
-      <div class="pane" role="tabpanel" id="p-schedule" aria-labelledby="t-schedule" tabindex="0" hidden>
+      <div class="pane" id="p-schedule">
         <div class="pane-text">
           <div><h3>A schedule that knows the visit</h3><p>Booking, check-in and rooming flow into the visit note.</p></div>
           <ul>
@@ -1902,7 +1956,7 @@
         </picture></div>
         <a class="enlarge" href="img/screen-schedule.webp" data-title="Schedule">Enlarge</a>
       </div>
-      <div class="pane" role="tabpanel" id="p-encounters" aria-labelledby="t-encounters" tabindex="0" hidden>
+      <div class="pane" id="p-encounters">
         <div class="pane-text">
           <div><h3>Pick up where you left off</h3><p>A draft visit opens straight into its note.</p></div>
           <ul>
@@ -1943,7 +1997,7 @@
         </div>
         <div class="card reveal">
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M4 5h16v11H8l-4 4z"/><path pathLength="1" d="M8 9h8M8 12h5"/></svg>
-          <h3>AI messages, disclosed</h3>
+          <h3>AI handouts, disclosed</h3>
           <p>AI-written handouts carry the notice California requires, in English and Spanish with a way to reach a person, until a licensed clinician approves them.</p>
           <p class="law">Built around: AB 3030</p>
         </div>
@@ -2017,7 +2071,7 @@
       <h2 id="road-h">What's built, what's next, what's planned</h2>
       <p class="sub">Voluta is in development and is not yet used with real patients. Here is where it stands.</p>
       <div class="road">
-        <div class="col built reveal"><span class="tag">Built, in testing</span><h3>The clinic day</h3><ul><li>AI scribe with recorded consent, drafting the whole visit</li><li>One note per visit from rooming to signature</li><li>Draft visits open straight into the note</li><li>Diagnoses discussed but not on the problem list, offered to add or dismiss</li><li>Team huddle, care gaps and recalls</li><li>Results inbox with follow-up until closed, and critical results escalated</li><li>Prenatal due list, wellness visits, care management</li><li>Patient portal, standing orders and refill protocols</li><li>Office safety checks, vaccine fridge, sharps log</li><li>Protected care held apart from staff who do not need it</li><li>California's notice on AI-written handouts</li><li>Encryption, a sealed audit log, a part for each role, two-step sign-in and nightly backups</li></ul></div>
+        <div class="col built reveal"><span class="tag">Built, in testing</span><h3>The clinic day</h3><ul><li>AI scribe with recorded consent, drafting the whole visit</li><li>One note per visit from rooming to signature</li><li>Draft visits open straight into the note</li><li>Diagnoses discussed but not on the problem list, offered to add or dismiss</li><li>Team huddle, care gaps and recalls</li><li>Results inbox, a list of tests with no result yet, and critical results escalated</li><li>Prenatal due list, wellness visits, care management</li><li>Patient portal, standing orders and refill protocols</li><li>Office safety checks, vaccine fridge, sharps log</li><li>Protected care held apart from staff who do not need it</li><li>California's notice on AI-written handouts</li><li>Encryption, a sealed audit log, a part for each role, two-step sign-in and nightly backups</li></ul></div>
         <div class="col next reveal"><span class="tag">Next</span><h3>Safety before patients</h3><ul><li>Orders said aloud during a scribed visit, pended for the physician's signature (in testing now)</li><li>Dictation of your own voice into any field, from the top bar</li><li>Lab results filed on the server the moment they arrive</li><li>Patient matching by record number, name and date of birth</li><li>Prescribing checks for allergies, pregnancy and children's doses</li><li>Privacy-law features: change history, self-pay restriction</li><li>Independent penetration test and attorney's review</li><li>A pilot with pretend patients, then a small live pilot</li></ul></div>
         <div class="col plan reveal"><span class="tag">Planned, with partners</span><h3>Connected care</h3><ul><li>Electronic prescribing, including controlled substances</li><li>Claims, eligibility and payment posting</li><li>California's Data Exchange Framework and national networks</li><li>CAIR immunization registry, two-way</li><li>Electronic lab orders and results</li><li>Spanish-language scribe visits and two-way texting</li></ul></div>
       </div>
@@ -2034,7 +2088,7 @@
       </div>
       <form id="inq" novalidate>
         <div class="row2">
-          <label><span>Your name <span class="req" aria-hidden="true">(required)</span></span><input name="name" autocomplete="name" required></label>
+          <div class="field"><label><span>Your name <span class="req" aria-hidden="true">(required)</span></span><input name="name" autocomplete="name" required></label><p class="field-err" id="name-err" hidden></p></div>
           <label>Your role<select name="role"><option>Physician</option><option>Nurse practitioner or physician assistant</option><option>Practice owner or manager</option><option>Nurse or medical assistant</option><option>Other</option></select></label>
         </div>
         <div class="row2">
@@ -2042,7 +2096,7 @@
           <label>City<input name="city" autocomplete="address-level2"></label>
         </div>
         <div class="row2">
-          <label><span>Email <span class="req" aria-hidden="true">(required)</span></span><input name="email" type="email" autocomplete="email" required></label>
+          <div class="field"><label><span>Email <span class="req" aria-hidden="true">(required)</span></span><input name="email" type="email" autocomplete="email" required></label><p class="field-err" id="email-err" hidden></p></div>
           <label>Clinicians in the practice<select name="size"><option>1</option><option>2 to 5</option><option>6 to 15</option><option>More than 15</option></select></label>
         </div>
         <fieldset>
@@ -2053,7 +2107,7 @@
             <label><input type="checkbox" name="int" value="Prenatal care">Prenatal care</label>
             <label><input type="checkbox" name="int" value="Care gaps and quality">Care gaps and quality</label>
             <label><input type="checkbox" name="int" value="Billing and MIPS">Billing and MIPS</label>
-            <label><input type="checkbox" name="int" value="California compliance">California compliance</label>
+            <label><input type="checkbox" name="int" value="California rules">California rules</label>
           </div>
         </fieldset>
         <label>Anything else<textarea name="msg" placeholder="What does your current system make hard?"></textarea></label>
@@ -2071,18 +2125,18 @@
         <p class="dated">Last checked: November 18, 2026</p>
         <p>We want everyone to be able to use this site, including people who use a screen reader, a keyboard alone, magnification or voice control. We design it to the Web Content Accessibility Guidelines (WCAG) 2.2, Level AA, published by the W3C, and test it as described here.</p>
         <h3>How we check</h3>
-        <p>Before each change, we test the page in Chrome and in Safari's engine, at phone and computer widths and at 320 pixels wide (as at 400 percent zoom), in the light and dark looks, with reduced motion on and off, with JavaScript off, with a keyboard alone, and with automated accessibility checks (axe-core). No outside audit has been done.</p>
+        <p>For this version of the page, we tested it in Chrome and in Safari's engine, at phone and computer widths and at 320 pixels wide (as at 400 percent zoom), with wider text spacing, in the light and dark looks, with reduced motion on and off, with JavaScript off, with a keyboard alone, and with automated accessibility checks (axe-core). No outside audit has been done.</p>
         <h3>What to expect</h3>
         <ul>
           <li>Movement that starts on its own ends within five seconds, and nothing moves if your device asks for reduced motion. Nothing flashes.</li>
-          <li>Sound plays only when you press Hear the visit or Hear it; Stop or the Escape key ends it. Every word it reads is on the page.</li>
+          <li>Sound plays only when you press Hear the visit, Hear it or Resume; Stop or the Escape key ends it. Every word it reads is on the page.</li>
           <li>Every picture of Voluta has a text description of what it shows, and Enlarge shows a screen at full size. The descriptions summarize each screen rather than reading every word on it. Decorative pictures are hidden from screen readers.</li>
         </ul>
         <h3>Known limits</h3>
         <ul>
           <li>We have not yet tested the page with a screen reader, such as VoiceOver or NVDA.</li>
           <li>Hear it needs a voice on your device. Without one, the button does not appear; the same words are on the page.</li>
-          <li>Our email address is put together by the page's script, to keep it from address-collecting robots, so with JavaScript off it does not show, and the pilot form does not work.</li>
+          <li>With JavaScript off, every section, picture and screen still shows, as one long page. Our email address does not (the page's script puts it together, to keep it from address-collecting robots), the pilot form does not work, phones have no section menu, and the buttons of Try it and Hear it are left out.</li>
         </ul>
         <h3>Found a problem?</h3>
         <p>Write to <span class="addr" data-addr>us at the address this page shows when JavaScript is on</span>, and tell us which part of the page and what happened. We aim to reply within five business days. If you need anything on this page in another form, tell us.</p>
@@ -2105,6 +2159,7 @@
         <h3>The pilot form and your email</h3>
         <ul>
           <li>The form sends nothing to us. Write the email opens your own email app with a message filled in, and nothing is sent until you press Send there.</li>
+          <li>The email the form writes holds what you type: your name, role, practice, city, email address, number of clinicians, interests and message.</li>
           <li>Your email arrives in our mailbox, which Google Workspace stores for us. It is read only by the people working on the pilot and, when needed, our attorney or advisers. We never sell it or use it for advertising, and we give it to no one else unless the law requires it.</li>
           <li>It stays in our mailbox until we delete it, and you can ask us to delete it at any time.</li>
           <li>Please do not send any patient information. If some arrives, we delete it and tell you.</li>
