@@ -6,7 +6,7 @@
      script slipped into the page or a request to another site, is refused by the browser. When the style or the script
      below changes, its sha256 in this line must be updated, from the exact text between the tags:
      python3 -c "import re,hashlib,base64;h=open('index.html',encoding='utf-8').read();[print(t,'sha256-'+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()) for t in ('style','script') for m in re.findall('<'+t+'>(.*?)</'+t+'>',h,re.S)]" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-5THfOBpA14HO7Or2Sk6+0fhCm3gpXFwLnLEBdboN69E='; style-src 'sha256-MHTtfi8IA3xYoKImS5J1ZNerqjXkyEUK08t9fmPYPKs='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-nFVqtNdScmiGF7Xqedd7yx7tOqGw4oE8iqoEMKuVgv4='; style-src 'sha256-zAtFESM6/v+lYknKAV1+ul8w5sfTCqsJUJHmIXPtk+s='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voluta Health · A medical record for primary care, built by a physician</title>
@@ -836,7 +836,9 @@
     color: var(--ink);
     width: 100%;
   }
-  input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--err); box-shadow: 0 0 0 1px var(--err); }
+  input[aria-invalid="true"] { border-color: var(--err); box-shadow: 0 0 0 1px var(--err); }
+  /* Safari's engine draws no shadow on a list: a thicker border gives the same weight, and the padding keeps the size */
+  select[aria-invalid="true"] { border-color: var(--err); border-width: 2.5px; padding: 9px 11px; }
   /* Safari's engine counts a chosen option wider than the list as page width: keep it inside the list's own box */
   select { contain: paint; }
   /* a field that is missing or wrong says why just under it, where focus lands */
@@ -1594,6 +1596,8 @@
       // The pilot list is for clinicians and the staff of clinics and medical groups. For anyone else the role field
       // says so as soon as it is chosen, and the form writes no email.
       const role = f.elements.role, roleNote = $('#role-note');
+      // the options carry fixed values, so a page translator that rewrites their words changes neither the stop nor
+      // the role written into the email
       const outside = () => role.value === 'Not with a clinic or medical group';
       const roleSay = () => {
         roleNote.hidden = !outside();
@@ -2120,7 +2124,7 @@
       <form id="inq" novalidate>
         <div class="row2">
           <div class="field"><label><span>Your name <span class="req" aria-hidden="true">(required)</span></span><input name="name" autocomplete="name" required></label><p class="field-err" id="name-err" hidden></p></div>
-          <div class="field"><label><span>Your role <span class="req" aria-hidden="true">(required)</span></span><select name="role" required><option value="">Choose your role</option><option>Physician</option><option>Nurse practitioner or physician assistant</option><option>Practice owner or manager</option><option>Nurse or medical assistant</option><option>Other clinic or medical group staff</option><option>Not with a clinic or medical group</option></select></label><p class="field-err" id="role-err" hidden></p><p class="field-note" id="role-note" hidden>Thank you for your interest in Voluta. At this time the pilot list is open only to physicians and other clinicians, and to the staff of clinics and medical groups, so this form will not write an email. If you are a clinician, choose the role closest to yours instead.</p></div>
+          <div class="field"><label><span>Your role <span class="req" aria-hidden="true">(required)</span></span><select name="role" required aria-invalid="false"><option value="">Choose your role</option><option value="Physician">Physician</option><option value="Nurse practitioner or physician assistant">Nurse practitioner or physician assistant</option><option value="Practice owner or manager">Practice owner or manager</option><option value="Nurse or medical assistant">Nurse or medical assistant</option><option value="Other clinic or medical group staff">Other clinic or medical group staff</option><option value="Not with a clinic or medical group">Not with a clinic or medical group</option></select></label><p class="field-err" id="role-err" hidden></p><p class="field-note" id="role-note" hidden>Thank you for your interest in Voluta. At this time the pilot list is open only to physicians and other clinicians, and to the staff of clinics and medical groups, so this form will not write an email. If you are a clinician, choose the role closest to yours instead.</p></div>
         </div>
         <div class="row2">
           <label>Practice<input name="practice" autocomplete="organization"></label>
