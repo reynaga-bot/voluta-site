@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- GitHub Pages answers with this page, and status 404, for any address the site does not have, at any depth: so every
+     file it asks for has a path from the site's root. It has no script. Only its own style and the site's own fonts
+     and icons may load. When the style below changes, its sha256 in this line must be updated, from the exact text
+     between the tags:
+     python3 -c "import re,hashlib,base64;h=open('404.html',encoding='utf-8').read();[print(t,'sha256-'+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()) for t in ('style',) for m in re.findall('<'+t+'>(.*?)</'+t+'>',h,re.S)]" -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'sha256-RmHoUvfYDZPPrKAurRvHnknCivOh8KizZUxH/hGL7zY='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found · Voluta Health</title>
+<meta name="theme-color" content="#F7F9FC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A0F1D" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="/favicon-96.png?v=2" sizes="96x96" type="image/png">
+<link rel="icon" href="/favicon-192.png?v=2" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+<style>
+  /* The home page's typeface, colors and wordmark (index.html has the reasons for each); nothing moves on this page. */
+  @font-face { font-family: "IBM Plex Sans"; src: url("/fonts/IBMPlexSans-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: "IBM Plex Sans"; src: url("/fonts/IBMPlexSans-SemiBold.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Plex fallback"; src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans"); font-weight: 400; size-adjust: 100.8%; }
+  @font-face { font-family: "Plex fallback"; src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("LiberationSans-Bold"); font-weight: 600; size-adjust: 96.8%; }
+  :root {
+    color-scheme: light dark;
+    --bg: #F7F9FC; --ink: #0E1A33; --muted: #414D64; --line: #DCE4F0;
+    --accent: #1D4ED8; --accent-strong: #1E40AF; --on-accent: #FFFFFF;
+    --logo-b: #196BAC; --logo-g: #4B9E37;
+    --focus: #1D4ED8;
+    --band: #0B1838; --band-muted: #B9C6E4; --band-line: rgb(147 197 253 / .18);
+    --gutter: 20px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0A0F1D; --ink: #E7ECF7; --muted: #A7B3CC; --line: #24304B;
+      --accent: #93C5FD; --accent-strong: #BFDBFE; --on-accent: #0A1A44;
+      --logo-b: #3D93D6; --logo-g: #8FD16A;
+      --focus: #93C5FD;
+      --band: #0E1B3D; --band-line: rgb(147 197 253 / .22);
+    }
+  }
+  @media (prefers-contrast: more) { :root { --muted: var(--ink); } }
+  @media (min-width: 768px) { :root { --gutter: 32px; } }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  /* the three rows fill the screen, so the footer sits at its foot however short the page is */
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", "Plex fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .wrap { width: min(1200px, 100% - 2 * var(--gutter)); margin-inline: auto; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .vh { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  header .wrap { display: flex; align-items: center; height: 64px; }
+  .brand { margin: 0; }
+  .wm { display: inline-flex; align-items: baseline; color: var(--accent); font-size: 24px; font-weight: 600; }
+  .wm svg { position: relative; top: 0.064em; width: 0.914em; height: 0.868em; margin-right: -0.035em; flex: none; overflow: visible; }
+  .wm .vl { stroke: var(--logo-b); }
+  .wm .vr { stroke: var(--logo-g); }
+  main { padding: clamp(40px, 9vw, 112px) 0 clamp(56px, 9vw, 112px); }
+  .kicker { text-transform: uppercase; letter-spacing: 0.14em; font-size: 13px; font-weight: 600; color: var(--accent); margin: 0 0 12px; }
+  h1 { font-size: clamp(2.25rem, 1.35rem + 3.6vw, 3.75rem); line-height: 1.06; letter-spacing: -0.025em; margin: 0 0 20px; font-weight: 600; text-wrap: balance; }
+  p { text-wrap: pretty; }
+  .lede { font-size: clamp(1.125rem, 1rem + .45vw, 1.3125rem); line-height: 1.55; color: var(--muted); margin: 0 0 28px; max-width: 52ch; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 22px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.15;
+    text-decoration: none;
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .btn:hover { background: var(--accent-strong); }
+  .act { margin: 0; }
+  .note { margin: 28px 0 0; font-size: 15px; color: var(--muted); max-width: 52ch; }
+  footer { background: var(--band); color: var(--band-muted); padding: 32px 0 40px; font-size: 14px; }
+  @media (prefers-color-scheme: dark) { footer { border-top: 1px solid var(--band-line); } }
+  footer p { margin: 0 0 8px; }
+  footer p:last-child { margin: 0; }
+  @media (forced-colors: active) { .btn { border: 1px solid; } }
+  @media print { body { display: block; min-height: 0; background: none; } footer { background: none; color: inherit; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <p class="brand"><span class="wm" aria-hidden="true"><svg viewBox="3 3 60 57" aria-hidden="true" focusable="false"><g fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path class="vr" d="M23.4 54.6L36.3 16.0A11.2 11.2 0 0 1 46.8 8.4A10.8 10.8 0 0 1 57.6 19.2A8.6 8.6 0 0 1 49.0 27.8A4.4 4.4 0 0 1 44.6 23.4"/><path class="vl" d="M8.2 9.6L22.6 54.4"/></g></svg>oluta</span><span class="vh">Voluta Health</span></p>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <p class="kicker">Error 404</p>
+    <h1>Page not found</h1>
+    <p class="lede">There is no page at this address on volutahealth.com. The address may be mistyped.</p>
+    <p class="act"><a class="btn" href="/">Go to the home page</a></p>
+    <p class="note">If a link on our own site brought you here, please tell us: the home page gives our address under Accessibility.</p>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <p>Voluta is in development and is not yet used with real patients.</p>
+    <p>&copy; 2026 Voluta Health</p>
+  </div>
+</footer>
+</body>
+</html>

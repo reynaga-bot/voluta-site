@@ -6,15 +6,16 @@
      script slipped into the page or a request to another site, is refused by the browser. When the style or the script
      below changes, its sha256 in this line must be updated, from the exact text between the tags:
      python3 -c "import re,hashlib,base64;h=open('index.html',encoding='utf-8').read();[print(t,'sha256-'+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()) for t in ('style','script') for m in re.findall('<'+t+'>(.*?)</'+t+'>',h,re.S)]" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-nFVqtNdScmiGF7Xqedd7yx7tOqGw4oE8iqoEMKuVgv4='; style-src 'sha256-zAtFESM6/v+lYknKAV1+ul8w5sfTCqsJUJHmIXPtk+s='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-nFVqtNdScmiGF7Xqedd7yx7tOqGw4oE8iqoEMKuVgv4='; style-src 'sha256-PE5WJMufkVoSKns+XClF0PZC5BP97O4+d25BV6cLhrU='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Voluta Health · A medical record for primary care, built by a physician</title>
-<meta name="description" content="Voluta is a medical record system for primary care, built by a practicing physician: an AI scribe with consent built in whose words stay marked until you review them, a visit note that keeps the chief complaint and history for every visit, results that wait for review with tests followed up when no result comes, and tools built to help a practice follow California's rules. In development and not yet used with real patients; inviting California practices to the pilot list.">
+<title>Voluta Health · In development · One system for a primary care clinic, front desk to back office</title>
+<meta name="description" content="Voluta is a medical record system for primary care, in development and not yet used with real patients. One system from the front desk to the back office: scheduling, check-in and rooming, the visit note, orders, results follow-up, messages and tasks, billing, a patient portal and the office's logs, with AI as one part, in testing. Nothing is sent to a pharmacy, a lab or a payer electronically yet. Inviting California primary care practices to the pilot list.">
+<link rel="canonical" href="https://volutahealth.com/">
 <meta name="theme-color" content="#F7F9FC" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0A0F1D" media="(prefers-color-scheme: dark)">
-<meta property="og:title" content="Voluta Health · In development · A medical record for primary care, built by a physician">
-<meta property="og:description" content="In development, not yet used with real patients. An AI scribe with consent built in that drafts the visit while you decide what is signed, one visit note from rooming to signing, results that wait for review with tests followed up when no result comes, and tools built to help a practice follow California's rules.">
+<meta property="og:title" content="Voluta Health · In development · One system for a primary care clinic, front desk to back office">
+<meta property="og:description" content="In development, not yet used with real patients. A medical record system for primary care: scheduling, check-in and rooming, the visit note, orders, results follow-up, messages and tasks, billing, a patient portal and the office's logs in one system, with AI as one part, in testing. Nothing is sent to a pharmacy, a lab or a payer electronically yet.">
 <meta property="og:image" content="https://volutahealth.com/img/og-chart.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -22,7 +23,7 @@
 <meta property="og:url" content="https://volutahealth.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Voluta Health">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Voluta Health","alternateName":"Voluta","url":"https://volutahealth.com/"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://volutahealth.com/#website","name":"Voluta Health","alternateName":"Voluta","url":"https://volutahealth.com/","publisher":{"@id":"https://volutahealth.com/#org"}},{"@type":"Organization","@id":"https://volutahealth.com/#org","name":"Voluta Health","url":"https://volutahealth.com/","logo":"https://volutahealth.com/favicon-192.png"}]}</script>
 <link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
 <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
 <link rel="icon" href="/favicon-96.png?v=2" sizes="96x96" type="image/png">
@@ -164,6 +165,7 @@
   }
   .chip.test { background: var(--draft-bg); color: var(--draft-ink); }
   .chip.done { background: var(--done-bg); color: var(--done-ink); }
+  .chip.plan { background: var(--plan-bg); color: var(--plan-ink); }
   /* "In testing" marks the parts of 0.158 not yet released; adding class v158 to <html> retires every chip at once
      (then also take "(in the version now in testing)" out of step 4's picture description) */
   html.v158 .soon { display: none; }
@@ -289,7 +291,8 @@
 
   /* hero */
   .hero {
-    padding: clamp(32px, 6vw, 72px) 0 clamp(64px, 8vw, 104px);
+    /* the space under the hero is short, so the list of what Voluta covers starts at the foot of a laptop's first screen */
+    padding: clamp(32px, 6vw, 72px) 0 clamp(40px, 5vw, 64px);
     background-color: var(--bg);
     background-image: var(--hero-glow);
     overflow-x: hidden;
@@ -314,7 +317,8 @@
   .status .dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--dot-dev); box-shadow: 0 0 0 4px var(--draft-bg); }
   .hero h1 { font-size: clamp(2.25rem, 1.35rem + 3.6vw, 3.75rem); line-height: 1.06; letter-spacing: -0.025em; margin: 0 0 20px; font-weight: 600; }
   .hero h1 em { font-style: normal; color: var(--accent); }
-  .lede { font-size: clamp(1.125rem, 1rem + .45vw, 1.3125rem); line-height: 1.55; color: var(--muted); margin: 0 0 28px; max-width: 58ch; }
+  /* 52ch is about 71 characters a line in Plex, whose letters average 0.44 of the size while 1ch is 0.6 of it */
+  .lede { font-size: clamp(1.125rem, 1rem + .45vw, 1.3125rem); line-height: 1.55; color: var(--muted); margin: 0 0 28px; max-width: 52ch; }
   .ctas { display: flex; flex-wrap: wrap; gap: 12px; }
   .sound-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 16px; }
   .sound-row.off { visibility: hidden; }
@@ -345,9 +349,10 @@
     box-shadow: 0 0 0 4px var(--ring-halo);
     pointer-events: none;
   }
-  .shot.h1 .ring { --x: 24.65%; --y: 12.3%; --w: 45.56%; --h: 17.54%; }
-  .shot.h2 .ring { --x: 25.65%; --y: 48.86%; --w: 43.56%; --h: 23.27%; }
-  .shot.h3 .ring { --x: 25.96%; --y: 77.82%; --w: 42.94%; --h: 15.43%; }
+  /* the schedule: the day's heading and working hours, the column of visit statuses, the practice-mode strip */
+  .shot.h1 .ring { --x: 25.26%; --y: 4.66%; --w: 37%; --h: 11.66%; }
+  .shot.h2 .ring { --x: 50.2%; --y: 16.16%; --w: 13.86%; --h: 54.7%; }
+  .shot.h3 .ring { --x: .4%; --y: 0%; --w: 46%; --h: 6%; }
   .callouts { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 10px; }
   .callout {
     display: block;
@@ -381,19 +386,30 @@
     .callouts li:nth-child(3) { right: -24px; bottom: 6%; }
     /* the note under the picture keeps left of the third callout, which floats over the frame's lower right corner */
     .shot .pretend { text-align: left; max-width: calc(100% - 200px); }
+    /* the first callout floats over the frame's upper right corner: the picture's caption keeps clear of it, so with
+       wider text spacing (WCAG 1.4.12) the caption wraps instead of running under the callout */
+    .hero .frame figcaption { padding-right: 180px; }
   }
-  .pretend { font-size: 13px; color: var(--muted); margin: 12px 0 0; text-align: center; }
+  /* the note under the picture says what is not there yet, so it is a size up from the small print and, while it sits
+     centered under the picture, no wider than about 76 characters */
+  .pretend { font-size: 14px; line-height: 1.5; color: var(--muted); margin: 12px 0 0; text-align: center; }
+  @media (max-width: 1279px) { .shot .pretend { max-width: 56ch; margin-inline: auto; } }
   @media (max-width: 600px) {
     .hero .frame { max-width: 300px; margin-inline: auto; }
-    .shot.h1 .ring { --x: 5.13%; --y: 1.18%; --w: 89.74%; --h: 46.23%; }
-    .shot.h2 .ring { --x: 5.13%; --y: 62.59%; --w: 89.74%; --h: 32.83%; }
-    .shot.h3 .ring { --x: 5.64%; --y: 65.77%; --w: 88.72%; --h: 29.31%; }
-    /* the phone picture has no note, so the third callout (the boxes and the note in step) is left out */
+    .shot.h1 .ring { --x: 3.6%; --y: 14.3%; --w: 92.8%; --h: 16.9%; }
+    .shot.h2 .ring { --x: 3.6%; --y: 31.2%; --w: 92.8%; --h: 68.4%; }
+    .shot.h3 .ring { --x: 3.6%; --y: 14.3%; --w: 92.8%; --h: 16.9%; }
+    /* the phone picture has no practice-mode strip, so the third callout (the strip) is left out */
     .callouts li:nth-child(3) { display: none; }
   }
 
-  /* facts strip */
+  /* What Voluta covers: under the hero, four groups of parts in the order of a clinic's day. Each part starts with its
+     name and carries its status as a word (never by color alone), then one row says plainly what is not there yet. */
   .alt { background: var(--bg-alt); }
+  .cover { padding-top: clamp(40px, 5vw, 64px); }
+  .cover .sub { max-width: 54ch; margin-bottom: 20px; }
+  .legend { list-style: none; margin: 0 0 32px; padding: 0; display: grid; gap: 8px; color: var(--muted); font-size: 16px; line-height: 1.5; }
+  .legend .chip { margin-right: 6px; }
   .facts {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -404,11 +420,19 @@
     overflow: hidden;
     box-shadow: var(--shadow-sm);
   }
-  @media (max-width: 899px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 519px) { .facts { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 1179px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 639px) { .facts { grid-template-columns: minmax(0, 1fr); } }
   .fact { background: var(--surface); padding: 24px; }
-  .fact .big { font-size: 26px; font-weight: 600; color: var(--accent-strong); line-height: 1.15; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
-  .fact p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.5; }
+  .fact h3 { margin: 0 0 14px; }
+  .parts { margin: 0; }
+  .parts dt { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 16px; font-weight: 600; line-height: 1.35; }
+  .parts dt:first-child { margin-top: 0; }
+  .parts dd { margin: 4px 0 0; color: var(--muted); font-size: 16px; line-height: 1.5; }
+  .notyet { grid-column: 1 / -1; display: grid; gap: 12px 48px; }
+  @media (min-width: 900px) { .notyet { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  .notyet h3 { grid-column: 1 / -1; margin: 0; }
+  .notyet p { margin: 0; max-width: 54ch; }
+  .notyet .chip { margin-right: 6px; }
 
   /* the AI scribe: what it does and never does, and the Try it illustration */
   .ai-grid { display: grid; gap: 40px; align-items: start; margin-top: 32px; }
@@ -1673,9 +1697,9 @@
       <span class="wm" aria-hidden="true"><svg viewBox="3 3 60 57" aria-hidden="true" focusable="false"><g fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path class="vr" pathLength="1" d="M23.4 54.6L36.3 16.0A11.2 11.2 0 0 1 46.8 8.4A10.8 10.8 0 0 1 57.6 19.2A8.6 8.6 0 0 1 49.0 27.8A4.4 4.4 0 0 1 44.6 23.4"/><path class="vl" pathLength="1" d="M8.2 9.6L22.6 54.4"/></g></svg>oluta</span>
     <span class="vh">Voluta Health</span></a>
     <nav class="links" aria-label="Sections">
+      <a href="#see" data-nav>Screens</a>
       <a href="#ai" data-nav>The AI scribe</a>
       <a href="#visit" data-nav>A visit</a>
-      <a href="#see" data-nav>Screens</a>
       <a href="#california" data-nav>California</a>
       <a href="#security" data-nav>Security</a>
       <a href="#roadmap" data-nav>Roadmap</a>
@@ -1684,9 +1708,9 @@
     <button class="menu-btn" type="button" popovertarget="menu" aria-label="Menu" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     <div class="menu" id="menu" popover>
       <nav aria-label="Sections, menu">
+        <a href="#see" data-nav>Screens</a>
         <a href="#ai" data-nav>The AI scribe</a>
         <a href="#visit" data-nav>A visit</a>
-        <a href="#see" data-nav>Screens</a>
         <a href="#california" data-nav>California</a>
         <a href="#security" data-nav>Security</a>
         <a href="#roadmap" data-nav>Roadmap</a>
@@ -1701,8 +1725,8 @@
     <div class="wrap">
       <div class="hero-copy">
         <p class="status"><span class="dot" aria-hidden="true"></span>In development · Inviting California primary care practices to the pilot list</p>
-        <h1 id="hero-h">The AI drafts the visit. <em>You decide what is signed.</em></h1>
-        <p class="lede">Voluta is a medical record system for primary care, built by a practicing family physician. One tap starts the AI scribe, with everyone's consent recorded in the note, and its words stay marked until you review them.</p>
+        <h1 id="hero-h">One system, <em>front desk to back office.</em></h1>
+        <p class="lede">Voluta is a medical record system for primary care: scheduling, check-in and rooming, the visit note, orders, results follow-up, messages and tasks, billing, a patient portal and the office's logs. AI is one part, in testing; only a physician, NP or PA signs.</p>
         <div class="ctas">
           <a class="btn pri" href="#pilot">Join the pilot list</a>
           <a class="btn sec" href="#visit">Walk through a visit</a>
@@ -1716,41 +1740,214 @@
       <div class="shot h1" id="shot">
         <svg class="volute" viewBox="0 0 600 600" aria-hidden="true"><path pathLength="1" d="M306.0 300.0C306.3 301.6 306.0 303.4 305.0 305.0C303.9 306.5 302.2 307.8 300.0 308.2C297.8 308.7 295.4 308.2 293.2 306.8C291.0 305.4 289.3 303.0 288.8 300.0C288.2 297.0 288.7 293.7 290.7 290.7C292.7 287.7 295.9 285.4 300.0 284.6C304.1 283.8 308.7 284.6 312.7 287.3C316.8 290.0 320.0 294.4 321.1 300.0C322.2 305.6 321.1 311.9 317.4 317.4C313.7 323.0 307.7 327.3 300.0 328.9C292.3 330.4 283.7 328.9 276.1 323.9C268.5 318.8 262.6 310.5 260.5 300.0C258.4 289.5 260.4 277.7 267.3 267.3C274.2 256.9 285.7 248.8 300.0 245.9C314.3 243.0 330.5 245.7 344.8 255.2C359.0 264.7 370.1 280.4 374.1 300.0C378.0 319.6 374.3 341.8 361.3 361.3C348.3 380.8 326.9 396.0 300.0 401.4C273.1 406.8 242.8 401.7 216.1 383.9C189.4 366.1 168.5 336.8 161.2 300.0C153.8 263.2 160.7 221.7 185.1 185.1C209.5 148.6 249.6 120.0 300.0 109.9C350.4 99.8 407.2 109.4 457.3 142.7C507.3 176.1 546.5 231.0 560.3 300.0"/></svg>
         <figure class="frame">
-          <figcaption>Pretend patient · A test build of Voluta 0.158, Nov 18, 2026</figcaption>
+          <figcaption>Pretend patients · A test build of Voluta 0.158, Nov 18, 2026</figcaption>
           <div class="pic">
             <picture>
-              <source media="(max-width: 600px)" srcset="img/hero-phone.webp" type="image/webp" width="780" height="1156">
-              <source media="(max-width: 600px)" srcset="img/hero-phone.jpg" width="780" height="1156">
-              <source srcset="img/hero-visit-800.webp 800w, img/hero-visit-1200.webp 1200w, img/hero-visit.webp 1686w" sizes="(min-width: 1240px) 630px, (min-width: 900px) 52vw, 100vw" type="image/webp" width="1686" height="1139">
-              <img src="img/hero-visit.jpg" width="1686" height="1139" fetchpriority="high" alt="Voluta's visit note for a pretend patient: the AI scribe buttons (Everyone agreed: start recording, They declined), Draft with AI and Pre-filled notes; the AI scribe line saying to ask everyone in the room out loud first; the chief complaint box marked From check-in, Staff Eli Mockley, and the history box marked By Test User, MD.">
+              <source media="(max-width: 600px)" srcset="img/phone-schedule.webp" type="image/webp" width="780" height="1468">
+              <source media="(max-width: 600px)" srcset="img/phone-schedule.jpg" width="780" height="1468">
+              <source srcset="img/screen-schedule-1200.webp 1200w, img/screen-schedule.webp 2201w" sizes="(min-width: 1240px) 630px, (min-width: 900px) 52vw, 100vw" type="image/webp" width="2201" height="1287">
+              <img src="img/screen-schedule.jpg" width="2201" height="1287" fetchpriority="high" alt="Voluta's schedule for a pretend clinic day, Wednesday, November 18, by time: the provider's working hours in 20-minute slots, each visit with its pretend patient, visit type and status, such as Visit complete and With physician. On a computer the screen also shows visits marked Rooming in process, Checked in, Arrived and Scheduled, lunch, an open time with a Book button, the month with a dot on each day that has appointments, and a strip across the top reading: Practice mode. Pretend patients only. Nothing here is sent to a pharmacy, lab, specialist, payer or patient.">
             </picture>
             <span class="ring" aria-hidden="true"></span>
           </div>
         </figure>
         <ul class="callouts">
-          <li><p class="callout" data-h="1"><b>One tap, consent recorded</b>The question to ask is on screen; the yes goes into the note with the date, time and who asked.</p></li>
-          <li><p class="callout" data-h="2"><b>Credited to who wrote it</b>The chief complaint shows who took it at check-in; the history shows who wrote it.</p></li>
-          <li><p class="callout" data-h="3"><b>Typed once, kept for history</b>The chief complaint and HPI boxes and the note follow each other as you type.</p></li>
+          <li><p class="callout" data-h="1"><b>The day, by time</b>Each provider's working hours, in slots of a set length: here, 20 minutes.</p></li>
+          <li><p class="callout" data-h="2"><b>Each visit's status</b>From Scheduled, through rooming, to Visit complete.</p></li>
+          <li><p class="callout" data-h="3"><b>Practice mode, on screen</b>The strip at the top says pretend patients only, and that nothing is sent to a pharmacy, lab, specialist, payer or patient.</p></li>
         </ul>
-        <p class="pretend">Screens show pretend patients and pretend data; Voluta sends nothing to a pharmacy or lab yet. One sentence, about deleting the recording, is left out of this picture until it is confirmed.</p>
+        <p class="pretend">Pretend patients and pretend data. Voluta sends nothing to a pharmacy, a lab or a payer electronically yet. “Telehealth visit” is a visit type: Voluta has no video calling of its own.</p>
       </div>
     </div>
   </section>
 
-  <section class="alt" aria-labelledby="facts-h">
+  <section class="alt cover" aria-labelledby="facts-h">
     <div class="wrap">
-      <h2 id="facts-h" class="reveal">Built the way a clinic actually works</h2>
-      <p class="sub reveal">Every part of Voluta came from a real clinic day: the huddle before the first patient, rooming, the visit, the results that come back after the patient leaves, and the office work around it. It is built to help a practice follow California's rules as part of that day.</p>
-      <div class="facts reveal">
-        <div class="fact"><div class="big">1 tap</div><p>to start the AI scribe, with the consent question on screen and the answer recorded in the note.</p></div>
-        <div class="fact"><div class="big">Typed once</div><p>and kept in step: the chief complaint, history, review of systems and exam boxes and the note follow each other.</p></div>
-        <div class="fact"><div class="big">Each result</div><p>waits for review. A test with no result yet is listed after 14 days (a lab) or 30 (a study), and a critical result is escalated until it is reviewed.</p></div>
-        <div class="fact"><div class="big">No outside scripts</div><p>in Voluta's page or on this website, and nothing loaded from other sites. Records are encrypted, and every chart opened is in a sealed audit log.</p></div>
+      <h2 id="facts-h">What Voluta covers, and where each part stands</h2>
+      <p class="sub">One system, shown part by part in the order of a clinic's day. Voluta is used with pretend patients only, and each part carries one of three labels.</p>
+      <ul class="legend">
+        <li><span class="chip done">Installed</span> In Voluta 0.158, the version on our own server, with automated tests.</li>
+        <li><span class="chip test">In testing</span> Built, and tested so far with stand-ins for outside services or with no browser test of its own.</li>
+        <li><span class="chip plan">Planned</span> Not built yet, or built and not yet connected to anyone outside the clinic.</li>
+      </ul>
+      <div class="facts">
+        <div class="fact">
+          <h3>Front desk</h3>
+          <dl class="parts">
+            <dt>Scheduling <span class="chip done">Installed</span></dt>
+            <dd>The day by time, each provider's hours, blocked time, and a reminder list the staff work.</dd>
+            <dt>Check-in <span class="chip done">Installed</span></dt>
+            <dd>The front desk checks the patient in and records the copay.</dd>
+            <dt>Patient portal <span class="chip done">Installed</span></dt>
+            <dd>Adult patients read their record, message the clinic, ask for refills and appointments, answer questionnaires and check in online. A patient is invited by email; that step is tested so far with a stand-in mail service.</dd>
+          </dl>
+        </div>
+        <div class="fact">
+          <h3>Exam room</h3>
+          <dl class="parts">
+            <dt>Rooming <span class="chip done">Installed</span></dt>
+            <dd>The medical assistant records the chief complaint, vitals, history, allergies, medicines and screenings, and can start a brief history that the physician's note continues.</dd>
+            <dt>The visit note <span class="chip done">Installed</span></dt>
+            <dd>Chief complaint, history, review of systems and exam each have their own box, and the boxes and the note follow each other. Drafts are saved as you write. Only a physician, NP or PA signs.</dd>
+            <dt>Orders and prescriptions <span class="chip done">Installed</span></dt>
+            <dd>Orders wait in a cart for a physician, NP or PA to sign. Under a standing order or refill protocol that a provider approved, a nurse can place the order first, for that provider to co-sign. Prescriptions are printed, or faxed or phoned in by staff.</dd>
+            <dt>AI scribe and dictation <span class="chip test">In testing</span></dt>
+            <dd>The AI scribe drafts the note after you confirm everyone agreed to be recorded, and dictation types your voice into the box with the cursor. The scribe's words stay marked until a physician, NP or PA reviews them, and it never signs or sends anything. Tested so far with stand-ins for the AI and speech services.</dd>
+          </dl>
+        </div>
+        <div class="fact">
+          <h3>After the visit</h3>
+          <dl class="parts">
+            <dt>Results follow-up <span class="chip done">Installed</span></dt>
+            <dd>Each result in a chart waits in an inbox until a clinician reviews it. A test with no result is listed after 14 days (a lab) or 30 (a study), and a critical result stays at the top of the screen until it is reviewed. No lab is connected yet: results are typed in, or scanned into the chart.</dd>
+            <dt>Care gaps <span class="chip done">Installed</span></dt>
+            <dd>Lists of screenings, monitoring tests and visits due, for one patient or the whole practice. The rules are simplified and must be checked by a clinician before real use.</dd>
+            <dt>Messages and tasks <span class="chip test">In testing</span></dt>
+            <dd>Staff message each other and send tasks to a person or a team pool; patients' portal messages go to a team pool.</dd>
+          </dl>
+        </div>
+        <div class="fact">
+          <h3>Back office</h3>
+          <dl class="parts">
+            <dt>Billing <span class="chip done">Installed</span></dt>
+            <dd>The visit level is suggested for you to confirm, charges are checked before a claim, and the front desk's payments, patient statements and payment plans are recorded. No claim is sent to a payer yet.</dd>
+            <dt>The office's logs <span class="chip done">Installed</span></dt>
+            <dd>Safety checks, the sharps injury log, the vaccine refrigerator log, waived-test quality control, staff training and the yearly security risk assessment.</dd>
+            <dt>Privacy by position <span class="chip done">Installed</span></dt>
+            <dd>Nine positions. The server chooses which parts of a chart each one is sent: the front desk, for example, is sent no visit notes and no medication list. It is not complete: the known gaps in this version are listed under <a href="#security">Security</a>.</dd>
+          </dl>
+        </div>
+        <div class="fact notyet">
+          <h3>Not yet</h3>
+          <p>Voluta is not yet used with real patients. Nothing goes electronically to a pharmacy, a lab, a payer or California's immunization registry, and there is no texting, video calling or faxing from the screen.</p>
+          <p><span class="chip plan">Planned</span> Electronic prescribing, claims, electronic lab orders and results, a time clock and inventory. Payroll is not part of Voluta. The <a href="#roadmap">roadmap</a> has the rest.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="ai" aria-labelledby="ai-h">
+  <section id="see" aria-labelledby="see-h">
+    <div class="wrap">
+      <p class="kicker">See it work</p>
+      <h2 id="see-h">Real screens, pretend patients</h2>
+      <p class="sub">These are Voluta's own screens, filled with invented patients for testing.</p>
+      <p class="gal-note">Voluta is not yet connected to any lab, pharmacy or immunization registry: the lab results shown are pretend entries, and what is built for prescribing and the registry sends nothing yet (see the <a href="#roadmap">roadmap</a>). Telehealth visits are scheduled and documented in Voluta, which has no video calling of its own.</p>
+      <div class="tabs" role="tablist" aria-label="Voluta screens" hidden>
+        <button class="tab" role="tab" id="t-huddle" aria-controls="p-huddle" aria-selected="true">Team huddle</button>
+        <button class="tab" role="tab" id="t-chart" aria-controls="p-chart" aria-selected="false" tabindex="-1">Chart at a glance</button>
+        <button class="tab" role="tab" id="t-results" aria-controls="p-results" aria-selected="false" tabindex="-1">Results inbox</button>
+        <button class="tab" role="tab" id="t-gaps" aria-controls="p-gaps" aria-selected="false" tabindex="-1">Care gaps</button>
+        <button class="tab" role="tab" id="t-schedule" aria-controls="p-schedule" aria-selected="false" tabindex="-1">Schedule</button>
+        <button class="tab" role="tab" id="t-encounters" aria-controls="p-encounters" aria-selected="false" tabindex="-1">Encounters</button>
+      </div>
+      <div class="pane" id="p-huddle">
+        <div class="pane-text">
+          <div><h3>Ready before the first patient</h3><p>The huddle lists what each visit needs before it starts.</p></div>
+          <ul>
+            <li>Care due: vaccines, screenings and annual wellness parts</li>
+            <li>Results not yet reviewed, referrals still open, insurance not checked, an order waiting for a signature</li>
+            <li>Visit prep: the plan from the last visit, ready to print</li>
+          </ul>
+        </div>
+        <div class="shotframe"><picture>
+          <source media="(max-width: 600px)" srcset="img/phone-huddle.webp" type="image/webp" width="780" height="1456">
+          <source media="(max-width: 600px)" srcset="img/phone-huddle.jpg" width="780" height="1456">
+          <source srcset="img/screen-huddle-1200.webp 1200w, img/screen-huddle.webp 2201w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2201" height="1270">
+          <img src="img/screen-huddle.jpg" width="2201" height="1270" loading="lazy" decoding="async" alt="The daily huddle for a pretend clinic: today's visits in time order, each with what the chart says to prepare, such as care and screenings due, a result not reviewed, an order waiting for a signature and insurance not checked lately, and Visit prep.">
+        </picture></div>
+        <a class="enlarge" href="img/screen-huddle.webp" data-title="Team huddle">Enlarge</a>
+      </div>
+      <div class="pane" id="p-chart">
+        <div class="pane-text">
+          <div><h3>The whole patient on one screen</h3><p>The chart opens on what matters today.</p></div>
+          <ul>
+            <li>What changed since the last visit</li>
+            <li>Care gaps with one tap to put the order in the cart, and a problem list with each diagnosis's history</li>
+            <li>Search the whole record, with quotes for a phrase</li>
+          </ul>
+        </div>
+        <div class="shotframe"><picture>
+          <source media="(max-width: 600px)" srcset="img/phone-chart.webp" type="image/webp" width="780" height="1546">
+          <source media="(max-width: 600px)" srcset="img/phone-chart.jpg" width="780" height="1546">
+          <source srcset="img/screen-chart-1200.webp 1200w, img/screen-chart.webp 1863w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="1863" height="1689">
+          <img src="img/screen-chart.jpg" width="1863" height="1689" loading="lazy" decoding="async" alt="A pretend patient's chart summary: the banner with the allergy and code status, today's chief complaint taken at check-in and the visit status, and what changed since the last visit.">
+        </picture></div>
+        <a class="enlarge" href="img/screen-chart.webp" data-title="Chart at a glance">Enlarge</a>
+      </div>
+      <div class="pane" id="p-results">
+        <div class="pane-text">
+          <div><h3>Results with one-tap next steps</h3><p>Each result is shown with the actions a clinician takes most.</p></div>
+          <ul>
+            <li>Normal, discuss at the next visit, call the patient, review and tell</li>
+            <li>A test with no result yet is listed after 14 days (a lab) or 30 (a study), for up to a year</li>
+            <li>Critical results escalate until they are reviewed; the normal ones are reviewed together</li>
+          </ul>
+        </div>
+        <div class="shotframe"><picture>
+          <source media="(max-width: 600px)" srcset="img/visit-6.webp" type="image/webp" width="780" height="1292">
+          <source media="(max-width: 600px)" srcset="img/visit-6.jpg" width="780" height="1292">
+          <source srcset="img/screen-results-1200.webp 1200w, img/screen-results.webp 2201w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2201" height="1259">
+          <img src="img/screen-results.jpg" width="2201" height="1259" loading="lazy" decoding="async" alt="The results inbox for pretend patients: Review the normal ones for the 3 normal lab results, and the abnormal results first, with values, units, flags and reference ranges and one-tap actions for each.">
+        </picture></div>
+        <a class="enlarge" href="img/screen-results.webp" data-title="Results inbox">Enlarge</a>
+      </div>
+      <div class="pane" id="p-gaps">
+        <div class="pane-text">
+          <div><h3>Care gaps across the practice</h3><p>Screenings, monitoring tests and vaccines due, for each patient in the practice.</p></div>
+          <ul>
+            <li>Filter by gap, insurance or primary care provider</li>
+            <li>One click puts the order in the cart with its diagnosis code, for a physician, NP or PA to sign</li>
+            <li>Mark "done elsewhere" with where and when</li>
+            <li>The rules shown are simplified for testing and must be validated before real use</li>
+            <li>The screen's line "Click a gap to place its order" is older wording: a click puts the order in the cart, and nothing is placed until a physician, NP or PA signs</li>
+          </ul>
+        </div>
+        <div class="shotframe"><picture>
+          <source media="(max-width: 600px)" srcset="img/phone-gaps.webp" type="image/webp" width="780" height="1520">
+          <source media="(max-width: 600px)" srcset="img/phone-gaps.jpg" width="780" height="1520">
+          <source srcset="img/screen-gaps-1200.webp 1200w, img/screen-gaps.webp 2392w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2392" height="1634">
+          <img src="img/screen-gaps.jpg" width="2392" height="1634" loading="lazy" decoding="async" alt="Care gaps across a pretend practice, by patient: filters by gap, insurance and primary care provider, the note that the rules are simplified for practice and must be validated before real use, and each gap due with Click to order, its screening diagnosis code, and Done already.">
+        </picture></div>
+        <a class="enlarge" href="img/screen-gaps.webp" data-title="Care gaps">Enlarge</a>
+      </div>
+      <div class="pane" id="p-schedule">
+        <div class="pane-text">
+          <div><h3>A schedule that knows the visit</h3><p>Booking, check-in and rooming flow into the visit note.</p></div>
+          <ul>
+            <li>The reason for the visit and the chief complaint carry into the note</li>
+            <li>Rooming status for each patient at a glance</li>
+            <li>Blocked time, and a reminder list the staff work</li>
+          </ul>
+        </div>
+        <div class="shotframe"><picture>
+          <source media="(max-width: 600px)" srcset="img/phone-schedule.webp" type="image/webp" width="780" height="1468">
+          <source media="(max-width: 600px)" srcset="img/phone-schedule.jpg" width="780" height="1468">
+          <source srcset="img/screen-schedule-1200.webp 1200w, img/screen-schedule.webp 2201w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2201" height="1287">
+          <img src="img/screen-schedule.jpg" width="2201" height="1287" loading="lazy" decoding="async" alt="The schedule for a pretend clinic day: today's visits by time, each with its status, such as Visit complete and With physician.">
+        </picture></div>
+        <a class="enlarge" href="img/screen-schedule.webp" data-title="Schedule">Enlarge</a>
+      </div>
+      <div class="pane" id="p-encounters">
+        <div class="pane-text">
+          <div><h3>Pick up where you left off</h3><p>A draft visit opens straight into its note.</p></div>
+          <ul>
+            <li>Open encounter returns to today's draft</li>
+            <li>Earlier visits open their signed note</li>
+            <li>Drafts are saved as they are written and come back after a reload (in 0.158, while the word just typed at the end of a line may begin a protected-care term, such as “test” or “days”, the automatic save waits until something more is typed after it, or for Save draft, the screen lock, closing the note, opening another chart or leaving the window)</li>
+          </ul>
+        </div>
+        <div class="shotframe"><picture>
+          <source media="(max-width: 600px)" srcset="img/phone-encounters.webp" type="image/webp" width="780" height="980">
+          <source media="(max-width: 600px)" srcset="img/phone-encounters.jpg" width="780" height="980">
+          <source srcset="img/screen-encounters-1200.webp 1200w, img/screen-encounters.webp 2544w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2544" height="528">
+          <img src="img/screen-encounters.jpg" width="2544" height="528" loading="lazy" decoding="async" alt="Encounters for a pretend patient: today's draft visit with Open encounter, and an earlier signed visit with Open note.">
+        </picture></div>
+        <a class="enlarge" href="img/screen-encounters.webp" data-title="Encounters">Enlarge</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="ai" class="alt" aria-labelledby="ai-h">
     <div class="wrap">
       <p class="kicker">AI scribe</p>
       <h2 id="ai-h">What the AI scribe does, and never does</h2>
@@ -1890,127 +2087,6 @@
     </div>
   </section>
 
-  <section id="see" class="alt" aria-labelledby="see-h">
-    <div class="wrap">
-      <p class="kicker">See it work</p>
-      <h2 id="see-h">Real screens, pretend patients</h2>
-      <p class="sub">These are Voluta's own screens, filled with invented patients for testing.</p>
-      <p class="gal-note">Voluta is not yet connected to any lab, pharmacy or immunization registry: the lab results shown are pretend entries, and what is built for prescribing and the registry sends nothing yet (see the <a href="#roadmap">roadmap</a>). Telehealth visits are scheduled and documented in Voluta, which has no video calling of its own.</p>
-      <div class="tabs" role="tablist" aria-label="Voluta screens" hidden>
-        <button class="tab" role="tab" id="t-huddle" aria-controls="p-huddle" aria-selected="true">Team huddle</button>
-        <button class="tab" role="tab" id="t-chart" aria-controls="p-chart" aria-selected="false" tabindex="-1">Chart at a glance</button>
-        <button class="tab" role="tab" id="t-results" aria-controls="p-results" aria-selected="false" tabindex="-1">Results inbox</button>
-        <button class="tab" role="tab" id="t-gaps" aria-controls="p-gaps" aria-selected="false" tabindex="-1">Care gaps</button>
-        <button class="tab" role="tab" id="t-schedule" aria-controls="p-schedule" aria-selected="false" tabindex="-1">Schedule</button>
-        <button class="tab" role="tab" id="t-encounters" aria-controls="p-encounters" aria-selected="false" tabindex="-1">Encounters</button>
-      </div>
-      <div class="pane" id="p-huddle">
-        <div class="pane-text">
-          <div><h3>Ready before the first patient</h3><p>The huddle lists what each visit needs before it starts.</p></div>
-          <ul>
-            <li>Care due: vaccines, screenings and annual wellness parts</li>
-            <li>Results not yet reviewed, referrals still open, insurance not checked, an order waiting for a signature</li>
-            <li>Visit prep: the plan from the last visit, ready to print</li>
-          </ul>
-        </div>
-        <div class="shotframe"><picture>
-          <source media="(max-width: 600px)" srcset="img/phone-huddle.webp" type="image/webp" width="780" height="1456">
-          <source media="(max-width: 600px)" srcset="img/phone-huddle.jpg" width="780" height="1456">
-          <source srcset="img/screen-huddle-1200.webp 1200w, img/screen-huddle.webp 2201w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2201" height="1270">
-          <img src="img/screen-huddle.jpg" width="2201" height="1270" loading="lazy" decoding="async" alt="The daily huddle for a pretend clinic: today's visits in time order, each with what the chart says to prepare, such as care and screenings due, a result not reviewed, an order waiting for a signature and insurance not checked lately, and Visit prep.">
-        </picture></div>
-        <a class="enlarge" href="img/screen-huddle.webp" data-title="Team huddle">Enlarge</a>
-      </div>
-      <div class="pane" id="p-chart">
-        <div class="pane-text">
-          <div><h3>The whole patient on one screen</h3><p>The chart opens on what matters today.</p></div>
-          <ul>
-            <li>What changed since the last visit</li>
-            <li>Care gaps with one tap to put the order in the cart, and a problem list with each diagnosis's history</li>
-            <li>Search the whole record, with quotes for a phrase</li>
-          </ul>
-        </div>
-        <div class="shotframe"><picture>
-          <source media="(max-width: 600px)" srcset="img/phone-chart.webp" type="image/webp" width="780" height="1546">
-          <source media="(max-width: 600px)" srcset="img/phone-chart.jpg" width="780" height="1546">
-          <source srcset="img/screen-chart-1200.webp 1200w, img/screen-chart.webp 1863w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="1863" height="1689">
-          <img src="img/screen-chart.jpg" width="1863" height="1689" loading="lazy" decoding="async" alt="A pretend patient's chart summary: the banner with the allergy and code status, today's chief complaint taken at check-in and the visit status, and what changed since the last visit.">
-        </picture></div>
-        <a class="enlarge" href="img/screen-chart.webp" data-title="Chart at a glance">Enlarge</a>
-      </div>
-      <div class="pane" id="p-results">
-        <div class="pane-text">
-          <div><h3>Results with one-tap next steps</h3><p>Each result is shown with the actions a clinician takes most.</p></div>
-          <ul>
-            <li>Normal, discuss at the next visit, call the patient, review and tell</li>
-            <li>A test with no result yet is listed after 14 days (a lab) or 30 (a study), for up to a year</li>
-            <li>Critical results escalate until they are reviewed; the normal ones are reviewed together</li>
-          </ul>
-        </div>
-        <div class="shotframe"><picture>
-          <source media="(max-width: 600px)" srcset="img/visit-6.webp" type="image/webp" width="780" height="1292">
-          <source media="(max-width: 600px)" srcset="img/visit-6.jpg" width="780" height="1292">
-          <source srcset="img/screen-results-1200.webp 1200w, img/screen-results.webp 2201w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2201" height="1259">
-          <img src="img/screen-results.jpg" width="2201" height="1259" loading="lazy" decoding="async" alt="The results inbox for pretend patients: Review the normal ones for the 3 normal lab results, and the abnormal results first, with values, units, flags and reference ranges and one-tap actions for each.">
-        </picture></div>
-        <a class="enlarge" href="img/screen-results.webp" data-title="Results inbox">Enlarge</a>
-      </div>
-      <div class="pane" id="p-gaps">
-        <div class="pane-text">
-          <div><h3>Care gaps across the practice</h3><p>Screenings, monitoring tests and vaccines due, for each patient in the practice.</p></div>
-          <ul>
-            <li>Filter by gap, insurance or primary care provider</li>
-            <li>One click puts the order in the cart with its diagnosis code, for a physician, NP or PA to sign</li>
-            <li>Mark "done elsewhere" with where and when</li>
-            <li>The rules shown are simplified for testing and must be validated before real use</li>
-            <li>The screen's line "Click a gap to place its order" is older wording: a click puts the order in the cart, and nothing is placed until a physician, NP or PA signs</li>
-          </ul>
-        </div>
-        <div class="shotframe"><picture>
-          <source media="(max-width: 600px)" srcset="img/phone-gaps.webp" type="image/webp" width="780" height="1520">
-          <source media="(max-width: 600px)" srcset="img/phone-gaps.jpg" width="780" height="1520">
-          <source srcset="img/screen-gaps-1200.webp 1200w, img/screen-gaps.webp 2392w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2392" height="1634">
-          <img src="img/screen-gaps.jpg" width="2392" height="1634" loading="lazy" decoding="async" alt="Care gaps across a pretend practice, by patient: filters by gap, insurance and primary care provider, the note that the rules are simplified for practice and must be validated before real use, and each gap due with Click to order, its screening diagnosis code, and Done already.">
-        </picture></div>
-        <a class="enlarge" href="img/screen-gaps.webp" data-title="Care gaps">Enlarge</a>
-      </div>
-      <div class="pane" id="p-schedule">
-        <div class="pane-text">
-          <div><h3>A schedule that knows the visit</h3><p>Booking, check-in and rooming flow into the visit note.</p></div>
-          <ul>
-            <li>The reason for the visit and the chief complaint carry into the note</li>
-            <li>Rooming status for each patient at a glance</li>
-            <li>Blocked time, waitlist and reminders</li>
-          </ul>
-        </div>
-        <div class="shotframe"><picture>
-          <source media="(max-width: 600px)" srcset="img/phone-schedule.webp" type="image/webp" width="780" height="1468">
-          <source media="(max-width: 600px)" srcset="img/phone-schedule.jpg" width="780" height="1468">
-          <source srcset="img/screen-schedule-1200.webp 1200w, img/screen-schedule.webp 2201w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2201" height="1287">
-          <img src="img/screen-schedule.jpg" width="2201" height="1287" loading="lazy" decoding="async" alt="The schedule for a pretend clinic day: today's visits by time, each with its status, such as Visit complete and With physician.">
-        </picture></div>
-        <a class="enlarge" href="img/screen-schedule.webp" data-title="Schedule">Enlarge</a>
-      </div>
-      <div class="pane" id="p-encounters">
-        <div class="pane-text">
-          <div><h3>Pick up where you left off</h3><p>A draft visit opens straight into its note.</p></div>
-          <ul>
-            <li>Open encounter returns to today's draft</li>
-            <li>Earlier visits open their signed note</li>
-            <li>Drafts are saved as they are written and come back after a reload (in 0.158, while the word just typed at the end of a line may begin a protected-care term, such as “test” or “days”, the automatic save waits until something more is typed after it, or for Save draft, the screen lock, closing the note, opening another chart or leaving the window)</li>
-          </ul>
-        </div>
-        <div class="shotframe"><picture>
-          <source media="(max-width: 600px)" srcset="img/phone-encounters.webp" type="image/webp" width="780" height="980">
-          <source media="(max-width: 600px)" srcset="img/phone-encounters.jpg" width="780" height="980">
-          <source srcset="img/screen-encounters-1200.webp 1200w, img/screen-encounters.webp 2544w" sizes="(min-width: 1280px) 1198px, 100vw" type="image/webp" width="2544" height="528">
-          <img src="img/screen-encounters.jpg" width="2544" height="528" loading="lazy" decoding="async" alt="Encounters for a pretend patient: today's draft visit with Open encounter, and an earlier signed visit with Open note.">
-        </picture></div>
-        <a class="enlarge" href="img/screen-encounters.webp" data-title="Encounters">Enlarge</a>
-      </div>
-    </div>
-  </section>
-
   <section id="california" aria-labelledby="ca-h">
     <div class="wrap">
       <p class="kicker">Built for California</p>
@@ -2106,7 +2182,7 @@
       <h2 id="road-h">What's built, what's next, what's planned</h2>
       <p class="sub">Voluta is in development and is not yet used with real patients. Here is where it stands.</p>
       <div class="road">
-        <div class="col built reveal"><span class="tag">Built, in testing</span><h3>The clinic day</h3><ul><li>AI scribe with recorded consent, drafting the whole visit</li><li>One note per visit from rooming to signature</li><li>Draft visits open straight into the note</li><li>Diagnoses discussed but not on the problem list, offered to add or dismiss</li><li>Team huddle, care gaps and recalls</li><li>Results inbox, a list of tests with no result yet, and critical results escalated</li><li>Prenatal due list, wellness visits, care management</li><li>Patient portal, standing orders and refill protocols</li><li>Office safety checks, vaccine fridge, sharps log</li><li>Protected care held apart from the front desk, call center, referral coordinator and office manager in most of the chart, when Voluta recognizes it or a clinician ticks it (the gaps are listed under Protected care kept separate)</li><li>Orders said aloud during a scribed visit, pended for a physician, NP or PA to sign</li><li>Dictation into the text box with the cursor, on any screen, from the top bar (never into a passcode; not yet tried with a real microphone, PowerMic or SpeechMike, or on a real iPad, Mac or Edge)</li><li>Lab results from a lab's message (no lab is connected yet) filed only under the chart whose record number the message gives, and only when the name (family and first names) and the date of birth it gives, at least one of the two, match that chart; when either differs, or neither is given, the results are held and the clinical team gets a task to call the lab. A message with no record number, or for more than one patient, is refused whole. A message whose record number is no chart's is kept, filed nowhere, with no task yet</li><li>California's notice on AI-written handouts</li><li>Encryption, a sealed audit log, a part for each role, two-step sign-in and nightly backups</li></ul></div>
+        <div class="col built reveal"><span class="tag">Built</span><h3>The clinic day</h3><ul><li>AI scribe with recorded consent, drafting the whole visit</li><li>One note per visit from rooming to signature</li><li>Draft visits open straight into the note</li><li>Diagnoses discussed but not on the problem list, offered to add or dismiss</li><li>Team huddle, care gaps and recalls</li><li>Results inbox, a list of tests with no result yet, and critical results escalated</li><li>Prenatal due list, wellness visits, care management</li><li>Patient portal, standing orders and refill protocols</li><li>Office safety checks, vaccine fridge, sharps log</li><li>Protected care held apart from the front desk, call center, referral coordinator and office manager in most of the chart, when Voluta recognizes it or a clinician ticks it (the gaps are listed under Protected care kept separate)</li><li>Orders said aloud during a scribed visit, pended for a physician, NP or PA to sign</li><li>Dictation into the text box with the cursor, on any screen, from the top bar (never into a passcode; not yet tried with a real microphone, PowerMic or SpeechMike, or on a real iPad, Mac or Edge)</li><li>Lab results from a lab's message (no lab is connected yet) filed only under the chart whose record number the message gives, and only when the name (family and first names) and the date of birth it gives, at least one of the two, match that chart; when either differs, or neither is given, the results are held and the clinical team gets a task to call the lab. A message with no record number, or for more than one patient, is refused whole. A message whose record number is no chart's is kept, filed nowhere, with no task yet</li><li>California's notice on AI-written handouts</li><li>Encryption, a sealed audit log, a part for each role, two-step sign-in and nightly backups</li></ul></div>
         <div class="col next reveal"><span class="tag">Next</span><h3>Safety before patients</h3><ul><li>Unsigned drafts held apart too, and protection that does not depend on recognizing words</li><li>Lab results filed on the server the moment they arrive</li><li>Prescribing checks for allergies, pregnancy and children's doses</li><li>Privacy-law features: change history, self-pay restriction</li><li>Independent penetration test and attorney's review</li><li>A pilot with pretend patients, then a small live pilot</li></ul></div>
         <div class="col plan reveal"><span class="tag">Planned, with partners</span><h3>Connected care</h3><ul><li>Electronic prescribing, including controlled substances</li><li>Claims, eligibility and payment posting</li><li>California's Data Exchange Framework and national networks</li><li>CAIR immunization registry, two-way</li><li>Electronic lab orders and results</li><li>Spanish-language scribe visits and two-way texting</li></ul></div>
       </div>
@@ -2157,7 +2233,7 @@
     <div class="wrap info">
       <article id="accessibility" aria-labelledby="acc-h">
         <h2 id="acc-h">Accessibility</h2>
-        <p class="dated">Last checked: November 20, 2026</p>
+        <p class="dated">Last checked: November 21, 2026</p>
         <p>We want everyone to be able to use this site, including people who use a screen reader, a keyboard alone, magnification or voice control. We design it to the Web Content Accessibility Guidelines (WCAG) 2.2, Level AA, published by the W3C, and test it as described here.</p>
         <h3>How we check</h3>
         <p>For this version of the page, we tested it in Chrome and in Safari's engine, at phone and computer widths and at 320 pixels wide (as at 400 percent zoom), with wider text spacing, in the light and dark looks, with reduced motion on and off, with JavaScript off, with a keyboard alone, and with automated accessibility checks (axe-core). No outside audit has been done.</p>
