@@ -6,7 +6,7 @@
      script slipped into the page or a request to another site, is refused by the browser. When the style or the script
      below changes, its sha256 in this line must be updated, from the exact text between the tags:
      python3 -c "import re,hashlib,base64;h=open('index.html',encoding='utf-8').read();[print(t,'sha256-'+base64.b64encode(hashlib.sha256(m.encode()).digest()).decode()) for t in ('style','script') for m in re.findall('<'+t+'>(.*?)</'+t+'>',h,re.S)]" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-njzkPyilroSylPKi1Vjov03c2+PvWEvl7xCL28+U7N4='; style-src 'sha256-gm7YKLGlWkvXB7OVRNRHkifWlA5jai2khy6SbRD6sR8='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XR4IFe+Ech4rBm3kxNRb+vqsHuxdKCAnECiJu/sYY+k='; style-src 'sha256-bC5aK4A0574YPsEnaUE5dmjF1qKfEAyMHWxUOJc4RgY='; font-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voluta Health · A medical record for primary care, built by a physician</title>
@@ -21,6 +21,8 @@
 <meta property="og:image:alt" content="A strip reading Pretend patient · Voluta is in development, over Voluta's chart for a pretend patient: the banner with the allergy and code status, today's chief complaint taken at check-in, the chart's tabs and search, and its first boxes: since the last visit, care gaps, problems and recall.">
 <meta property="og:url" content="https://volutahealth.com/">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Voluta Health">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Voluta Health","alternateName":"Voluta","url":"https://volutahealth.com/"}</script>
 <link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
 <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
 <link rel="icon" href="/favicon-96.png?v=2" sizes="96x96" type="image/png">
@@ -838,6 +840,7 @@
   /* a field that is missing or wrong says why just under it, where focus lands */
   .field { display: grid; gap: 6px; }
   .field-err { margin: 0; font-size: 15px; font-weight: 600; color: var(--err); }
+  .field-note { margin: 0; border-radius: 8px; padding: 10px 12px; font-size: 15px; background: var(--accent-soft); color: var(--ink); }
   textarea { min-height: 110px; resize: vertical; }
   ::placeholder { color: var(--placeholder); opacity: 1; }
   fieldset { border: 1.5px solid var(--field); border-radius: 8px; padding: 8px 14px 10px; margin: 0; }
@@ -1564,7 +1567,7 @@
     }
 
     // The address is put together here, so it is not sitting in the page for address collectors.
-    const to = ['reynaga', 'volutahealth.com'].join('@');
+    const to = ['support', 'volutahealth.com'].join('@');
     function address() {
       $$('#addr, [data-addr]').forEach(s => {
         const link = el('a', '', to);
@@ -1586,8 +1589,24 @@
         err.hidden = !why;
       };
       f.addEventListener('input', e => { if (e.target.getAttribute('aria-invalid') === 'true') flag(e.target, ''); });
+      // The pilot list is for clinicians and the staff of clinics and medical groups. For anyone else the role field
+      // says so as soon as it is chosen, and the form writes no email.
+      const role = f.elements.role, roleNote = $('#role-note');
+      const outside = () => role.value === 'Not with a clinic or medical group';
+      const roleSay = () => {
+        roleNote.hidden = !outside();
+        if (outside()) role.setAttribute('aria-describedby', roleNote.id); else role.removeAttribute('aria-describedby');
+      };
+      role.addEventListener('change', roleSay);
+      roleSay();
       f.addEventListener('submit', e => {
         e.preventDefault();
+        if (outside()) {
+          sent.classList.remove('on');
+          say.textContent = '';
+          role.focus();
+          return;
+        }
         const v = n => (f.elements[n].value || '').trim();
         const mail = v('email'), nameWhy = v('name') ? '' : 'Add your name.';
         const mailWhy = !mail ? 'Add an email address we can reply to.'
@@ -2084,12 +2103,12 @@
         <p class="kicker">Pilot</p>
         <h2 id="pilot-h">Join the pilot list</h2>
         <p class="sub">We are looking for a few California primary care practices to help shape Voluta before it opens. Tell us about your practice and what you would want from your medical record.</p>
-        <p class="lead-note">The form opens a ready-to-send email in your email app. Please do not include any patient information. How we handle your email: <a href="#privacy">Privacy</a>.</p>
+        <p class="lead-note">The pilot list is for physicians and other clinicians, and for the staff of clinics and medical groups. The form opens a ready-to-send email in your email app. Please do not include any patient information. How we handle your email: <a href="#privacy">Privacy</a>.</p>
       </div>
       <form id="inq" novalidate>
         <div class="row2">
           <div class="field"><label><span>Your name <span class="req" aria-hidden="true">(required)</span></span><input name="name" autocomplete="name" required></label><p class="field-err" id="name-err" hidden></p></div>
-          <label>Your role<select name="role"><option>Physician</option><option>Nurse practitioner or physician assistant</option><option>Practice owner or manager</option><option>Nurse or medical assistant</option><option>Other</option></select></label>
+          <div class="field"><label>Your role<select name="role"><option>Physician</option><option>Nurse practitioner or physician assistant</option><option>Practice owner or manager</option><option>Nurse or medical assistant</option><option>Other clinic or medical group staff</option><option>Not with a clinic or medical group</option></select></label><p class="field-note" id="role-note" hidden>Thank you for your interest in Voluta. At this time the pilot list is open only to physicians and other clinicians, and to the staff of clinics and medical groups, so this form will not write an email.</p></div>
         </div>
         <div class="row2">
           <label>Practice<input name="practice" autocomplete="organization"></label>
